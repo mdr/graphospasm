@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core
+Bundle-SymbolicName: com.github.mdr.graphospasm.core;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: core.jar,
+ lib/guava-r09.jar
