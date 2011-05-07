@@ -36,5 +36,3 @@ trait Edge {
   def isIncidentTo(v: Vertex): Boolean = vertices contains v
 
 }
-
-case class Name(simpleName: String, namespace: String = "")

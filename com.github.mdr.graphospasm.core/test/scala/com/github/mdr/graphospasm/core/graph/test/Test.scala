@@ -34,10 +34,25 @@ object Test {
           </dependency>
         </dependencies>
       </project>
-    val pomGraph = new XmlImporter().makeGraph(xml)
 
-    println(pomGraph)
+    val pomNamespace = "http://maven.apache.org/POM/4.0.0"
+    val project = Name("project", pomNamespace)
+    val optional = Name("optional", pomNamespace)
 
+    {
+      val rename = Rename(IncomingLocation(project), Name("Project"))
+      val optionalIsBoolean = AssignType(IncomingLocation(optional), XmlImporter.XSD.boolean)
+      val importSpec = XmlImportSpec(blackList = true, directives = List(rename, optionalIsBoolean))
+      val pomGraph = new XmlImporter(importSpec).makeGraph(xml)
+      println(pomGraph)
+    }
+
+    {
+      val include = Include(project, NoAttributes)
+      val importSpec = XmlImportSpec(blackList = false, directives = List(include))
+      val pomGraph = new XmlImporter(importSpec).makeGraph(xml)
+      println(pomGraph)
+    }
   }
 
 }
