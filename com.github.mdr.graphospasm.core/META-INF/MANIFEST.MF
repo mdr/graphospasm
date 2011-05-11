@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: com.github.mdr.graphospasm.core;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-ClassPath: core.jar,
+Bundle-ClassPath: .,
  lib/guava-r09.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.github.mdr.graphospasm.core.graph,

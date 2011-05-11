@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.graphics.GC
 import java.util.ArrayList
 import org.eclipse.draw2d.graph.DirectedGraphLayout
-import org.eclipse.draw2d.graph.{ Node => Draw2DNode, Edge, DirectedGraph }
+import org.eclipse.draw2d.graph.{ Node ⇒ Draw2DNode, Edge, DirectedGraph }
 import org.eclipse.draw2d.geometry._
 import org.eclipse.gef.ui.parts._
 import org.eclipse.gef._
@@ -21,7 +21,41 @@ import scala.xml._
 object DummyDataGetter {
 
   def getDiagram = {
-    val xml = XML.loadFile("/home/matt/corpus2/scalariform/scalariform/pom.xml")
+    val xml =
+      <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <modelVersion>4.0.0</modelVersion>
+        <groupId>org.scalariform</groupId>
+        <artifactId>scalariform</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <packaging>eclipse-plugin</packaging>
+        <parent>
+          <artifactId>scalariform.parent</artifactId>
+          <groupId>org.scalariform</groupId>
+          <version>0.1.0-SNAPSHOT</version>
+        </parent>
+        <dependencies>
+          <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest</artifactId>
+            <version>1.2-for-scala-2.8.0.final-SNAPSHOT</version>
+            <scope>test</scope>
+          </dependency>
+        </dependencies>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.sonatype.tycho</groupId>
+              <artifactId>maven-osgi-compiler-plugin</artifactId>
+              <version>0.11</version>
+              <configuration>
+                <excludeResources>
+                  <excludeResource>**/*.scala</excludeResource>
+                </excludeResources>
+              </configuration>
+            </plugin>
+          </plugins>
+        </build>
+      </project>
 
     val pomNamespace = "http://maven.apache.org/POM/4.0.0"
     val xsiNamespace = "http://www.w3.org/2001/XMLSchema-instance"
@@ -41,10 +75,10 @@ object DummyDataGetter {
     val fontMetrics = FigureUtilities.getFontMetrics(font)
     var vertexToNode = Map[Vertex, Node]()
 
-    for (vertex <- graph.vertices) {
+    for (vertex ← graph.vertices) {
       val node = new Node
       node.name = vertex.name.simpleName
-      val attributes = vertex.attributes map { case (Name(simpleName, _), value) => (simpleName, value) }
+      val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
       node.attributes = attributes
       val height = (fontMetrics.getHeight) * attributes.size + 30
       val widestAttribute = if (attributes.isEmpty) 0 else attributes.map {
@@ -58,7 +92,7 @@ object DummyDataGetter {
       diagram.add(node)
       vertexToNode = vertexToNode + (vertex -> node)
     }
-    for (edge <- graph.edges)
+    for (edge ← graph.edges)
       Connection.connect(vertexToNode(edge.source), vertexToNode(edge.target))
 
     diagram
