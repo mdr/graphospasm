@@ -1,9 +1,8 @@
-package com.github.mdr.graphospasm
-package core.graph.test
+package com.github.mdr.graphospasm.core.graph.test
 
-import core.graph.mutable._
-import core.graph._
-import core.graph.xml._
+import com.github.mdr.graphospasm.core.graph.mutable._
+import com.github.mdr.graphospasm.core.graph._
+import com.github.mdr.graphospasm.core.graph.xml._
 
 object Test {
 

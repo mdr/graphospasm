@@ -6,3 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: core.jar,
  lib/guava-r09.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: com.github.mdr.graphospasm.core.graph,
+ com.github.mdr.graphospasm.core.graph.mutable,
+ com.github.mdr.graphospasm.core.graph.xml
+Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0"

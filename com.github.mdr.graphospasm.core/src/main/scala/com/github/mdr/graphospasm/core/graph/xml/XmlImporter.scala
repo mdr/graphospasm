@@ -1,8 +1,7 @@
-package com.github.mdr.graphospasm.core
-package graph.xml
+package com.github.mdr.graphospasm.core.graph.xml
 
-import graph._
-import graph.mutable._
+import com.github.mdr.graphospasm.core.graph._
+import com.github.mdr.graphospasm.core.graph.mutable._
 
 import scala.xml._
 

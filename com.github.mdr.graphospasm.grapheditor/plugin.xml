@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.github.mdr.graphospasm.grapheditor.GraphEditor"
+            default="true"
+            extensions="graph"
+            id="com.github.mdr.graphospasm.grapheditor.GraphEditor"
+            name="Graph Editor">
+      </editor>
+   </extension>
+
+</plugin>

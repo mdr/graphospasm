@@ -1,5 +1,4 @@
-package com.github.mdr.graphospasm
-package core.graph
+package com.github.mdr.graphospasm.core.graph
 
 trait Graph {
 

@@ -1,7 +1,6 @@
-package com.github.mdr.graphospasm
-package core.graph.mutable
+package com.github.mdr.graphospasm.core.graph.mutable
 
-import core.graph._
+import com.github.mdr.graphospasm.core.graph._
 import com.google.common.collect.{ ListMultimap, ArrayListMultimap }
 
 import scala.collection.JavaConversions._
