@@ -8,14 +8,9 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>com.github.mdr</groupId>
-  <artifactId>com.github.mdr.graphospasm.core</artifactId>
+  <artifactId>com.github.mdr.graphospasm.grapheditor</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
     <dependencies>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>r09</version>
-    </dependency>
   </dependencies>
 </project>

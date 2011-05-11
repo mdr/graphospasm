@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: com.github.mdr.graphospasm.core;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.0.1.qualifier
 Bundle-ClassPath: core.jar,
  lib/guava-r09.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.github.mdr.graphospasm.core.graph,
  com.github.mdr.graphospasm.core.graph.mutable,
  com.github.mdr.graphospasm.core.graph.xml
-Require-Bundle: org.scala-ide.scala.library;bundle-version="2.10.0"
+Require-Bundle: org.scala-ide.scala.library
