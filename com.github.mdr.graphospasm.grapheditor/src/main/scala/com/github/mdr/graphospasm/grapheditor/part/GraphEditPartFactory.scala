@@ -1,7 +1,6 @@
-package com.github.mdr.graphospasm
-package grapheditor.part
+package com.github.mdr.graphospasm.grapheditor.part
 
-import grapheditor.model._
+import com.github.mdr.graphospasm.grapheditor.model._
 
 import org.eclipse.gef._
 
@@ -12,6 +11,7 @@ object GraphEditPartFactory extends EditPartFactory {
       case graphDiagram: GraphDiagram ⇒ new GraphDiagramEditPart(graphDiagram)
       case node: Node                 ⇒ new NodeEditPart(node)
       case connection: Connection     ⇒ new ConnectionEditPart(connection)
+      case nodeName: NodeName         => new NodeNameEditPart(nodeName)
     }
 
 }

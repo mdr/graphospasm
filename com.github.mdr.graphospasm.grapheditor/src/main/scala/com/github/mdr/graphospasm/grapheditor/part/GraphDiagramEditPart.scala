@@ -1,8 +1,7 @@
-package com.github.mdr.graphospasm
-package grapheditor.part
+package com.github.mdr.graphospasm.grapheditor.part
 
-import grapheditor.model._
-import grapheditor.model.commands._
+import com.github.mdr.graphospasm.grapheditor.model._
+import com.github.mdr.graphospasm.grapheditor.model.commands._
 
 import org.eclipse.swt.SWT
 import org.eclipse.gef.LayerConstants

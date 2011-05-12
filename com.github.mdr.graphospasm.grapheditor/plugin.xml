@@ -11,5 +11,15 @@
             name="Graph Editor">
       </editor>
    </extension>
+    <extension point="org.eclipse.ui.newWizards">
+      <category name="Graphospasm"
+                id="com.github.mdr.graphospasm.category"/>
+      <wizard name="Graph"
+              category="com.github.mdr.graphospasm.category"
+              class="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard"
+              id="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard">
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
 
 </plugin>

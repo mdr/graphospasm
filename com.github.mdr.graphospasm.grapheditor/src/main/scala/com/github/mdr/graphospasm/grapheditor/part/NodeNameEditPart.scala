@@ -1,6 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
-import com.github.mdr.graphospasm.grapheditor.model.NodeName
+import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.figure._
 
@@ -13,15 +13,13 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 
-class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
+class NodeNameEditPart(name: NodeName) extends AbstractGraphicalEditPart with Listener {
 
-  setModel(node)
+  setModel(name)
 
-  override protected def getModelChildren: JList[AnyRef] = List(new NodeName(node.name))
-
-  override def getFigure = super.getFigure.asInstanceOf[NodeFigure]
+  override def getFigure = super.getFigure.asInstanceOf[NodeNameFigure]
   override def getParent = super.getParent.asInstanceOf[GraphicalEditPart]
-  override def createFigure = new NodeFigure
+  override def createFigure = new NodeNameFigure
 
   protected def createEditPolicies() {
     //    installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateConnectionsEditPolicy)
@@ -32,35 +30,26 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
 
   override def refreshVisuals() {
     println("refreshVisuals: " + this + ", parent = " + getParent)
-    getFigure.name = node.name.simpleName
-    getFigure.attributes = node.attributes
-    getParent.setLayoutConstraint(this, figure, node.bounds)
+    getFigure.name = name
+    // getParent.setLayoutConstraint(this, figure, node.bounds)
     // getParent.refresh()
   }
 
   override def activate() {
-    if (!isActive) node.addListener(this)
+    if (!isActive) name.addListener(this)
     super.activate()
   }
 
   override def deactivate() {
-    if (isActive) node.removeListener(this)
+    if (isActive) name.removeListener(this)
     super.deactivate()
   }
 
   def changed(event: Event) {
     refreshVisuals()
-    refreshChildren()
+    //    refreshChildren()
     //    refreshSourceConnections()
     //    refreshTargetConnections()
   }
-
-  override protected def getModelSourceConnections = node.sourceConnections
-  override protected def getModelTargetConnections = node.targetConnections
-
-  def getSourceConnectionAnchor(request: Request) = getFigure.connectionAnchor
-  def getTargetConnectionAnchor(request: Request) = getFigure.connectionAnchor
-  def getTargetConnectionAnchor(connection: gef.ConnectionEditPart) = getFigure.connectionAnchor
-  def getSourceConnectionAnchor(connection: gef.ConnectionEditPart) = getFigure.connectionAnchor
 
 }

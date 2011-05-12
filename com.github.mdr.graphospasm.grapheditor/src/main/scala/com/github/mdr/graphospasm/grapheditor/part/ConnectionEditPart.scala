@@ -1,7 +1,6 @@
-package com.github.mdr.graphospasm
-package grapheditor.part
+package com.github.mdr.graphospasm.grapheditor.part
 
-import grapheditor.model._
+import com.github.mdr.graphospasm.grapheditor.model._
 
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PolylineConnection

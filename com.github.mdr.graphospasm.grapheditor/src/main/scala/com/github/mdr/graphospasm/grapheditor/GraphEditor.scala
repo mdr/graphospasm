@@ -32,6 +32,9 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     super.configureGraphicalViewer()
     val viewer = getGraphicalViewer
 
+    val rootEditPart = new ScalableFreeformRootEditPart
+    viewer.setRootEditPart(rootEditPart)
+
     viewer.setEditPartFactory(GraphEditPartFactory)
 
     viewer.setContents(diagram)
@@ -57,7 +60,7 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 
   override def getGraphicalViewer = super.getGraphicalViewer.asInstanceOf[ScrollingGraphicalViewer]
 
-  private final def getRootEditPart = getGraphicalViewer.getRootEditPart.asInstanceOf[ScalableRootEditPart]
+  private final def getRootEditPart = getGraphicalViewer.getRootEditPart.asInstanceOf[ScalableFreeformRootEditPart]
 
   override def setInput(input: IEditorInput) {
     super.setInput(input)
@@ -66,7 +69,7 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     diagram = DummyDataGetter.createDiagram(xml)
     DummyDataGetter.autolayoutDiagram(diagram)
 
-    setPartName(file.getName())
+    setPartName(file.getName)
   }
 
   def doSave(monitor: IProgressMonitor) {
