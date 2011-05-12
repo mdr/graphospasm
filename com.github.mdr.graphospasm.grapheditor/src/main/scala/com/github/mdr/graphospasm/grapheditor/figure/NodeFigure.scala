@@ -1,5 +1,9 @@
 package com.github.mdr.graphospasm.grapheditor.figure
 
+import org.eclipse.swt.graphics.Color
+import org.eclipse.draw2d.geometry.Rectangle
+import org.eclipse.swt.widgets.Display
+import org.eclipse.swt.graphics.Pattern
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d._
@@ -7,7 +11,7 @@ import org.eclipse.draw2d._
 class NodeFigure extends Figure {
 
   setLayoutManager(new XYLayout)
-  setBorder(new LineBorder(1))
+  // setBorder(new LineBorder(1))
 
   //   setOpaque(true)
 
@@ -34,13 +38,24 @@ class NodeFigure extends Figure {
 
   override def paintFigure(g: Graphics) {
     super.paintFigure(g)
-    g.setForegroundColor(ColorConstants.black)
     val bounds = getBounds.getCopy
+    val display = Display.getDefault
+    val gradHeight = 30
+    val pattern = new Pattern(display, bounds.x, bounds.y, bounds.x, bounds.y + gradHeight, new Color(null, 192, 192, 255), ColorConstants.white)
+    g.setBackgroundPattern(pattern)
+    //    g.fillRectangle(bounds.x, bounds.y, bounds.width, bounds.height)
+    g.fillRoundRectangle(new Rectangle(bounds.x, bounds.y, bounds.width - 1, gradHeight), 10, 10)
+    g.setBackgroundPattern(null)
+    pattern.dispose()
+    g.setForegroundColor(ColorConstants.black)
+    g.drawRoundRectangle(new Rectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1), 10, 10)
+
     val nameDimension = FigureUtilities.getTextExtents(name, g.getFont)
     val titleTextPos = bounds.getTopLeft.getTranslated(new Dimension((bounds.width - nameDimension.width) / 2, 3))
     g.drawText(name, titleTextPos)
     val lineY = titleTextPos.y + nameDimension.height + 2
-    g.drawLine(bounds.x, lineY, bounds.getRight.x, lineY)
+    if (attributes_.nonEmpty)
+      g.drawLine(bounds.x, lineY, bounds.getRight.x, lineY)
 
     var currentY = lineY - bounds.y + 3
 
