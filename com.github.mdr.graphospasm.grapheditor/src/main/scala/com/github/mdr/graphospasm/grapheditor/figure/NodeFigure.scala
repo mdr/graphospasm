@@ -38,8 +38,14 @@ class NodeFigure extends Figure {
 
   override def paintFigure(g: Graphics) {
     super.paintFigure(g)
-    val bounds = getBounds.getCopy
+    val shadowSize = 6
+    val bounds = getBounds.getCopy.resize(-shadowSize, -shadowSize)
     val display = Display.getDefault
+    g.setBackgroundColor(new Color(null, 192, 192, 192))
+    g.fillRoundRectangle(new Rectangle(bounds.x + shadowSize, bounds.y + shadowSize, bounds.width - 1, bounds.height - 1), 10, 10)
+
+    g.setBackgroundColor(ColorConstants.white)
+    g.fillRoundRectangle(new Rectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1), 10, 10)
     val gradHeight = 30
     val pattern = new Pattern(display, bounds.x, bounds.y, bounds.x, bounds.y + gradHeight, new Color(null, 192, 192, 255), ColorConstants.white)
     g.setBackgroundPattern(pattern)
@@ -49,6 +55,7 @@ class NodeFigure extends Figure {
     pattern.dispose()
     g.setForegroundColor(ColorConstants.black)
     g.drawRoundRectangle(new Rectangle(bounds.x, bounds.y, bounds.width - 1, bounds.height - 1), 10, 10)
+    g.setForegroundColor(ColorConstants.black)
 
     val nameDimension = FigureUtilities.getTextExtents(name, g.getFont)
     val titleTextPos = bounds.getTopLeft.getTranslated(new Dimension((bounds.width - nameDimension.width) / 2, 3))

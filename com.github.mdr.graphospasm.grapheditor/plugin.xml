@@ -6,7 +6,7 @@
       <editor
             class="com.github.mdr.graphospasm.grapheditor.GraphEditor"
             default="true"
-            extensions="graph"
+            extensions="graph,xml"
             id="com.github.mdr.graphospasm.grapheditor.GraphEditor"
             name="Graph Editor">
       </editor>

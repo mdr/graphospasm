@@ -52,13 +52,6 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
     refreshChildren()
   }
 
-  override def refreshVisuals() {
-    super.refreshVisuals()
-    val connectionLayer = getLayer(LayerConstants.CONNECTION_LAYER).asInstanceOf[ConnectionLayer]
-    if ((getViewer.getControl.getStyle & SWT.MIRRORED) == 0)
-      connectionLayer.setAntialias(SWT.ON)
-  }
-
 }
 
 class GraphDiagramLayoutEditPolicy extends XYLayoutEditPolicy {

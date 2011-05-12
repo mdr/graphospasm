@@ -98,7 +98,7 @@ object DummyDataGetter {
     diagram
   }
 
-  private def createDiagram(xml: Elem): GraphDiagram = {
+  def createDiagram(xml: Elem): GraphDiagram = {
     def childElems(elem: Elem) = elem.child.collect { case e: Elem ⇒ e }
     val diagram = new GraphDiagram
     val font = new GC(new Shell).getFont
@@ -118,7 +118,7 @@ object DummyDataGetter {
         }
       }
       node.attributes = attributes
-      val height = (fontMetrics.getHeight) * attributes.size + 30
+      val height = (fontMetrics.getHeight) * attributes.size + 38
       val widestAttribute = if (attributes.isEmpty) 0 else attributes.map {
         case (name, value) ⇒
           FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width
@@ -134,21 +134,21 @@ object DummyDataGetter {
     makeNode(xml)
     diagram
   }
-  private def autolayoutDiagram(diagram: com.github.mdr.graphospasm.grapheditor.model.GraphDiagram): Unit = {
+  def autolayoutDiagram(diagram: GraphDiagram) {
 
     val directedGraphLayout = new DirectedGraphLayout
     val graph = new DirectedGraph
 
     var thingToNodeMap: Map[Node, Draw2DNode] = Map()
     var connections: Set[Connection] = Set()
-    for (thing ← diagram.nodes) {
-      val node = new Draw2DNode(thing)
-      node.width = thing.width
-      node.height = thing.height
-      node.setPadding(new Insets(4, 4, 4, 4))
-      thingToNodeMap = thingToNodeMap + (thing -> node)
-      graph.nodes.asInstanceOf[ArrayList[Draw2DNode]].add(node)
-      connections = connections ++ thing.allConnections
+    for (node ← diagram.nodes) {
+      val draw2dNode = new Draw2DNode(node)
+      draw2dNode.width = node.width
+      draw2dNode.height = node.height
+      draw2dNode.setPadding(new Insets(8, 4, 8, 4))
+      thingToNodeMap = thingToNodeMap + (node -> draw2dNode)
+      graph.nodes.asInstanceOf[ArrayList[Draw2DNode]].add(draw2dNode)
+      connections = connections ++ node.allConnections
     }
     for {
       connection ← connections
