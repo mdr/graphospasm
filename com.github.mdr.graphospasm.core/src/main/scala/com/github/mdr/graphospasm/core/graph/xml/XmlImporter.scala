@@ -82,7 +82,7 @@ class XmlImporter(importSpec: XmlImportSpec) {
           child ← elem.child
           childElement ← Some(child) collect { case e: Elem ⇒ e }
         } childElement.child.toList match {
-          case List(t: Text) ⇒
+          case List(t: Text) if getAttributes(childElement).isEmpty ⇒
             val childElementName = getName(childElement)
             if (includeElement(childElementName))
               vertex.setAttribute(rewriteElement(childElementName), coerceElement(childElementName, t.text))

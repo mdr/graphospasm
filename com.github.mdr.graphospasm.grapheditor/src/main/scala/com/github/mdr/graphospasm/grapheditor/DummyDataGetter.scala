@@ -69,7 +69,7 @@ object DummyDataGetter {
     diagram
   }
 
-  private def createDiagram(graph: Graph): GraphDiagram = {
+  def createDiagram(graph: Graph): GraphDiagram = {
     val diagram = new GraphDiagram
     val font = new GC(new Shell).getFont
     val fontMetrics = FigureUtilities.getFontMetrics(font)
@@ -79,7 +79,7 @@ object DummyDataGetter {
       val node = new Node(vertex.name)
       val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
       node.attributes = attributes
-      val height = (fontMetrics.getHeight) * attributes.size + 30
+      val height = (fontMetrics.getHeight) * attributes.size + 38
       val widestAttribute = if (attributes.isEmpty) 0 else attributes.map {
         case (name, value) ⇒
           FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width

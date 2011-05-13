@@ -1,5 +1,8 @@
 package com.github.mdr.graphospasm.grapheditor
 
+import org.eclipse.draw2d.Graphics
+import org.eclipse.draw2d.FreeformLayer
+import org.eclipse.draw2d.ScalableFreeformLayeredPane
 import java.util.EventObject
 import org.eclipse.ui.IEditorPart
 import org.eclipse.draw2d.PositionConstants
@@ -43,7 +46,40 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     super.configureGraphicalViewer()
     val viewer = getGraphicalViewer
 
-    val rootEditPart = new ScalableFreeformRootEditPart
+    val rootEditPart = new ScalableFreeformRootEditPart {
+      class FeedbackLayer extends FreeformLayer {
+        setEnabled(false)
+      }
+
+      override def createScaledLayers() = {
+        val layers = new ScalableFreeformLayeredPane() {
+
+          override def paintClientArea(graphics: Graphics) {
+            if (getChildren().isEmpty())
+              return ;
+            //            if (getScale == 1.0)
+            //              super.paintClientArea(graphics)
+            //            else {
+            val g = new ScaledGraphics(graphics)
+            val optimizeClip = getBorder == null || getBorder.isOpaque
+            if (!optimizeClip)
+              g.clipRect(getBounds.getCropped(getInsets))
+            g.scale(getScale)
+            g.pushState()
+            paintChildren(g)
+            g.dispose()
+            graphics.restoreState()
+            //            }
+          }
+
+        }
+        layers.add(createGridLayer(), LayerConstants.GRID_LAYER)
+        layers.add(getPrintableLayers(), LayerConstants.PRINTABLE_LAYERS)
+        layers.add(new FeedbackLayer(), LayerConstants.SCALED_FEEDBACK_LAYER)
+        layers
+      }
+
+    }
     viewer.setRootEditPart(rootEditPart)
 
     viewer.setEditPartFactory(GraphEditPartFactory)
@@ -107,7 +143,9 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     super.setInput(input)
     val file = input.asInstanceOf[IFileEditorInput].getFile()
     val xml = XML.load(file.getContents)
-    diagram = DummyDataGetter.createDiagram(xml)
+    val importSpec = XmlImportSpec(blackList = true, directives = List())
+    val graph = new XmlImporter(importSpec).makeGraph(xml)
+    diagram = DummyDataGetter.createDiagram(graph)
     DummyDataGetter.autolayoutDiagram(diagram)
 
     setPartName(file.getName)

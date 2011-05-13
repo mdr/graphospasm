@@ -76,6 +76,9 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
 
   def changed(event: Event) {
     refreshVisuals()
+    for (child ← getChildren) {
+      child.asInstanceOf[NodeNameEditPart].refreshVisuals()
+    }
     refreshChildren()
     //    refreshSourceConnections()
     //    refreshTargetConnections()
