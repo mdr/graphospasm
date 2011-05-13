@@ -76,8 +76,7 @@ object DummyDataGetter {
     var vertexToNode = Map[Vertex, Node]()
 
     for (vertex ← graph.vertices) {
-      val node = new Node
-      node.name = vertex.name
+      val node = new Node(vertex.name)
       val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
       node.attributes = attributes
       val height = (fontMetrics.getHeight) * attributes.size + 30
@@ -86,7 +85,7 @@ object DummyDataGetter {
           FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width
       }.max
 
-      val width = scala.math.max(FigureUtilities.getTextExtents(node.name.simpleName, font).width, widestAttribute) + 85
+      val width = scala.math.max(FigureUtilities.getTextExtents(node.name.name.simpleName, font).width, widestAttribute) + 85
 
       node.bounds = new Rectangle(150, 150, width, height)
       diagram.add(node)
@@ -106,8 +105,7 @@ object DummyDataGetter {
 
     def makeNode(elem: Elem): Node = {
 
-      val node = new Node
-      node.name = Name(elem.label, elem.namespace)
+      val node = new Node(Name(elem.label, elem.namespace))
       var attributes = Map[String, Any]()
       for (childElem ← childElems(elem)) {
         if (childElems(childElem).isEmpty)
@@ -124,7 +122,7 @@ object DummyDataGetter {
           FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width
       }.max
 
-      val width = scala.math.max(FigureUtilities.getTextExtents(node.name.simpleName, font).width, widestAttribute) + 85
+      val width = scala.math.max(FigureUtilities.getTextExtents(node.name.name.simpleName, font).width, widestAttribute) + 85
 
       node.bounds = new Rectangle(150, 150, width, height)
       diagram.add(node)

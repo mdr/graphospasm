@@ -1,5 +1,14 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import org.eclipse.gef.CompoundSnapToHelper
+import org.eclipse.gef.SnapToGrid
+import org.eclipse.gef.SnapToGuides
+import org.eclipse.gef.SnapToGeometry
+import org.eclipse.gef.rulers.RulerProvider
+import PartialFunction.cond
+import org.eclipse.gef.SnapToHelper
+import org.eclipse.gef.editpolicies.SnapFeedbackPolicy
+import com.github.mdr.graphospasm.grapheditor.figure.GraphDiagramFigure
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.model.commands._
 
@@ -25,15 +34,11 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
 
   override protected def getModelChildren: JList[Node] = diagram.nodes
 
-  override def createFigure: IFigure = {
-    val f = new FreeformLayer
-    f.setLayoutManager(new FreeformLayout)
-    f.setBorder(new MarginBorder(5))
-    f
-  }
+  override def createFigure: IFigure = new GraphDiagramFigure
 
   protected def createEditPolicies() {
     installEditPolicy(EditPolicy.LAYOUT_ROLE, new GraphDiagramLayoutEditPolicy)
+    installEditPolicy("Snap Feedback", new SnapFeedbackPolicy)
   }
 
   override def activate() {
@@ -50,7 +55,27 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
     refreshVisuals()
     refreshChildren()
   }
+  override def getAdapter(type_ : Class[_]) =
+    if (type_ == classOf[SnapToHelper])
+      makeSnapToStrategies
+    else
+      super.getAdapter(type_)
 
+  protected def makeSnapToStrategies() = {
+    def checkProperty(p: String) = cond(getViewer.getProperty(p)) { case x if x == true ⇒ true }
+    var strategies: List[SnapToHelper] = Nil
+    if (checkProperty(RulerProvider.PROPERTY_RULER_VISIBILITY))
+      strategies ::= new SnapToGuides(this)
+    if (checkProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED))
+      strategies ::= new SnapToGeometry(this)
+    if (checkProperty(SnapToGrid.PROPERTY_GRID_ENABLED))
+      strategies ::= new SnapToGrid(this)
+    strategies match {
+      case Nil     ⇒ null
+      case List(s) ⇒ s
+      case xs      ⇒ new CompoundSnapToHelper(xs.reverse.toArray[SnapToHelper])
+    }
+  }
 }
 
 class GraphDiagramLayoutEditPolicy extends XYLayoutEditPolicy {

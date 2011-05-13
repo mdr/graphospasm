@@ -5,6 +5,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="com.github.mdr.graphospasm.grapheditor.GraphEditor"
+            contributorClass="com.github.mdr.graphospasm.grapheditor.GraphEditorActionBarContributor"
             default="true"
             extensions="graph,xml"
             id="com.github.mdr.graphospasm.grapheditor.GraphEditor"

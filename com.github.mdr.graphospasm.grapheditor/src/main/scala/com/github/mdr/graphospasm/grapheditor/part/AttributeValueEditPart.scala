@@ -13,30 +13,30 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 
-class NodeNameEditPart(nodeName: NodeName) extends AbstractGraphicalEditPart with Listener {
+class AttributeValueEditPart(attributeValue: AttributeValue) extends AbstractGraphicalEditPart with Listener {
 
-  setModel(nodeName)
+  setModel(attributeValue)
 
-  override def getFigure = super.getFigure.asInstanceOf[NodeNameFigure]
+  override def getFigure = super.getFigure.asInstanceOf[AttributeValueFigure]
   override def getParent = super.getParent.asInstanceOf[NodeEditPart]
-  override def getModel = super.getModel.asInstanceOf[NodeName]
+  override def getModel = super.getModel.asInstanceOf[AttributeValue]
   override def createFigure = new NodeNameFigure
 
   protected def createEditPolicies() {
   }
 
   override def refreshVisuals() {
-    getFigure.nodeName = nodeName
+    getFigure.attributeValue = attributeValue
     getParent.setLayoutConstraint(this)
   }
 
   override def activate() {
-    if (!isActive) nodeName.addListener(this)
+    if (!isActive) attributeValue.addListener(this)
     super.activate()
   }
 
   override def deactivate() {
-    if (isActive) nodeName.removeListener(this)
+    if (isActive) attributeValue.removeListener(this)
     super.deactivate()
   }
 

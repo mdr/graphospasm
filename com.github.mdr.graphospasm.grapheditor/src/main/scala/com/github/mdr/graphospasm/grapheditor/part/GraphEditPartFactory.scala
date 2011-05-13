@@ -8,10 +8,12 @@ object GraphEditPartFactory extends EditPartFactory {
 
   def createEditPart(context: EditPart, model: Object): EditPart =
     model match {
-      case graphDiagram: GraphDiagram ⇒ new GraphDiagramEditPart(graphDiagram)
-      case node: Node                 ⇒ new NodeEditPart(node)
-      case connection: Connection     ⇒ new ConnectionEditPart(connection)
-      case nodeName: NodeName         => new NodeNameEditPart(nodeName)
+      case graphDiagram: GraphDiagram     ⇒ new GraphDiagramEditPart(graphDiagram)
+      case node: Node                     ⇒ new NodeEditPart(node)
+      case connection: Connection         ⇒ new ConnectionEditPart(connection)
+      case nodeName: NodeName             ⇒ new NodeNameEditPart(nodeName)
+      case attributeName: AttributeName   ⇒ new AttributeNameEditPart(attributeName)
+      case attributeValue: AttributeValue ⇒ new AttributeValueEditPart(attributeValue)
     }
 
 }

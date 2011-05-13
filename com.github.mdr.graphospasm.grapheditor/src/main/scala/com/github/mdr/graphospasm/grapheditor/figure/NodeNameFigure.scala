@@ -9,25 +9,16 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d._
 
-class NodeNameFigure extends Figure {
+class NodeNameFigure extends Label {
 
-  setLayoutManager(new XYLayout)
+  private var nodeName_ : NodeName = _
 
-  private var name_ : NodeName = _
-
-  def name_=(nodeName: NodeName) {
-    name_ = nodeName
+  def nodeName_=(nodeName: NodeName) {
+    nodeName_ = nodeName
+    setText(nodeName.name.simpleName)
     repaint()
   }
 
-  def name = name_
-
-  override def paintFigure(g: Graphics) {
-    super.paintFigure(g)
-
-    val nameDimension = FigureUtilities.getTextExtents(name.name.simpleName, g.getFont)
-    val titleTextPos = bounds.getTopLeft.getTranslated(new Dimension((bounds.width - nameDimension.width) / 2, 3))
-    g.drawText(name.name.simpleName, titleTextPos)
-  }
+  def nodeName = nodeName_
 
 }

@@ -3,9 +3,9 @@ package com.github.mdr.graphospasm.grapheditor.model
 import com.github.mdr.graphospasm.core.graph.Name
 import org.eclipse.draw2d.geometry._
 
-class Node extends Observable {
+class Node(initialName: Name) extends Observable {
 
-  private var name_ : Name = _
+  val name: NodeName = new NodeName(initialName)
 
   private var attributes_ : Map[String, Any] = Map()
 
@@ -16,13 +16,6 @@ class Node extends Observable {
   private var bounds_ = new Rectangle(0, 0, 0, 0)
 
   private var diagram_ : GraphDiagram = _
-
-  def name = name_
-
-  def name_=(newName: Name) {
-    name_ = newName
-    fireEvent(LocalPropertyChanged)
-  }
 
   def attributes_=(atts: Map[String, Any]) { attributes_ = atts }
   def attributes = attributes_
