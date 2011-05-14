@@ -8,6 +8,7 @@
             contributorClass="com.github.mdr.graphospasm.grapheditor.GraphEditorActionBarContributor"
             default="true"
             extensions="graph,xml"
+            icon="icons/graph-16.png"
             id="com.github.mdr.graphospasm.grapheditor.GraphEditor"
             name="Graph Editor">
       </editor>
@@ -15,10 +16,13 @@
     <extension point="org.eclipse.ui.newWizards">
       <category name="Graphospasm"
                 id="com.github.mdr.graphospasm.category"/>
-      <wizard name="Graph"
-              category="com.github.mdr.graphospasm.category"
-              class="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard"
-              id="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard">
+      <wizard
+            category="com.github.mdr.graphospasm.category"
+            class="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard"
+            descriptionImage="icons/graph-32.png"
+            icon="icons/graph-16.png"
+            id="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard"
+            name="Graph">
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
    </extension>
