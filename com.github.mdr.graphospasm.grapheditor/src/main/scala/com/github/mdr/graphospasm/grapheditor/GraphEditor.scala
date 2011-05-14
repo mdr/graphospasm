@@ -1,5 +1,14 @@
 package com.github.mdr.graphospasm.grapheditor
 
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage
+import org.eclipse.swt.widgets.Composite
+import org.eclipse.swt.custom.SashForm
+import org.eclipse.swt.events.DisposeEvent
+import org.eclipse.swt.events.DisposeListener
+import org.eclipse.draw2d.Viewport
+import org.eclipse.draw2d.parts.ScrollableThumbnail
+import org.eclipse.draw2d.LightweightSystem
+import org.eclipse.swt.widgets.Canvas
 import org.eclipse.draw2d.Graphics
 import org.eclipse.draw2d.FreeformLayer
 import org.eclipse.draw2d.ScalableFreeformLayeredPane
@@ -132,6 +141,8 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
       getEditDomain.getCommandStack
     else if (type_ == classOf[ZoomManager])
       getGraphicalViewer.getProperty(classOf[ZoomManager].toString)
+    else if (type_ == classOf[IContentOutlinePage])
+      new GraphEditorOutlinePage()
     else
       super.getAdapter(type_)
 
@@ -165,6 +176,40 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.CENTER))
     createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.MIDDLE))
 
+  }
+
+  class GraphEditorOutlinePage extends ContentOutlinePage(new TreeViewer) with IAdaptable {
+    private var sash: SashForm = _
+    override def createControl(parent: Composite) {
+      sash = new SashForm(parent, SWT.VERTICAL)
+      val canvas = new Canvas(sash, SWT.BORDER)
+      val lws = new LightweightSystem(canvas)
+      val thumbnail = new ScrollableThumbnail(getRootEditPart.getFigure.asInstanceOf[Viewport])
+      thumbnail.setSource(getRootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS))
+      lws.setContents(thumbnail)
+      val disposeListener = new DisposeListener() {
+        def widgetDisposed(e: DisposeEvent) {
+          if (thumbnail != null) {
+            thumbnail.deactivate()
+            // thumbnail = null
+          }
+        }
+      }
+      getGraphicalViewer.getControl.addDisposeListener(disposeListener)
+    }
+
+    override def getControl = sash // getViewer.getControl
+
+    override def dispose {
+      getSelectionSynchronizer.removeViewer(getViewer)
+      super.dispose
+    }
+
+    def getAdapter(type_ : Class[_]) =
+      if (type_ == classOf[ZoomManager])
+        getGraphicalViewer.getProperty(classOf[ZoomManager].toString)
+      else
+        null
   }
 
 }
