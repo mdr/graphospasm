@@ -40,9 +40,9 @@ class GraphEditorActionBarContributor extends ActionBarContributor {
     //    //      GEFActionConstants.TOGGLE_RULER_VISIBILITY,
     //    //      GEFMessages.ToggleRulerVisibility_Label, IAction.AS_CHECK_BOX))
     //
-    //    addRetargetAction(new RetargetAction(
-    //      GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
-    //      GEFMessages.ToggleSnapToGeometry_Label, IAction.AS_CHECK_BOX))
+    addRetargetAction(new RetargetAction(
+      GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
+      GEFMessages.ToggleSnapToGeometry_Label, IAction.AS_CHECK_BOX))
     //
     //    addRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY,
     //      GEFMessages.ToggleGrid_Label, IAction.AS_CHECK_BOX))
@@ -95,14 +95,14 @@ class GraphEditorActionBarContributor extends ActionBarContributor {
     val viewMenu = new MenuManager("View")
     viewMenu.add(getAction(GEFActionConstants.ZOOM_IN))
     viewMenu.add(getAction(GEFActionConstants.ZOOM_OUT))
-    //    viewMenu.add(new Separator)
+    viewMenu.add(new Separator)
     //    //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY))
     //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY))
-    //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY))
+    viewMenu.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY))
     viewMenu.add(new Separator)
     viewMenu.add(getAction(GEFActionConstants.MATCH_WIDTH))
     viewMenu.add(getAction(GEFActionConstants.MATCH_HEIGHT))
-    //    menubar.insertAfter(IWorkbenchActionConstants.M_EDIT, viewMenu)
+    menubar.insertAfter(IWorkbenchActionConstants.M_EDIT, viewMenu)
   }
 
 }

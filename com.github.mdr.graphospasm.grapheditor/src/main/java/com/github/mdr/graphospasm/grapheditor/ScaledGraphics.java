@@ -2,15 +2,10 @@ package com.github.mdr.graphospasm.grapheditor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.draw2d.FigureUtilities;
-import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.PointList;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
@@ -26,23 +21,32 @@ import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 
-/**
- * @canBeSeenBy %partners
- *  
- * Subclass of Graphics that uses resource manager for its font cache and 
- * scales graphics/fonts by a specified scale factor
- *
- * <p>
- * Code taken from Eclipse reference bugzilla #77403
- * See also bugzilla #111454
- * See also bugzilla #230056 setLineWidth in ScaledGraphics does not support the 
- * zoom factor.
- */
+import org.eclipse.draw2d.FigureUtilities;
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.draw2d.geometry.Rectangle;
+
+// See TweakedScalableFreeformLayeredPane
 /**
  * A Graphics object able to scale all operations based on the current scale
  * factor.
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ScaledGraphics extends Graphics {
+
+  public void setBackgroundPattern(Device device, int x1, int y1, int x2,
+      int y2, Color color1, Color color2) {
+
+    int x1s = (int) (Math.floor(x1 * zoom + fractionalX));
+    int y1s = (int) (Math.floor(y1 * zoom + fractionalY));
+    int x2s = (int) (Math.floor(x2 * zoom + fractionalX));
+    int y2s = (int) (Math.floor(y2 * zoom + fractionalY));
+
+    graphics.setBackgroundPattern(new Pattern(device, x1s, y1s, x2s, y2s,
+        color1, color2));
+
+  }
 
   private static class FontHeightCache {
     Font font;
@@ -191,8 +195,8 @@ public class ScaledGraphics extends Graphics {
 
   private boolean allowText = true;
   // private static final Point PT = new Point();
-  // private Map fontCache = new HashMap();
-  private Map<Font, FontData> fontDataCache = new HashMap<Font, FontData>();
+  private Map fontCache = new HashMap();
+  private Map fontDataCache = new HashMap();
   private FontKey fontKey = new FontKey();
   private double fractionalX;
   private double fractionalY;
@@ -200,7 +204,7 @@ public class ScaledGraphics extends Graphics {
   private FontHeightCache localCache = new FontHeightCache();
   private Font localFont;
   private float localLineWidth;
-  private List<State> stack = new ArrayList<State>();
+  private List stack = new ArrayList();
   private int stackPointer = 0;
   private FontHeightCache targetCache = new FontHeightCache();
 
@@ -233,7 +237,6 @@ public class ScaledGraphics extends Graphics {
    * @param path
    *          Path to be scaled
    * @return Scaled path
-   * @since 1.2
    */
   private Path createScaledPath(Path path) {
     PathData p = path.getPathData();
@@ -280,7 +283,13 @@ public class ScaledGraphics extends Graphics {
       popState();
     }
 
-    // Resource manager handles fonts
+    // Dispose fonts
+    Iterator iter = fontCache.values().iterator();
+    while (iter.hasNext()) {
+      Font font = ((Font) iter.next());
+      font.dispose();
+    }
+
   }
 
   /** @see Graphics#drawArc(int, int, int, int, int, int) */
@@ -299,15 +308,11 @@ public class ScaledGraphics extends Graphics {
   /** @see Graphics#drawImage(Image, int, int) */
   public void drawImage(Image srcImage, int x, int y) {
     org.eclipse.swt.graphics.Rectangle size = srcImage.getBounds();
-    Dimension sizeLPDim = new Dimension(size.width, size.height);
-
-    Rectangle z = new Rectangle((int) (Math.floor((x * zoom + fractionalX))),
+    graphics.drawImage(srcImage, 0, 0, size.width, size.height,
+        (int) (Math.floor((x * zoom + fractionalX))),
         (int) (Math.floor((y * zoom + fractionalY))),
-        (int) (Math.floor((sizeLPDim.width * zoom + fractionalX))),
-        (int) (Math.floor((sizeLPDim.height * zoom + fractionalY))));
-
-    graphics.drawImage(srcImage, 0, 0, size.width, size.height, z.x, z.y,
-        z.width, z.height);
+        (int) (Math.floor((size.width * zoom + fractionalX))),
+        (int) (Math.floor((size.height * zoom + fractionalY))));
   }
 
   /** @see Graphics#drawImage(Image, int, int, int, int, int, int, int, int) */
@@ -411,10 +416,16 @@ public class ScaledGraphics extends Graphics {
       int selectionStart, int selectionEnd, Color selectionForeground,
       Color selectionBackground) {
     TextLayout scaled = zoomTextLayout(layout);
-    graphics.drawTextLayout(scaled, (int) Math.floor(x * zoom + fractionalX),
-        (int) Math.floor(y * zoom + fractionalY), selectionStart, selectionEnd,
-        selectionBackground, selectionForeground);
-    scaled.dispose();
+    if (scaled == null) {
+      return;
+    }
+    try {
+      graphics.drawTextLayout(scaled, (int) Math.floor(x * zoom + fractionalX),
+          (int) Math.floor(y * zoom + fractionalY), selectionStart,
+          selectionEnd, selectionBackground, selectionForeground);
+    } finally {
+      scaled.dispose();
+    }
   }
 
   /** @see Graphics#fillArc(int, int, int, int, int, int) */
@@ -507,13 +518,20 @@ public class ScaledGraphics extends Graphics {
   }
 
   Font getCachedFont(FontKey key) {
+    Font font = (Font) fontCache.get(key);
+    if (font != null) {
+      return font;
+    }
+    key = new FontKey(key.font, key.height);
     FontData data = key.font.getFontData()[0];
     data.setHeight(key.height);
-    return FontRegistry.getInstance().getFont(Display.getCurrent(), data);
+    Font zoomedFont = createFont(data);
+    fontCache.put(key, zoomedFont);
+    return zoomedFont;
   }
 
   FontData getCachedFontData(Font f) {
-    FontData data = fontDataCache.get(f);
+    FontData data = (FontData) fontDataCache.get(f);
     if (data == null) {
       data = getLocalFont().getFontData()[0];
       fontDataCache.put(f, data);
@@ -640,14 +658,14 @@ public class ScaledGraphics extends Graphics {
   public void popState() {
     graphics.popState();
     stackPointer--;
-    restoreLocalState(stack.get(stackPointer));
+    restoreLocalState((State) stack.get(stackPointer));
   }
 
   /** @see Graphics#pushState() */
   public void pushState() {
     State s;
     if (stack.size() > stackPointer) {
-      s = stack.get(stackPointer);
+      s = (State) stack.get(stackPointer);
       s.setValues(zoom, fractionalX, fractionalY, getLocalFont(),
           localLineWidth);
     } else {
@@ -670,7 +688,12 @@ public class ScaledGraphics extends Graphics {
   /** @see Graphics#restoreState() */
   public void restoreState() {
     graphics.restoreState();
-    restoreLocalState(stack.get(stackPointer - 1));
+    restoreLocalState((State) stack.get(stackPointer - 1));
+  }
+
+  /** @see Graphics#rotate(float) */
+  public void rotate(float degrees) {
+    graphics.rotate(degrees);
   }
 
   /** @see Graphics#scale(double) */
@@ -684,10 +707,6 @@ public class ScaledGraphics extends Graphics {
   }
 
   /**
-   * This method requires advanced graphics support. A check should be made to
-   * ensure advanced graphics is supported in the user's environment before
-   * calling this method. See {@link GCUtilities#supportsAdvancedGraphics()}.
-   * 
    * @see Graphics#setAlpha(int)
    */
   public void setAlpha(int alpha) {
@@ -695,10 +714,6 @@ public class ScaledGraphics extends Graphics {
   }
 
   /**
-   * This method requires advanced graphics support. A check should be made to
-   * ensure advanced graphics is supported in the user's environment before
-   * calling this method. See {@link GCUtilities#supportsAdvancedGraphics()}.
-   * 
    * @see Graphics#setAntialias(int)
    */
   public void setAntialias(int value) {
@@ -720,15 +735,6 @@ public class ScaledGraphics extends Graphics {
     }
   }
 
-  public void clipPath(Path path) {
-    Path scaledPath = createScaledPath(path);
-    try {
-      graphics.clipPath(scaledPath);
-    } finally {
-      scaledPath.dispose();
-    }
-  }
-
   /** @see Graphics#setBackgroundPattern(Pattern) */
   public void setBackgroundPattern(Pattern pattern) {
     graphics.setBackgroundPattern(pattern);
@@ -737,6 +743,18 @@ public class ScaledGraphics extends Graphics {
   /** @see Graphics#setClip(Rectangle) */
   public void setClip(Rectangle r) {
     graphics.setClip(zoomClipRect(r));
+  }
+
+  /**
+   * @see org.eclipse.draw2d.Graphics#clipPath(org.eclipse.swt.graphics.Path)
+   */
+  public void clipPath(Path path) {
+    Path scaledPath = createScaledPath(path);
+    try {
+      graphics.clipPath(scaledPath);
+    } finally {
+      scaledPath.dispose();
+    }
   }
 
   /**
@@ -761,13 +779,7 @@ public class ScaledGraphics extends Graphics {
     graphics.setForegroundPattern(pattern);
   }
 
-  /**
-   * This method requires advanced graphics support. A check should be made to
-   * ensure advanced graphics is supported in the user's environment before
-   * calling this method. See {@link GCUtilities#supportsAdvancedGraphics()}.
-   * 
-   * @see org.eclipse.draw2d.Graphics#setInterpolation(int)
-   */
+  /** @see org.eclipse.draw2d.Graphics#setInterpolation(int) */
   public void setInterpolation(int interpolation) {
     graphics.setInterpolation(interpolation);
   }
@@ -838,10 +850,6 @@ public class ScaledGraphics extends Graphics {
   }
 
   /**
-   * This method requires advanced graphics support. A check should be made to
-   * ensure advanced graphics is supported in the user's environment before
-   * calling this method. See {@link GCUtilities#supportsAdvancedGraphics()}.
-   * 
    * @see Graphics#setTextAntialias(int)
    */
   public void setTextAntialias(int value) {
@@ -909,20 +917,7 @@ public class ScaledGraphics extends Graphics {
   }
 
   float zoomLineWidth(float w) {
-    /*
-     * We introduced line width zoom in GMF 2.1. Unfortunately GMF 2.0 clients
-     * used HiMetric map mode and called setLineWidth(1) rather than
-     * setLineWidth(getMapMode().LPtoDP(1)). This small piece of code detects
-     * this case and simply returns the line width.
-     */
-    if (zoom < 0.04 && w <= 5) {
-      return w;
-    }
-    /*
-     * We interestingly add 0.1 to eliminate rounding errors with HiMetric map
-     * mode. This has no effect with identity/pixel map mode.
-     */
-    return (float) ((zoom * w) + 0.1);
+    return (float) (w * zoom);
   }
 
   private int[] zoomPointList(int[] points) {
@@ -956,7 +951,7 @@ public class ScaledGraphics extends Graphics {
     return scaled;
   }
 
-  protected Rectangle zoomRect(int x, int y, int w, int h) {
+  private Rectangle zoomRect(int x, int y, int w, int h) {
     tempRECT.x = (int) (Math.floor(x * zoom + fractionalX));
     tempRECT.y = (int) (Math.floor(y * zoom + fractionalY));
     tempRECT.width = (int) (Math.floor(((x + w) * zoom + fractionalX)))
@@ -1013,7 +1008,7 @@ public class ScaledGraphics extends Graphics {
     return zoomed;
   }
 
-  Point zoomTextPoint(int x, int y) {
+  private Point zoomTextPoint(int x, int y) {
     if (localCache.font != localFont) {
       // Font is different, re-calculate its height
       FontMetrics metric = FigureUtilities.getFontMetrics(localFont);
@@ -1028,23 +1023,6 @@ public class ScaledGraphics extends Graphics {
     return new Point(((int) (Math.floor((x * zoom) + fractionalX))),
         (int) (Math.floor((y + localCache.height - 1) * zoom
             - targetCache.height + 1 + fractionalY)));
-  }
-
-  protected Graphics getGraphics() {
-    return graphics;
-  }
-
-  public void setBackgroundPattern(Device device, int x1, int y1, int x2,
-      int y2, Color color1, Color color2) {
-
-    int x1s = (int) (Math.floor(x1 * zoom + fractionalX));
-    int y1s = (int) (Math.floor(y1 * zoom + fractionalY));
-    int x2s = (int) (Math.floor(x2 * zoom + fractionalX));
-    int y2s = (int) (Math.floor(y2 * zoom + fractionalY));
-
-    graphics.setBackgroundPattern(new Pattern(device, x1s, y1s, x2s, y2s,
-        color1, color2));
-
   }
 
 }

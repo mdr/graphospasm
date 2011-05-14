@@ -46,40 +46,7 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     super.configureGraphicalViewer()
     val viewer = getGraphicalViewer
 
-    val rootEditPart = new ScalableFreeformRootEditPart {
-      class FeedbackLayer extends FreeformLayer {
-        setEnabled(false)
-      }
-
-      override def createScaledLayers() = {
-        val layers = new ScalableFreeformLayeredPane() {
-
-          override def paintClientArea(graphics: Graphics) {
-            if (getChildren().isEmpty())
-              return ;
-            //            if (getScale == 1.0)
-            //              super.paintClientArea(graphics)
-            //            else {
-            val g = new ScaledGraphics(graphics)
-            val optimizeClip = getBorder == null || getBorder.isOpaque
-            if (!optimizeClip)
-              g.clipRect(getBounds.getCropped(getInsets))
-            g.scale(getScale)
-            g.pushState()
-            paintChildren(g)
-            g.dispose()
-            graphics.restoreState()
-            //            }
-          }
-
-        }
-        layers.add(createGridLayer(), LayerConstants.GRID_LAYER)
-        layers.add(getPrintableLayers(), LayerConstants.PRINTABLE_LAYERS)
-        layers.add(new FeedbackLayer(), LayerConstants.SCALED_FEEDBACK_LAYER)
-        layers
-      }
-
-    }
+    val rootEditPart = new TweakedScalableFreeformRootEditPart
     viewer.setRootEditPart(rootEditPart)
 
     viewer.setEditPartFactory(GraphEditPartFactory)
@@ -89,10 +56,7 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     configureConnectionRouting()
     useAntialiasingForConnections()
     configureZoom()
-
-    val snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer)
-    getActionRegistry.registerAction(snapAction)
-    viewer.setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, true)
+    configureSnapToGeometry(viewer)
 
     val contextMenuProvider = new GraphEditorContextMenuProvider(viewer, getActionRegistry)
     viewer.setContextMenu(contextMenuProvider)
@@ -111,6 +75,12 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     getHandlerService.activateHandler(zoomIn.getActionDefinitionId, new ActionHandler(zoomIn))
     getHandlerService.activateHandler(zoomOut.getActionDefinitionId, new ActionHandler(zoomOut))
     getGraphicalViewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.None), MouseWheelZoomHandler.SINGLETON)
+  }
+
+  private def configureSnapToGeometry(viewer: org.eclipse.gef.ui.parts.ScrollingGraphicalViewer) {
+    val snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer)
+    getActionRegistry.registerAction(snapAction)
+    viewer.setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, true)
   }
 
   private final def getHandlerService = getSite.getService(classOf[IHandlerService]).asInstanceOf[IHandlerService]
