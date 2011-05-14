@@ -64,74 +64,11 @@ object DummyDataGetter {
     val exclude = ExcludeAttribute(project, Attributes(List(schemaLocationAttribute)))
     val graph = new XmlImporter(XmlImportSpec(blackList = true, directives = List(exclude))).makeGraph(xml)
 
-    val diagram = createDiagram(graph)
+    val diagram = GraphDiagram.create(graph)
     autolayoutDiagram(diagram)
     diagram
   }
 
-  def createDiagram(graph: Graph): GraphDiagram = {
-    val diagram = new GraphDiagram
-    val font = new GC(new Shell).getFont
-    val fontMetrics = FigureUtilities.getFontMetrics(font)
-    var vertexToNode = Map[Vertex, Node]()
-
-    for (vertex ← graph.vertices) {
-      val node = new Node(vertex.name)
-      val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
-      node.attributes = attributes
-      val height = (fontMetrics.getHeight) * attributes.size + 38
-      val widestAttribute = if (attributes.isEmpty) 0 else attributes.map {
-        case (name, value) ⇒
-          FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width
-      }.max
-
-      val width = scala.math.max(FigureUtilities.getTextExtents(node.name.name.simpleName, font).width, widestAttribute) + 85
-
-      node.bounds = new Rectangle(150, 150, width, height)
-      diagram.add(node)
-      vertexToNode = vertexToNode + (vertex -> node)
-    }
-    for (edge ← graph.edges)
-      Connection.connect(vertexToNode(edge.source), vertexToNode(edge.target))
-
-    diagram
-  }
-
-  def createDiagram(xml: Elem): GraphDiagram = {
-    def childElems(elem: Elem) = elem.child.collect { case e: Elem ⇒ e }
-    val diagram = new GraphDiagram
-    val font = new GC(new Shell).getFont
-    val fontMetrics = FigureUtilities.getFontMetrics(font)
-
-    def makeNode(elem: Elem): Node = {
-
-      val node = new Node(Name(elem.label, elem.namespace))
-      var attributes = Map[String, Any]()
-      for (childElem ← childElems(elem)) {
-        if (childElems(childElem).isEmpty)
-          attributes = attributes + (childElem.label -> childElem.text)
-        else {
-          val childNode = makeNode(childElem)
-          Connection.connect(node, childNode)
-        }
-      }
-      node.attributes = attributes
-      val height = (fontMetrics.getHeight) * attributes.size + 38
-      val widestAttribute = if (attributes.isEmpty) 0 else attributes.map {
-        case (name, value) ⇒
-          FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width
-      }.max
-
-      val width = scala.math.max(FigureUtilities.getTextExtents(node.name.name.simpleName, font).width, widestAttribute) + 85
-
-      node.bounds = new Rectangle(150, 150, width, height)
-      diagram.add(node)
-      node
-    }
-
-    makeNode(xml)
-    diagram
-  }
   def autolayoutDiagram(diagram: GraphDiagram) {
 
     val directedGraphLayout = new DirectedGraphLayout

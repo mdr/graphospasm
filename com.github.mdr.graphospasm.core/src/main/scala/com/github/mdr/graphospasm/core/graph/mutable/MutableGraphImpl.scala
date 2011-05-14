@@ -10,13 +10,13 @@ object MutableGraphImpl {
   def copy(graph: Graph): MutableGraph = {
     val clone = new MutableGraphImpl
     var oldToNewVertexMap: Map[Vertex, MutableVertex] = Map()
-    for (oldVertex <- graph.vertices) {
+    for (oldVertex ← graph.vertices) {
       val newVertex = clone.addVertex(oldVertex.name)
-      for ((key, value) <- oldVertex.attributes)
+      for ((key, value) ← oldVertex.attributes)
         newVertex.setAttribute(key, value)
       oldToNewVertexMap = oldToNewVertexMap + (oldVertex -> newVertex)
     }
-    for (oldEdge <- graph.edges)
+    for (oldEdge ← graph.edges)
       clone.addEdge(oldToNewVertexMap(oldEdge.source), oldToNewVertexMap(oldEdge.target), oldEdge.nameOpt)
     clone
   }
@@ -41,7 +41,7 @@ class MutableGraphImpl extends MutableGraph {
     require(incomingEdgeMap.values.toSet == edges_.toSet)
     require(outgoingEdgeMap.keySet forall vertices_.contains)
     require(outgoingEdgeMap.values.toSet == edges_.toSet)
-    require(edges_ forall { edge => incomingEdgeMap.get(edge.target).contains(edge) && outgoingEdgeMap.get(edge.source).contains(edge) })
+    require(edges_ forall { edge ⇒ incomingEdgeMap.get(edge.target).contains(edge) && outgoingEdgeMap.get(edge.source).contains(edge) })
   }
 
   def vertices: List[MutableVertex] = vertices_
@@ -49,13 +49,13 @@ class MutableGraphImpl extends MutableGraph {
   def edges: List[MutableEdge] = edges_
 
   def incomingEdges(v: Vertex): List[MutableEdge] = v match {
-    case mv: MutableVertexImpl => incomingEdgeMap.get(mv).toSeq.toList
-    case _                     => Nil
+    case mv: MutableVertexImpl ⇒ incomingEdgeMap.get(mv).toSeq.toList
+    case _                     ⇒ Nil
   }
 
   def outgoingEdges(v: Vertex): List[MutableEdge] = v match {
-    case mv: MutableVertexImpl => outgoingEdgeMap.get(mv).toSeq.toList
-    case _                     => Nil
+    case mv: MutableVertexImpl ⇒ outgoingEdgeMap.get(mv).toSeq.toList
+    case _                     ⇒ Nil
   }
 
   def copy = MutableGraphImpl.copy(this)
@@ -99,11 +99,11 @@ class MutableGraphImpl extends MutableGraph {
 
     def setName(name: Name) { name_ = name }
 
-    private var attributes_ : Map[Name, Any] = Map()
+    private var attributes_ : Map[Name, AnyRef] = Map()
 
     def attributes = attributes_
 
-    def setAttribute(name: Name, value: Any) {
+    def setAttribute(name: Name, value: AnyRef) {
       attributes_ += (name -> value)
     }
 
@@ -138,9 +138,9 @@ class MutableGraphImpl extends MutableGraph {
   override def toString = {
     var sb = new StringBuilder
     sb.append("MutableGraphImpl(\n")
-    for (vertex <- vertices_)
+    for (vertex ← vertices_)
       sb.append("  " + vertex + "\n")
-    for (edge <- edges)
+    for (edge ← edges)
       sb.append("  " + edge + "\n")
     sb.append(")")
     sb.toString

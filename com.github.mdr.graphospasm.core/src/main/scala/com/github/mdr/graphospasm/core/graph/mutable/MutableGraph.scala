@@ -28,7 +28,7 @@ trait MutableVertex extends Vertex {
 
   def setName(name: Name)
 
-  def setAttribute(name: Name, value: Any)
+  def setAttribute(name: Name, value: AnyRef)
 
   def removeAttribute(name: Name)
 

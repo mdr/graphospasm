@@ -7,7 +7,18 @@ class Node(initialName: Name) extends Observable {
 
   val name: NodeName = new NodeName(initialName)
 
-  private var attributes_ : Map[String, Any] = Map()
+  private var attributeNameValues: List[(AttributeName, AttributeValue)] = Nil
+
+  def addAttribute(name: Name, value: AnyRef): (AttributeName, AttributeValue) = {
+    require(!attributeNameValues.exists(_._1.name == name))
+    val attributeName = new AttributeName(name)
+    val attributeValue = new AttributeValue(value)
+    attributeNameValues = attributeNameValues :+ (attributeName, attributeValue)
+    fireEvent(LocalPropertyChanged)
+    (attributeName, attributeValue)
+  }
+
+  private var attributes_ : Map[String, AnyRef] = Map()
 
   private var sourceConnections_ : List[Connection] = Nil
 
@@ -17,7 +28,7 @@ class Node(initialName: Name) extends Observable {
 
   private var diagram_ : GraphDiagram = _
 
-  def attributes_=(atts: Map[String, Any]) { attributes_ = atts }
+  def attributes_=(atts: Map[String, AnyRef]) { attributes_ = atts }
   def attributes = attributes_
 
   def sourceConnections: List[Connection] = sourceConnections_

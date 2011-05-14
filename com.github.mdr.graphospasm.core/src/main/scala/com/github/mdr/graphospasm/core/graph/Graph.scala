@@ -18,7 +18,7 @@ trait Vertex {
 
   def name: Name
 
-  def attributes: Map[Name, Any]
+  def attributes: Map[Name, AnyRef]
 
 }
 

@@ -124,7 +124,7 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     val xml = XML.load(file.getContents)
     val importSpec = XmlImportSpec(blackList = true, directives = List())
     val graph = new XmlImporter(importSpec).makeGraph(xml)
-    diagram = DummyDataGetter.createDiagram(graph)
+    diagram = GraphDiagram.create(graph)
     DummyDataGetter.autolayoutDiagram(diagram)
 
     setPartName(file.getName)
