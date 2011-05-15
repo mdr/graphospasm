@@ -31,6 +31,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
 
   override def getFigure = super.getFigure.asInstanceOf[NodeFigure]
   override def getParent = super.getParent.asInstanceOf[GraphicalEditPart]
+  override def getModel = super.getModel.asInstanceOf[Node]
   override def createFigure = new NodeFigure
 
   protected def createEditPolicies() {

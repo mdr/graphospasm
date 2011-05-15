@@ -1,5 +1,8 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import org.eclipse.gef.commands.CompoundCommand
+import org.eclipse.gef.Request
+import org.eclipse.gef.requests.ChangeBoundsRequest
 import org.eclipse.gef.CompoundSnapToHelper
 import org.eclipse.gef.SnapToGrid
 import org.eclipse.gef.SnapToGuides
@@ -33,6 +36,7 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
   setModel(diagram)
 
   override protected def getModelChildren: JList[Node] = diagram.nodes
+  override def getModel: GraphDiagram = diagram
 
   override def createFigure: IFigure = new GraphDiagramFigure
 
@@ -76,15 +80,5 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
       case xs      ⇒ new CompoundSnapToHelper(xs.reverse.toArray[SnapToHelper])
     }
   }
-}
-
-class GraphDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
-
-  override def getHost = super.getHost.asInstanceOf[GraphDiagramEditPart]
-
-  protected def createChangeConstraintCommand(child: EditPart, constraint: Object): Command =
-    new MoveNodeCommand(child.getModel.asInstanceOf[Node], constraint.asInstanceOf[Rectangle])
-
-  protected def getCreateCommand(request: CreateRequest): Command = null
 
 }
