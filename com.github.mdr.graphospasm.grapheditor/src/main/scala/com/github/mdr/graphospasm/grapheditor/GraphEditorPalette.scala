@@ -1,4 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor
+
+import org.eclipse.gef.requests.CreationFactory
 import com.github.mdr.graphospasm.grapheditor.model._
 import org.eclipse.gef.palette._
 import org.eclipse.jface.resource.ImageDescriptor
@@ -42,11 +44,20 @@ class GraphEditorPalette extends PaletteRoot {
     entry.setId("palette.vertex")
     paletteGroup.add(entry)
   }
-  //  {
-  //    val entry = new ConnectionCreationToolEntry("Connection", "Creates a new connection.", new ConnectionFactory,
-  //      ImageDescriptor.createFromFile(classOf[Plugin], "icons/connection_s16.gif"),
-  //      ImageDescriptor.createFromFile(classOf[Plugin], "icons/connection_s24.gif"))
-  //    entry.setId("palette.connection")
-  //    paletteGroup.add(entry)
-  //  }
+  {
+    val entry = new ConnectionCreationToolEntry("Edge", "Creates a new edge", new ConnectionInProgressFactory,
+      Plugin.newConnection16Descriptor, Plugin.newConnection24Descriptor)
+    entry.setId("palette.connection")
+    paletteGroup.add(entry)
+  }
+}
+
+class ConnectionInProgress
+
+class ConnectionInProgressFactory extends CreationFactory {
+
+  def getNewObject = new ConnectionInProgress
+
+  def getObjectType = classOf[ConnectionInProgress]
+
 }

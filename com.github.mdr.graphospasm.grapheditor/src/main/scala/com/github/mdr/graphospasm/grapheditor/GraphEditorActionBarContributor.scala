@@ -18,7 +18,7 @@ class GraphEditorActionBarContributor extends ActionBarContributor {
     //    addRetargetAction(new PasteRetargetAction)
     //    // addRetargetAction(new CutRetargetAction)
     //
-    //    addRetargetAction(new DeleteRetargetAction)
+    addRetargetAction(new DeleteRetargetAction)
     addRetargetAction(new UndoRetargetAction)
     addRetargetAction(new RedoRetargetAction)
     addRetargetAction(new ZoomInRetargetAction)
@@ -51,16 +51,16 @@ class GraphEditorActionBarContributor extends ActionBarContributor {
 
   def declareGlobalActionKeys {
     //    addGlobalActionKey(ActionFactory.PRINT.getId)
-    //    addGlobalActionKey(ActionFactory.SELECT_ALL.getId)
+    addGlobalActionKey(ActionFactory.SELECT_ALL.getId)
     //    addGlobalActionKey(ActionFactory.CUT.getId)
     //    addGlobalActionKey(ActionFactory.COPY.getId)
     //    addGlobalActionKey(ActionFactory.PASTE.getId)
-    //    addGlobalActionKey(ActionFactory.DELETE.getId)
+    addGlobalActionKey(ActionFactory.DELETE.getId)
   }
 
   override def contributeToToolBar(tbm: IToolBarManager) {
     import tbm.add
-    //    add(getAction(ActionFactory.DELETE.getId))
+    add(getAction(ActionFactory.DELETE.getId))
     add(getAction(ActionFactory.UNDO.getId))
     add(getAction(ActionFactory.REDO.getId))
 

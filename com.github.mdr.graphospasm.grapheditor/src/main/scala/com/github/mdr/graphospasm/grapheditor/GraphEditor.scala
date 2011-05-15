@@ -173,10 +173,10 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 
     registry.registerAction(new SelectAllAction(this))
 
+    createSelectionAction(new DirectEditAction(this))
     //    createSelectionAction(new CopyAction(this))
     //    createSelectionAction(new PasteAction(this))
     //    createSelectionAction(new CutAction(this))
-    //    createSelectionAction(new DirectEditAction(this))
     //    createSelectionAction(new RelayoutAction(this))
     createSelectionAction(new MatchWidthAction(this))
     createSelectionAction(new MatchHeightAction(this))

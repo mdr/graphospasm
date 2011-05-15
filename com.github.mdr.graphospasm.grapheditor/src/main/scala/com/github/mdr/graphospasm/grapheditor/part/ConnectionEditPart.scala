@@ -14,7 +14,7 @@ class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditP
   setModel(connection)
 
   protected def createEditPolicies() {
-    // installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy())
+    installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy())
     installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy())
   }
 

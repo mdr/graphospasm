@@ -32,11 +32,11 @@ class GraphEditorContextMenuProvider(viewer: EditPartViewer, actionRegistry: Act
     //      menu.appendToGroup(GEFActionConstants.GROUP_COPY, pasteAction)
 
     menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.SELECT_ALL.getId))
-    //    menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.DELETE.getId))
+    menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.DELETE.getId))
 
-    //    val editAction = getAction(GEFActionConstants.DIRECT_EDIT)
-    //    if (editAction.isEnabled)
-    //      menu.appendToGroup(GEFActionConstants.GROUP_EDIT, editAction)
+    val editAction = getAction(GEFActionConstants.DIRECT_EDIT)
+    if (editAction.isEnabled)
+      menu.appendToGroup(GEFActionConstants.GROUP_EDIT, editAction)
 
     //    val relayoutAction = getAction(RelayoutAction.actionId)
     //    if (relayoutAction.isEnabled)

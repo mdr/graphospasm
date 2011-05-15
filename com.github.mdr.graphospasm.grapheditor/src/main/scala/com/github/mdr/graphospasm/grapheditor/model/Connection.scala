@@ -2,8 +2,7 @@ package com.github.mdr.graphospasm.grapheditor.model
 
 object Connection {
 
-  def connect(source: Node, target: Node): Connection =
-    new Connection(source, target)
+  def connect(source: Node, target: Node): Connection = new Connection(source, target)
 
 }
 

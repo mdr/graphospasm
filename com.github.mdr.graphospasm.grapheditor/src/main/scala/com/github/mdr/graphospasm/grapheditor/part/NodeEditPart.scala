@@ -1,5 +1,7 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import com.github.mdr.graphospasm.grapheditor.model.commands.DeleteNodeCommand
+import org.eclipse.gef.requests.GroupRequest
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy
 import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.graphics.GC
@@ -36,10 +38,8 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
 
   protected def createEditPolicies() {
     installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeLayoutEditPolicy)
-    //    installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateConnectionsEditPolicy)
-    //    installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeComponentEditPolicy)
-    //    installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new RenameDirectEditPolicy)
-    //    installEditPolicy("Snap Feedback", new SnapFeedbackPolicy)
+    installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateConnectionsEditPolicy)
+    installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeComponentEditPolicy)
   }
 
   override def refreshVisuals() {
@@ -140,8 +140,8 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
       child.asInstanceOf[NodeChildEditPart].refreshVisuals()
     }
     refreshChildren()
-    //    refreshSourceConnections()
-    //    refreshTargetConnections()
+    refreshSourceConnections()
+    refreshTargetConnections()
   }
 
   override protected def getModelSourceConnections = node.sourceConnections
