@@ -89,8 +89,8 @@ class NodeFigure extends Figure {
     val fontHeight = FigureUtilities.getFontMetrics(g.getFont).getHeight
     for (attributeName ← attributes_.keys.toSeq.sorted) {
       val attributeValue = attributes_(attributeName)
-      g.drawText(attributeName, contentArea.getTopLeft.getTranslated(new Dimension(5, currentY)))
-      g.drawText("" + attributeValue, contentArea.getTopLeft.getTranslated(new Dimension(17 + widestAttribute, currentY)))
+      //      g.drawText(attributeName, contentArea.getTopLeft.getTranslated(new Dimension(5, currentY)))
+      //      g.drawText("" + attributeValue, contentArea.getTopLeft.getTranslated(new Dimension(17 + widestAttribute, currentY)))
 
       currentY += fontHeight
     }

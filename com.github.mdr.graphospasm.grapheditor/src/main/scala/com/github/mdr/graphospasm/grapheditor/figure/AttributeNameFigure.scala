@@ -15,4 +15,9 @@ class AttributeNameFigure extends Label {
 
   def attributeName = attributeName_
 
+  override def paintFigure(g: Graphics) {
+    g.setForegroundColor(ColorConstants.black)
+    super.paintFigure(g)
+  }
+
 }

@@ -11,17 +11,19 @@ import org.eclipse.draw2d._
 
 class NodeNameFigure extends Label {
 
-  private var nodeName_ : NodeName = _
+  private var name_ : String = _
 
-  def nodeName_=(nodeName: NodeName) {
-    nodeName_ = nodeName
-    setText(nodeName.name.simpleName)
+  def name_=(name: String) {
+    name_ = name
+    setText(name)
     repaint()
   }
 
-  def nodeName = nodeName_
+  def name = name_
+
   override def paintFigure(g: Graphics) {
     g.setForegroundColor(ColorConstants.black)
     super.paintFigure(g)
   }
+
 }

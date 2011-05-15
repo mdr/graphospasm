@@ -13,14 +13,14 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 
-class AttributeValueEditPart(attributeValue: AttributeValue) extends AbstractGraphicalEditPart with Listener {
+class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChildEditPart with Listener {
 
   setModel(attributeValue)
 
   override def getFigure = super.getFigure.asInstanceOf[AttributeValueFigure]
   override def getParent = super.getParent.asInstanceOf[NodeEditPart]
   override def getModel = super.getModel.asInstanceOf[AttributeValue]
-  override def createFigure = new NodeNameFigure
+  override def createFigure = new AttributeValueFigure
 
   protected def createEditPolicies() {
   }

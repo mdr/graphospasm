@@ -8,8 +8,8 @@ class NodeName(initialName: Name) extends Observable {
 
   def name = name_
 
-  def name_=(newName: String) {
-    name_ = name_.copy(simpleName = newName)
+  def name_=(newName: Name) {
+    name_ = newName
     fireEvent(LocalPropertyChanged)
   }
 

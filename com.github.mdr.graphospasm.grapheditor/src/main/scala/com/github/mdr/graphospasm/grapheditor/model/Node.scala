@@ -7,6 +7,8 @@ class Node(initialName: Name) extends Observable {
 
   val name: NodeName = new NodeName(initialName)
 
+  def getAttributes = attributeNameValues
+
   private var attributeNameValues: List[(AttributeName, AttributeValue)] = Nil
 
   def addAttribute(name: Name, value: AnyRef): (AttributeName, AttributeValue) = {
@@ -85,3 +87,4 @@ class Node(initialName: Name) extends Observable {
   }
 
 }
+

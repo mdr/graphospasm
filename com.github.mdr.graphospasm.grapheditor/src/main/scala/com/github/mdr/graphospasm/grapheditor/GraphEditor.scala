@@ -66,11 +66,19 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     useAntialiasingForConnections()
     configureZoom()
     configureSnapToGeometry(viewer)
+    addKeyBindingForDirectEdit()
 
     val contextMenuProvider = new GraphEditorContextMenuProvider(viewer, getActionRegistry)
     viewer.setContextMenu(contextMenuProvider)
     getSite.registerContextMenu(contextMenuProvider, viewer)
 
+  }
+
+  private def addKeyBindingForDirectEdit() {
+    val keyHandler = new GraphicalViewerKeyHandler(getGraphicalViewer)
+    getGraphicalViewer.setKeyHandler(keyHandler)
+    val directEditAction = getActionRegistry.getAction(GEFActionConstants.DIRECT_EDIT)
+    keyHandler.put(KeyStroke.getPressed(SWT.F2, 0), directEditAction)
   }
 
   private def configureZoom() {

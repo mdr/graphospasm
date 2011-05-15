@@ -13,7 +13,7 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 
-class NodeNameEditPart(nodeName: NodeName) extends AbstractGraphicalEditPart with Listener {
+class NodeNameEditPart(nodeName: NodeName) extends NodeChildEditPart with Listener {
 
   setModel(nodeName)
 
@@ -23,10 +23,11 @@ class NodeNameEditPart(nodeName: NodeName) extends AbstractGraphicalEditPart wit
   override def createFigure = new NodeNameFigure
 
   protected def createEditPolicies() {
+    installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new RenameDirectEditPolicy)
   }
 
   override def refreshVisuals() {
-    getFigure.nodeName = nodeName
+    getFigure.name = nodeName.name.simpleName
     getParent.setLayoutConstraint(this)
   }
 
@@ -42,6 +43,14 @@ class NodeNameEditPart(nodeName: NodeName) extends AbstractGraphicalEditPart wit
 
   def changed(event: Event) {
     refreshVisuals()
+  }
+
+  override def performRequest(request: Request) = {
+    // println("KnowledgeNodeEditPart: " + request)
+    if (request.getType == RequestConstants.REQ_OPEN || request.getType == RequestConstants.REQ_DIRECT_EDIT)
+      new RenameEditManager(this, new RenameCellEditorLocator(getFigure.asInstanceOf[NodeNameFigure])).show()
+    else
+      super.performRequest(request)
   }
 
 }

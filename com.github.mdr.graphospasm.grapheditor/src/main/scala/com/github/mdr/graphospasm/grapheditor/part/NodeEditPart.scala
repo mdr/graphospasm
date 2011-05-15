@@ -25,7 +25,9 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
 
   setModel(node)
 
-  override protected def getModelChildren: JList[AnyRef] = List(node.name)
+  private def toList[T](p: (T, T)): List[T] = List(p._1, p._2)
+
+  override protected def getModelChildren: JList[AnyRef] = List(node.name) ++ node.getAttributes.flatMap(toList)
 
   override def getFigure = super.getFigure.asInstanceOf[NodeFigure]
   override def getParent = super.getParent.asInstanceOf[GraphicalEditPart]
@@ -46,22 +48,95 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
     // getParent.refresh()
   }
 
-  def setLayoutConstraint(attributeNameEditPart: AttributeNameEditPart) {
+  private var nodeNameEditPart: NodeNameEditPart = _
+  private var attributeNameEditParts: Map[AttributeName, AttributeNameEditPart] = Map()
+  private var attributeValueEditParts: Map[AttributeValue, AttributeValueEditPart] = Map()
+
+  private def findCurrentChildEditParts() {
+    attributeNameEditParts = Map()
+    attributeValueEditParts = Map()
+    for (child ← getChildren)
+      child match {
+        case editPart: NodeNameEditPart ⇒
+          this.nodeNameEditPart = editPart
+        case editPart: AttributeNameEditPart ⇒
+          attributeNameEditParts = attributeNameEditParts + (editPart.attributeName -> editPart)
+        case editPart: AttributeValueEditPart ⇒
+          attributeValueEditParts = attributeValueEditParts + (editPart.attributeValue -> editPart)
+      }
 
   }
-  def setLayoutConstraint(attributeValueEditPart: AttributeValueEditPart) {
 
+  private def layoutChildren() {
+    findCurrentChildEditParts()
+    val contentArea = getFigure.getContentArea(node.bounds)
+    val font = nodeNameEditPart.getFigure.getFont
+
+    val nameHeight = {
+      val text = nodeNameEditPart.getModel.name.simpleName
+      val textDimension = FigureUtilities.getTextExtents(text, font)
+      val textX = max((contentArea.width - textDimension.width) / 2, 0)
+      val nameHeight = textDimension.height + 2
+      val textWidth = min(textDimension.width, contentArea.width)
+      val bounds = new Rectangle(textX, 2, textWidth, textDimension.height + 2)
+      getFigure.setConstraint(nodeNameEditPart.getFigure, bounds)
+      nameHeight
+    }
+
+    val attributeMap = node.getAttributes.toMap
+    if (attributeMap.nonEmpty && attributeNameEditParts.size == attributeMap.size && attributeValueEditParts.size == attributeMap.size) {
+      val sortedAttributeNames = attributeMap.toList.map(_._1).sortBy(p ⇒ p.name.simpleName)
+      val widestAttributeName = sortedAttributeNames.map { attributeName ⇒
+        val nameText = attributeName.name.simpleName
+        FigureUtilities.getTextExtents(nameText, font).width
+      }.max
+      val widestAttributeValue = sortedAttributeNames.map { attributeName ⇒
+        val valueText = attributeMap(attributeName).value.toString
+        FigureUtilities.getTextExtents(valueText, font).width
+      }.max
+
+      var currentY = 2 + nameHeight + 4
+
+      for ((attributeName, attributeValue) ← attributeMap.toList.sortBy(_._1.name.simpleName)) {
+        val attributeNameDimension = {
+          val text = attributeName.name.simpleName
+          val dimension = FigureUtilities.getTextExtents(text, font)
+          val bounds = new Rectangle(4, currentY, dimension.width, dimension.height)
+          getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)
+          dimension
+        }
+        {
+          val text = attributeValue.value.toString
+          val dimension = FigureUtilities.getTextExtents(text, font)
+          val startX = widestAttributeName + 17
+          val width = min(contentArea.width - startX, dimension.width)
+          val bounds = new Rectangle(startX, currentY, width, dimension.height)
+          getFigure.setConstraint(attributeValueEditParts(attributeValue).getFigure, bounds)
+        }
+        currentY += attributeNameDimension.height
+      }
+    }
+
+  }
+
+  def setLayoutConstraint(attributeNameEditPart: AttributeNameEditPart) {
+    layoutChildren()
+    //    for (attributeName ← sortedAttributeNames) {
+    //      if (attributeNameEditPart.attributeName == attributeName) {
+    //
+    //        getFigure.setConstraint(attributeNameEditPart.getFigure, new Rectangle(20, 20, 20, 20))
+    //
+    //      }
+    //    }
+
+  }
+
+  def setLayoutConstraint(attributeValueEditPart: AttributeValueEditPart) {
+    //    getFigure.setConstraint(attributeValueEditPart.getFigure, new Rectangle(20, 20, 20, 20))
   }
 
   def setLayoutConstraint(nodeNameEditPart: NodeNameEditPart) {
-    val nodeNameFigure = nodeNameEditPart.getFigure
-    val text = nodeNameEditPart.getModel.name.simpleName
-
-    val textDimension = FigureUtilities.getTextExtents(text, nodeNameFigure.getFont)
-    val contentArea = getFigure.getContentArea(node.bounds)
-    val textX = max((contentArea.width - textDimension.width) / 2, 0)
-    val textWidth = min(textDimension.width, contentArea.width)
-    getFigure.setConstraint(nodeNameFigure, new Rectangle(textX, 2, textWidth, textDimension.height + 2))
+    layoutChildren()
   }
 
   override def activate() {
@@ -77,7 +152,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
   def changed(event: Event) {
     refreshVisuals()
     for (child ← getChildren) {
-      child.asInstanceOf[NodeNameEditPart].refreshVisuals()
+      child.asInstanceOf[NodeChildEditPart].refreshVisuals()
     }
     refreshChildren()
     //    refreshSourceConnections()
