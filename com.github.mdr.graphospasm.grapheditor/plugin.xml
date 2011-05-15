@@ -19,7 +19,6 @@
       <wizard
             category="com.github.mdr.graphospasm.category"
             class="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard"
-            descriptionImage="icons/graph-32.png"
             icon="icons/graph-16.png"
             id="com.github.mdr.graphospasm.grapheditor.GraphCreationWizard"
             name="Graph">

@@ -67,11 +67,14 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     configureZoom()
     configureSnapToGeometry(viewer)
     addKeyBindingForDirectEdit()
+    setUpContextMenu()
+  }
 
+  private def setUpContextMenu() {
+    val viewer = getGraphicalViewer
     val contextMenuProvider = new GraphEditorContextMenuProvider(viewer, getActionRegistry)
     viewer.setContextMenu(contextMenuProvider)
     getSite.registerContextMenu(contextMenuProvider, viewer)
-
   }
 
   private def addKeyBindingForDirectEdit() {

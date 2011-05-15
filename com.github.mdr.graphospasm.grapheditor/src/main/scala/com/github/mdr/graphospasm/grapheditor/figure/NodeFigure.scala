@@ -65,7 +65,7 @@ class NodeFigure extends Figure {
       g.asInstanceOf[ScaledGraphics].setBackgroundPattern(display, contentArea.x, contentArea.y, contentArea.x, contentArea.y + gradientHeight, gradientColour, ColorConstants.white)
     else
       g.setBackgroundPattern(pattern)
-    g.fillRoundRectangle(new Rectangle(contentArea.x, contentArea.y, contentArea.width - 1, gradientHeight), 10, 10)
+    g.fillRoundRectangle(new Rectangle(contentArea.x, contentArea.y, contentArea.width - 1, gradientHeight - 2), 10, 10)
     pattern.dispose()
     g.setBackgroundPattern(null)
     g.popState()
@@ -77,23 +77,10 @@ class NodeFigure extends Figure {
     // Name - attribute divider line
     val nameDimension = FigureUtilities.getTextExtents(name, g.getFont)
     val titleTextPos = contentArea.getTopLeft.getTranslated(new Dimension((contentArea.width - nameDimension.width) / 2, 3))
-    //    g.drawText(name, titleTextPos)
     val lineY = titleTextPos.y + nameDimension.height + 2
     if (attributes_.nonEmpty)
       g.drawLine(contentArea.x, lineY, contentArea.getRight.x - 1, lineY)
 
-    // Attributes
-    var currentY = lineY - contentArea.y + 3
-
-    val widestAttribute = if (attributes.isEmpty) 0 else attributes.keys.map { FigureUtilities.getTextExtents(_, g.getFont).width }.max
-    val fontHeight = FigureUtilities.getFontMetrics(g.getFont).getHeight
-    for (attributeName ← attributes_.keys.toSeq.sorted) {
-      val attributeValue = attributes_(attributeName)
-      //      g.drawText(attributeName, contentArea.getTopLeft.getTranslated(new Dimension(5, currentY)))
-      //      g.drawText("" + attributeValue, contentArea.getTopLeft.getTranslated(new Dimension(17 + widestAttribute, currentY)))
-
-      currentY += fontHeight
-    }
     g.popState()
   }
 
