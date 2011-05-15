@@ -119,23 +119,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
 
   }
 
-  def setLayoutConstraint(attributeNameEditPart: AttributeNameEditPart) {
-    layoutChildren()
-    //    for (attributeName ← sortedAttributeNames) {
-    //      if (attributeNameEditPart.attributeName == attributeName) {
-    //
-    //        getFigure.setConstraint(attributeNameEditPart.getFigure, new Rectangle(20, 20, 20, 20))
-    //
-    //      }
-    //    }
-
-  }
-
-  def setLayoutConstraint(attributeValueEditPart: AttributeValueEditPart) {
-    //    getFigure.setConstraint(attributeValueEditPart.getFigure, new Rectangle(20, 20, 20, 20))
-  }
-
-  def setLayoutConstraint(nodeNameEditPart: NodeNameEditPart) {
+  def relayout() {
     layoutChildren()
   }
 

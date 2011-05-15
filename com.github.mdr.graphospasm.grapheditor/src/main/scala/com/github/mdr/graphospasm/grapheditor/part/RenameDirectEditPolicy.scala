@@ -1,7 +1,7 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
 import com.github.mdr.graphospasm.grapheditor.model.NodeName
-import com.github.mdr.graphospasm.grapheditor.figure.NodeNameFigure
+import com.github.mdr.graphospasm.grapheditor.figure._
 import com.github.mdr.graphospasm.grapheditor.model.commands._
 
 import org.eclipse.gef.editpolicies.DirectEditPolicy
@@ -14,14 +14,14 @@ class RenameDirectEditPolicy extends DirectEditPolicy {
 
   def getDirectEditCommand(edit: DirectEditRequest): Command = {
     val name = edit.getCellEditor.getValue.toString
-    val editPart = getHost.asInstanceOf[NodeNameEditPart]
+    val editPart = getHost.asInstanceOf[AbstractNameEditPart]
     val node = editPart.getModel
     new RenameCommand(node, name)
   }
 
   def showCurrentEditValue(request: DirectEditRequest) {
     val value = request.getCellEditor.getValue.toString
-    getHostFigure.asInstanceOf[NodeNameFigure].name = value
+    getHostFigure.asInstanceOf[AbstractNameFigure].name = value
     getHostFigure.getUpdateManager.performUpdate
   }
 

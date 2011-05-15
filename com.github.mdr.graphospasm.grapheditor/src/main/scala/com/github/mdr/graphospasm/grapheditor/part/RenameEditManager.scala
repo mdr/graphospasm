@@ -1,6 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
-import com.github.mdr.graphospasm.grapheditor.figure.NodeNameFigure
+import com.github.mdr.graphospasm.grapheditor.figure._
 import org.eclipse.swt.SWT
 import org.eclipse.swt.graphics.Font
 import org.eclipse.swt.graphics.FontData
@@ -23,56 +23,18 @@ import org.eclipse.gef.tools.DirectEditManager
 
 class RenameEditManager(source: GraphicalEditPart, locator: RenameCellEditorLocator)
   extends DirectEditManager(source, null, locator) {
+
   private var actionBars: IActionBars = _
   private var actionHandler: CellEditorActionHandler = _
 
-  //	private IAction copy, cut, paste, undo, redo, find, selectAll, delete
-  //	private double cachedZoom = -1.0
-  //	private Font scaledFont
-  //	private ZoomListener zoomListener = new ZoomListener() {
-  //		public void zoomChanged(double newZoom) {
-  //			updateScaledFont(newZoom)
-  //		}
-  //	}
-  //
-  //
-  //	/**
-  //	 * @see org.eclipse.gef.tools.DirectEditManager#bringDown()
-  //	 */
-  override def bringDown() {
-    //		ZoomManager zoomMgr = (ZoomManager) getEditPart().getViewer()
-    //				.getProperty(ZoomManager.class.toString())
-    //		if (zoomMgr != null)
-    //			zoomMgr.removeZoomListener(zoomListener)
-    //
-    //		if (actionHandler != null) {
-    //			actionHandler.dispose()
-    //			actionHandler = null
-    //		}
-    //		if (actionBars != null) {
-    //			restoreSavedActions(actionBars)
-    //			actionBars.updateActionBars()
-    //			actionBars = null
-    //		}
-    //
-    super.bringDown()
-    //		// dispose any scaled fonts that might have been created
-    //		disposeScaledFont()
-  }
-
-  override def createCellEditorOn(composite: Composite): CellEditor = new TextCellEditor(composite /*, SWT.MULTI | SWT.WRAP */ )
-
-  //	private void disposeScaledFont() {
-  //		if (scaledFont != null) {
-  //			scaledFont.dispose()
-  //			scaledFont = null
-  //		}
-  //	}
+  override def createCellEditorOn(composite: Composite): CellEditor =
+    new TextCellEditor(composite /*, SWT.MULTI | SWT.WRAP */ )
 
   override def initCellEditor() {
-    val figure = getEditPart.getFigure.asInstanceOf[NodeNameFigure]
+    val figure = getEditPart.getFigure.asInstanceOf[AbstractNameFigure]
     getCellEditor.setValue(figure.name)
   }
+
   //		// update font
   //		ZoomManager zoomMgr = (ZoomManager) getEditPart().getViewer()
   //				.getProperty(ZoomManager.class.toString())
@@ -138,5 +100,42 @@ class RenameEditManager(source: GraphicalEditPart, locator: RenameCellEditorLoca
   //			text.setFont(scaledFont = new Font(null, fd))
   //		}
   //	}
-
+  //    private IAction copy, cut, paste, undo, redo, find, selectAll, delete
+  //    private double cachedZoom = -1.0
+  //    private Font scaledFont
+  //    private ZoomListener zoomListener = new ZoomListener() {
+  //        public void zoomChanged(double newZoom) {
+  //            updateScaledFont(newZoom)
+  //        }
+  //    }
+  //
+  //
+  //     */
+  //  override def bringDown() {
+  //        ZoomManager zoomMgr = (ZoomManager) getEditPart().getViewer()
+  //                .getProperty(ZoomManager.class.toString())
+  //        if (zoomMgr != null)
+  //            zoomMgr.removeZoomListener(zoomListener)
+  //
+  //        if (actionHandler != null) {
+  //            actionHandler.dispose()
+  //            actionHandler = null
+  //        }
+  //        if (actionBars != null) {
+  //            restoreSavedActions(actionBars)
+  //            actionBars.updateActionBars()
+  //            actionBars = null
+  //        }
+  //
+  //    super.bringDown()
+  //        // dispose any scaled fonts that might have been created
+  //        disposeScaledFont()
+  //  }
+  //
+  //    private void disposeScaledFont() {
+  //        if (scaledFont != null) {
+  //            scaledFont.dispose()
+  //            scaledFont = null
+  //        }
+  //    }
 }

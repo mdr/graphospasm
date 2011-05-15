@@ -13,35 +13,11 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 
-class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildEditPart with Listener {
-
-  setModel(attributeName)
+class AttributeNameEditPart(val attributeName: AttributeName) extends AbstractNameEditPart(attributeName) {
 
   override def getFigure = super.getFigure.asInstanceOf[AttributeNameFigure]
   override def getParent = super.getParent.asInstanceOf[NodeEditPart]
   override def getModel = super.getModel.asInstanceOf[AttributeName]
   override def createFigure = new AttributeNameFigure
-
-  protected def createEditPolicies() {
-  }
-
-  override def refreshVisuals() {
-    getFigure.attributeName = attributeName
-    getParent.setLayoutConstraint(this)
-  }
-
-  override def activate() {
-    if (!isActive) attributeName.addListener(this)
-    super.activate()
-  }
-
-  override def deactivate() {
-    if (isActive) attributeName.removeListener(this)
-    super.deactivate()
-  }
-
-  def changed(event: Event) {
-    refreshVisuals()
-  }
 
 }

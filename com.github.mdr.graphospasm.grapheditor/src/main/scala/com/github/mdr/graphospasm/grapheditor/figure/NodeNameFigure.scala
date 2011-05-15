@@ -9,21 +9,4 @@ import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d._
 
-class NodeNameFigure extends Label {
-
-  private var name_ : String = _
-
-  def name_=(name: String) {
-    name_ = name
-    setText(name)
-    repaint()
-  }
-
-  def name = name_
-
-  override def paintFigure(g: Graphics) {
-    g.setForegroundColor(ColorConstants.black)
-    super.paintFigure(g)
-  }
-
-}
+class NodeNameFigure extends AbstractNameFigure

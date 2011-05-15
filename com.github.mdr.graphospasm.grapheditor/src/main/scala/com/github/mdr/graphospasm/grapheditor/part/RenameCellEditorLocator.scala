@@ -1,12 +1,12 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
-import com.github.mdr.graphospasm.grapheditor.figure.NodeNameFigure
+import com.github.mdr.graphospasm.grapheditor.figure._
 import org.eclipse.swt.widgets.Text
 import org.eclipse.jface.viewers.CellEditor
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.tools.CellEditorLocator
 
-class RenameCellEditorLocator(figure: NodeNameFigure) extends CellEditorLocator {
+class RenameCellEditorLocator(figure: AbstractNameFigure) extends CellEditorLocator {
 
   def relocate(celleditor: CellEditor) {
     val text = celleditor.getControl.asInstanceOf[Text]
