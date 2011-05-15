@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor
 
+import java.net.URL
 import org.eclipse.swt.graphics._
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.jface.resource.ImageDescriptor
@@ -16,6 +17,12 @@ object Plugin {
 
   private var plugin: Plugin = _
 
-  private def makeImage(path: String): Image = ImageDescriptor.createFromURL(classOf[Plugin].getResource(path)).createImage
+  private def imageDescriptor(path: String) = {
+    val url = new URL(instance.getDescriptor.getInstallURL, path)
+    ImageDescriptor.createFromURL(url)
+  }
+
+  lazy val newNode16Descriptor = imageDescriptor("icons/newNode-16.png")
+  lazy val newNode24Descriptor = imageDescriptor("icons/newNode-16.png")
 
 }

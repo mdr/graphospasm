@@ -1,5 +1,5 @@
 package com.github.mdr.graphospasm.grapheditor
-
+import com.github.mdr.graphospasm.grapheditor.model._
 import org.eclipse.gef.palette._
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.gef.palette._
@@ -36,14 +36,12 @@ class GraphEditorPalette extends PaletteRoot {
     separator.setId(PREFIX + "palette.separator")
     paletteGroup.add(separator)
   }
-  //  {
-  //    val entry = new CreationToolEntry("Container", "Creates a new container node.",
-  //      new ContainerNodeFactory,
-  //      ImageDescriptor.createFromFile(classOf[Plugin], "icons/N-16.png"),
-  //      ImageDescriptor.createFromFile(classOf[Plugin], "icons/N-24.png"))
-  //    entry.setId("palette.node.container")
-  //    paletteGroup.add(entry)
-  //  }
+  {
+    val entry = new CreationToolEntry("Vertex", "Creates a new vertex", new NodeFactory, Plugin.newNode16Descriptor,
+      Plugin.newNode24Descriptor)
+    entry.setId("palette.vertex")
+    paletteGroup.add(entry)
+  }
   //  {
   //    val entry = new ConnectionCreationToolEntry("Connection", "Creates a new connection.", new ConnectionFactory,
   //      ImageDescriptor.createFromFile(classOf[Plugin], "icons/connection_s16.gif"),
