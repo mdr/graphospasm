@@ -1,5 +1,8 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import org.eclipse.draw2d.Label
+import org.eclipse.draw2d.ConnectionLocator
+import org.eclipse.draw2d.MidpointLocator
 import com.github.mdr.graphospasm.grapheditor.model._
 
 import org.eclipse.draw2d.IFigure
@@ -14,17 +17,21 @@ class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditP
   setModel(connection)
 
   protected def createEditPolicies() {
-    installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy())
-    installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy())
+    installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy)
+    installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy)
   }
 
   override protected def createFigure: IFigure = {
-    val connection = new PolylineConnection
-    connection.setLineWidth(1)
+    val polylineConnection = new PolylineConnection
+    polylineConnection.setLineWidth(2)
     val decoration = new PolygonDecoration
     decoration.setTemplate(PolygonDecoration.TRIANGLE_TIP)
-    connection.setTargetDecoration(decoration)
-    connection
+    polylineConnection.setTargetDecoration(decoration)
+
+    //    val label = new Label("middle")
+    //    polylineConnection.add(label, new ConnectionLocator(polylineConnection, ConnectionLocator.MIDDLE))
+
+    polylineConnection
   }
 
 }
