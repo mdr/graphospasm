@@ -72,54 +72,17 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
 
   private def layoutChildren() {
     findCurrentChildEditParts()
-    val contentArea = getFigure.getContentArea(node.bounds)
-    val font = nodeNameEditPart.getFigure.getFont
-
-    val nameHeight = {
-      val text = nodeNameEditPart.getModel.name.simpleName
-      val textDimension = FigureUtilities.getTextExtents(text, font)
-      val textX = max((contentArea.width - textDimension.width) / 2, 0)
-      val nameHeight = textDimension.height + 2
-      val textWidth = min(textDimension.width, contentArea.width)
-      val bounds = new Rectangle(textX, 2, textWidth, textDimension.height + 2)
-      getFigure.setConstraint(nodeNameEditPart.getFigure, bounds)
-      nameHeight
+    if (attributeNameEditParts.size == node.getAttributes.size && attributeValueEditParts.size == node.getAttributes.size) {
+      val contentArea = getFigure.getContentArea(node.bounds)
+      val font = nodeNameEditPart.getFigure.getFont
+      val NodeContentsLayoutInfo(nameBounds, attributeNameBounds, attributeValueBounds, height) =
+        NodeContentsLayouter.layout(node, contentArea, font)
+      getFigure.setConstraint(nodeNameEditPart.getFigure, nameBounds)
+      for ((attributeName, bounds) ← attributeNameBounds)
+        getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)
+      for ((attributeValue, bounds) ← attributeValueBounds)
+        getFigure.setConstraint(attributeValueEditParts(attributeValue).getFigure, bounds)
     }
-
-    val attributeMap = node.getAttributes.toMap
-    if (attributeMap.nonEmpty && attributeNameEditParts.size == attributeMap.size && attributeValueEditParts.size == attributeMap.size) {
-      val sortedAttributeNames = attributeMap.toList.map(_._1).sortBy(p ⇒ p.name.simpleName)
-      val widestAttributeName = sortedAttributeNames.map { attributeName ⇒
-        val nameText = attributeName.name.simpleName
-        FigureUtilities.getTextExtents(nameText, font).width
-      }.max
-      val widestAttributeValue = sortedAttributeNames.map { attributeName ⇒
-        val valueText = attributeMap(attributeName).value.toString
-        FigureUtilities.getTextExtents(valueText, font).width
-      }.max
-
-      var currentY = 2 + nameHeight + 4
-
-      for ((attributeName, attributeValue) ← attributeMap.toList.sortBy(_._1.name.simpleName)) {
-        val attributeNameDimension = {
-          val text = attributeName.name.simpleName
-          val dimension = FigureUtilities.getTextExtents(text, font)
-          val bounds = new Rectangle(4, currentY, dimension.width, dimension.height)
-          getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)
-          dimension
-        }
-        {
-          val text = attributeValue.value.toString
-          val dimension = FigureUtilities.getTextExtents(text, font)
-          val startX = widestAttributeName + 17
-          val width = min(contentArea.width - startX, dimension.width)
-          val bounds = new Rectangle(startX, currentY, width, dimension.height)
-          getFigure.setConstraint(attributeValueEditParts(attributeValue).getFigure, bounds)
-        }
-        currentY += attributeNameDimension.height
-      }
-    }
-
   }
 
   def relayout() {

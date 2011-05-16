@@ -26,7 +26,7 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
   }
 
   override def refreshVisuals() {
-    getFigure.name = attributeValue.value.toString
+    getFigure.name = attributeValue.presentationString
     getParent.relayout()
   }
 
