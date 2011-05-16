@@ -46,7 +46,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
 
   override def refreshVisuals() {
     getFigure.name = node.name.name.simpleName
-    getFigure.attributes = node.attributes
+    getFigure.hasAttributes = node.getAttributes.nonEmpty
     getParent.setLayoutConstraint(this, getFigure, node.bounds)
     // getParent.refresh()
   }

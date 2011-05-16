@@ -34,13 +34,13 @@ class NodeFigure extends Figure {
 
   def name = name_
 
-  private var attributes_ : Map[String, Any] = Map()
+  private final var hasAttributes_ = false
 
-  def attributes_=(atts: Map[String, Any]) {
-    attributes_ = atts
-    repaint()
+  def hasAttributes_=(b: Boolean) {
+    hasAttributes_ = b
   }
-  def attributes = attributes_
+
+  def hasAttributes = hasAttributes_
 
   def getContentArea(bounds: Rectangle) = bounds.getCopy.resize(-shadowSize, -shadowSize)
 
@@ -78,7 +78,7 @@ class NodeFigure extends Figure {
     val nameDimension = FigureUtilities.getTextExtents(name, g.getFont)
     val titleTextPos = contentArea.getTopLeft.getTranslated(new Dimension((contentArea.width - nameDimension.width) / 2, 3))
     val lineY = titleTextPos.y + nameDimension.height + 2
-    if (attributes_.nonEmpty)
+    if (hasAttributes_)
       g.drawLine(contentArea.x, lineY, contentArea.getRight.x - 1, lineY)
 
     g.popState()
