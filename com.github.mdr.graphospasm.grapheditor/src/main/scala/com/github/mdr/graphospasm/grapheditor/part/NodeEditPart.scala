@@ -25,7 +25,7 @@ import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 import scala.math.{ min, max }
 
-class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener {
+class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener with org.eclipse.gef.NodeEditPart {
 
   setModel(node)
 
