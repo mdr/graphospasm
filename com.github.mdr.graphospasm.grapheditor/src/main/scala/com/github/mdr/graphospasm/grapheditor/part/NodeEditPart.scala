@@ -1,5 +1,7 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import com.github.mdr.graphospasm.grapheditor.model.commands.AddAttributeCommand
+import com.github.mdr.graphospasm.grapheditor.Attribute
 import com.github.mdr.graphospasm.grapheditor.model.commands.DeleteNodeCommand
 import org.eclipse.gef.requests.GroupRequest
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy
@@ -160,7 +162,14 @@ class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
 
   protected def createChangeConstraintCommand(child: EditPart, constraint: Object): Command = null
 
-  protected def getCreateCommand(request: CreateRequest): Command = null
+  protected def getCreateCommand(request: CreateRequest): Command = {
+    val node = getHost.getModel
+    val newObjectClass = request.getNewObjectType.asInstanceOf[Class[_]]
+    if (newObjectClass == classOf[Attribute]) {
+      new AddAttributeCommand(node)
+    } else
+      null
+  }
 
   override def createChildEditPolicy(child: EditPart) = {
     val policy = new NonResizableEditPolicy

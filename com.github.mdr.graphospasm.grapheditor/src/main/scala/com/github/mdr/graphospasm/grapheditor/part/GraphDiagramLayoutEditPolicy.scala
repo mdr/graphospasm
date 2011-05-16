@@ -31,13 +31,13 @@ class GraphDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
     new MoveNodeCommand(child.getModel.asInstanceOf[Node], constraint.asInstanceOf[Rectangle])
 
   protected def getCreateCommand(request: CreateRequest): Command = {
-    val nodeContainer = getHost.getModel
+    val diagram = getHost.getModel
     val newObjectClass = request.getNewObjectType.asInstanceOf[Class[_]]
     if (newObjectClass == classOf[Node]) {
       val adjustedLocation = getConstraintFor(request).asInstanceOf[Rectangle]
       val size = if (request.getSize == null) defaultNodeSize else minimumNodeSize getUnioned adjustedLocation.getSize
       new CreateNodeCommand(request.getNewObject.asInstanceOf[Node], adjustedLocation.getTopLeft,
-        size.getCopy, nodeContainer)
+        size.getCopy, diagram)
     } else
       null
   }

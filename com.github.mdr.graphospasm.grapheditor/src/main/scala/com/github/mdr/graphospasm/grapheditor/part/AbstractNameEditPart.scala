@@ -30,6 +30,11 @@ abstract class AbstractNameEditPart(nodeName: AbstractName) extends NodeChildEdi
     installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new RenameDirectEditPolicy)
   }
 
+  //  override def getTargetEditPart(request: Request) = request.getType match {
+  //    case RequestConstants.REQ_SELECTION ⇒ null
+  //    case _ ⇒ super.getTargetEditPart(request)
+  //  }
+
   override def activate() {
     if (!isActive) nodeName.addListener(this)
     super.activate()

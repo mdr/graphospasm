@@ -11,6 +11,11 @@ class Node(initialName: Name) extends Observable {
 
   private var attributeNameValues: List[(AttributeName, AttributeValue)] = Nil
 
+  def removeAttribute(attributeName: AttributeName) {
+    attributeNameValues = attributeNameValues.filterNot(_._1 == attributeName)
+    fireEvent(LocalPropertyChanged)
+  }
+
   def addAttribute(name: Name, value: AnyRef): (AttributeName, AttributeValue) = {
     require(!attributeNameValues.exists(_._1.name == name))
     val attributeName = new AttributeName(name)

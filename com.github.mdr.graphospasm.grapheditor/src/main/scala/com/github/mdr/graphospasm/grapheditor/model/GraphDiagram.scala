@@ -28,7 +28,7 @@ object GraphDiagram {
           FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width
       }.max
 
-      val width = max(FigureUtilities.getTextExtents(node.name.name.simpleName, font).width, widestAttribute) + 85
+      val width = max(FigureUtilities.getTextExtents(node.name.name.simpleName, font).width, widestAttribute) + 65
 
       node.bounds = new Rectangle(150, 150, width, height)
       diagram.add(node)

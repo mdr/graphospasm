@@ -45,11 +45,27 @@ class GraphEditorPalette extends PaletteRoot {
     paletteGroup.add(entry)
   }
   {
+    val entry = new CreationToolEntry("Attribute", "Creates a new attribute", new AttributeFactory, Plugin.addAttribute16Descriptor,
+      Plugin.addAttribute16Descriptor)
+    entry.setId("palette.attribute")
+    paletteGroup.add(entry)
+  }
+  {
     val entry = new ConnectionCreationToolEntry("Edge", "Creates a new edge", new ConnectionInProgressFactory,
       Plugin.newConnection16Descriptor, Plugin.newConnection24Descriptor)
     entry.setId("palette.connection")
     paletteGroup.add(entry)
   }
+}
+
+class Attribute
+
+class AttributeFactory extends CreationFactory {
+
+  def getNewObject = new Attribute
+
+  def getObjectType = classOf[Attribute]
+
 }
 
 class ConnectionInProgress
