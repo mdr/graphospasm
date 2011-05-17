@@ -23,10 +23,9 @@ object GraphDiagram {
         val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
         node.attributes = attributes
 
-        val NodeContentsLayoutInfo(_, _, _, minimumRequiredWidth, minimumRequiredHeight) =
-          NodeContentsLayouter.layout(node, font)
-
-        node.bounds = new Rectangle(150, 150, minimumRequiredWidth, minimumRequiredHeight)
+        val height = NodeContentsLayouter.layout(node, font).minimumRequiredHeight
+        val width = NodeContentsLayouter.preferredWidth(node, font)
+        node.bounds = new Rectangle(150, 150, width, height)
         diagram.add(node)
         vertexToNode = vertexToNode + (vertex -> node)
       }

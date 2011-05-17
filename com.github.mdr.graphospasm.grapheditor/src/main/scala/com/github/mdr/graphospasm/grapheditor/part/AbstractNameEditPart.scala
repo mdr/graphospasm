@@ -27,7 +27,7 @@ abstract class AbstractNameEditPart(nodeName: AbstractName) extends NodeChildEdi
   }
 
   protected def createEditPolicies() {
-    installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new RenameDirectEditPolicy)
+    installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new EditNameDirectEditPolicy)
   }
 
   //  override def getTargetEditPart(request: Request) = request.getType match {

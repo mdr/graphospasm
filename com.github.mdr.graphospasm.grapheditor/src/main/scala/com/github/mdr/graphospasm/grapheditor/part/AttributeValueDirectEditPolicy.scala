@@ -10,18 +10,18 @@ import org.eclipse.gef.editpolicies.DirectEditPolicy
 import org.eclipse.gef.requests.DirectEditRequest
 import org.eclipse.gef.EditPart
 
-class RenameDirectEditPolicy extends DirectEditPolicy {
+class AttributeValueDirectEditPolicy extends DirectEditPolicy {
 
   def getDirectEditCommand(edit: DirectEditRequest): Command = {
     val name = edit.getCellEditor.getValue.toString
-    val editPart = getHost.asInstanceOf[AbstractNameEditPart]
-    val node = editPart.getModel
-    new RenameCommand(node, name)
+    val editPart = getHost.asInstanceOf[AttributeValueEditPart]
+    val attributeValue = editPart.getModel
+    new SetAttributeValueCommand(attributeValue, name)
   }
 
   def showCurrentEditValue(request: DirectEditRequest) {
     val value = request.getCellEditor.getValue.toString
-    getHostFigure.asInstanceOf[AbstractNameFigure].name = value
+    getHostFigure.asInstanceOf[AttributeValueFigure].name = value
     getHostFigure.getUpdateManager.performUpdate
   }
 

@@ -14,14 +14,30 @@ case class NodeContentsLayoutInfo(
 
 object NodeContentsLayouter {
 
-  private val ATTRIBUTE_NAME_VALUE_GAP_X = 13
-  private val NAME_ATTRIBUTES_GAP_Y = 4
-  private val NAME_INDENT_Y = 2
-  private val ATTRIBUTE_NAME_INDENT_X = 4
-  private val SHADOW_SIZE = 6
-  private val NAME_HEIGHT_ADJUST = 4
-  private val RIGHT_PADDING = 4
-  private val BOTTOM_PADDING = 4
+  private final val ATTRIBUTE_NAME_VALUE_GAP_X = 13
+  private final val NAME_ATTRIBUTES_GAP_Y = 4
+  private final val NAME_INDENT_Y = 2
+  private final val ATTRIBUTE_NAME_INDENT_X = 4
+  private final val SHADOW_SIZE = 6
+  private final val NAME_HEIGHT_ADJUST = 4
+  private final val RIGHT_PADDING = 4
+  private final val BOTTOM_PADDING = 4
+
+  def preferredWidth(node: Node, font: Font) = {
+    implicit val f = font
+    val nameDimension = FigureUtilities.getTextExtents(node.name.name.simpleName, font)
+    val nameWidth = nameDimension.width
+    var preferredWidth = nameWidth + 32
+    val attributeMap = node.getAttributes.toMap
+    if (attributeMap.nonEmpty) {
+      val sortedAttributeNames = attributeMap.toList.map(_._1)
+      val widestAttributeName = sortedAttributeNames.map(widthRequired).max
+      val widestAttributeValue = sortedAttributeNames.map(n ⇒ widthRequired(attributeMap(n))).max
+      preferredWidth = max(preferredWidth,
+        ATTRIBUTE_NAME_INDENT_X + widestAttributeName + ATTRIBUTE_NAME_VALUE_GAP_X + widestAttributeValue) + SHADOW_SIZE + RIGHT_PADDING
+    }
+    preferredWidth
+  }
 
   def layout(node: Node, font: Font): NodeContentsLayoutInfo = {
     val contentArea = node.bounds.getResized(-SHADOW_SIZE, -SHADOW_SIZE)

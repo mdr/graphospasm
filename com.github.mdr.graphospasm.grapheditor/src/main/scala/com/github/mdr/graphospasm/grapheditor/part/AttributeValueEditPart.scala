@@ -23,6 +23,7 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
   override def createFigure = new AttributeValueFigure
 
   protected def createEditPolicies() {
+    installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new AttributeValueDirectEditPolicy)
   }
 
   override def refreshVisuals() {
@@ -43,5 +44,11 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
   def changed(event: Event) {
     refreshVisuals()
   }
-
+  override def performRequest(request: Request) = request.getType match {
+    case RequestConstants.REQ_OPEN | RequestConstants.REQ_DIRECT_EDIT ⇒
+      val cellEditorLocatior = new RenameCellEditorLocator(getFigure)
+      new RenameEditManager(this, cellEditorLocatior).show()
+    case _ ⇒
+      super.performRequest(request)
+  }
 }

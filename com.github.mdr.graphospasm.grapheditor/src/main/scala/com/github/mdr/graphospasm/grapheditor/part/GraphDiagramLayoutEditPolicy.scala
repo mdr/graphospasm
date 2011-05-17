@@ -1,5 +1,7 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import com.github.mdr.graphospasm.grapheditor.model.NodeContentsLayouter
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import com.github.mdr.graphospasm.grapheditor.model.commands.MoveNodeCommand
 import com.github.mdr.graphospasm.grapheditor.model.commands.CreateNodeCommand
 import com.github.mdr.graphospasm.grapheditor.model.Node
@@ -16,7 +18,7 @@ import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 
 object GraphDiagramLayoutEditPolicy {
 
-  val defaultNodeSize = new Dimension(160, 100)
+  val defaultNodeSize = new Dimension(120, 36)
   val minimumNodeSize = new Dimension(120, 36)
 
 }
@@ -27,8 +29,11 @@ class GraphDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
 
   override def getHost = super.getHost.asInstanceOf[GraphDiagramEditPart]
 
-  protected def createChangeConstraintCommand(child: EditPart, constraint: Object): Command =
-    new MoveNodeCommand(child.getModel.asInstanceOf[Node], constraint.asInstanceOf[Rectangle])
+  protected def createChangeConstraintCommand(child: EditPart, constraint: Object): Command = {
+    val node = child.getModel.asInstanceOf[Node]
+    val newBounds = constraint.asInstanceOf[Rectangle]
+    new MoveNodeCommand(node, newBounds)
+  }
 
   protected def getCreateCommand(request: CreateRequest): Command = {
     val diagram = getHost.getModel

@@ -9,7 +9,7 @@ import org.eclipse.gef.commands.Command
 
 object CreateNodeCommand {
 
-  val INITIAL_NODE_DIMENSION = new Dimension(200, 64)
+  val INITIAL_NODE_DIMENSION = new Dimension(120, 32)
 
 }
 
@@ -17,7 +17,7 @@ class CreateNodeCommand(node: Node, location: Point, size: Dimension, graphDiagr
 
   import CreateNodeCommand._
 
-  private val baseName = node.name
+  private final val baseName = node.name
 
   override def execute() {
     val initialLocation = new Rectangle(location, Option(size) getOrElse INITIAL_NODE_DIMENSION)

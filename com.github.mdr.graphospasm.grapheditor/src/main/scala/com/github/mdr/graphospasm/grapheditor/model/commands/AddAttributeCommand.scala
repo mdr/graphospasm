@@ -19,7 +19,7 @@ class AddAttributeCommand(node: Node) extends Command {
 
     Utils.withFont { font ⇒
       val nodeContentsLayoutInfo = NodeContentsLayouter.layout(node, font)
-      if (nodeContentsLayoutInfo.minimumRequiredHeight != node.height) {
+      if (node.height < nodeContentsLayoutInfo.minimumRequiredHeight) {
         previousDimension = Some(node.size)
         val newSize = node.size.getCopy
         newSize.height = nodeContentsLayoutInfo.minimumRequiredHeight
