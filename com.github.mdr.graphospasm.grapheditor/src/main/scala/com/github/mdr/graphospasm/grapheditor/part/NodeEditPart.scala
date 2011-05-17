@@ -73,10 +73,8 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   private def layoutChildren() {
     findCurrentChildEditParts()
     if (attributeNameEditParts.size == node.getAttributes.size && attributeValueEditParts.size == node.getAttributes.size) {
-      val contentArea = getFigure.getContentArea(node.bounds)
-      val font = nodeNameEditPart.getFigure.getFont
-      val NodeContentsLayoutInfo(nameBounds, attributeNameBounds, attributeValueBounds, height) =
-        NodeContentsLayouter.layout(node, contentArea, font)
+      val NodeContentsLayoutInfo(nameBounds, attributeNameBounds, attributeValueBounds, _, _) =
+        NodeContentsLayouter.layout(node, nodeNameEditPart.getFigure.getFont)
       getFigure.setConstraint(nodeNameEditPart.getFigure, nameBounds)
       for ((attributeName, bounds) ← attributeNameBounds)
         getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)

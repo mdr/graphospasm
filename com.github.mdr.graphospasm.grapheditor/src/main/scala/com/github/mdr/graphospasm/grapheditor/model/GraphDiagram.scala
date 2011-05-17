@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.model
 
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import org.eclipse.draw2d.FigureUtilities
 import org.eclipse.swt.graphics.GC
 import com.github.mdr.graphospasm.core.graph._
@@ -11,33 +12,29 @@ import scala.math.max
 object GraphDiagram {
 
   def create(graph: Graph): GraphDiagram = {
-    val diagram = new GraphDiagram
-    val font = new GC(new Shell).getFont
-    val fontMetrics = FigureUtilities.getFontMetrics(font)
-    var vertexToNode = Map[Vertex, Node]()
+    Utils.withFont { font ⇒
+      val diagram = new GraphDiagram
+      var vertexToNode = Map[Vertex, Node]()
 
-    for (vertex ← graph.vertices) {
-      val node = new Node(vertex.name)
-      for ((name, value) ← vertex.attributes)
-        node.addAttribute(name, value)
-      val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
-      node.attributes = attributes
-      val height = fontMetrics.getHeight * attributes.size + 38
-      val widestAttribute = if (attributes.isEmpty) 0 else attributes.map {
-        case (name, value) ⇒
-          FigureUtilities.getTextExtents(name, font).width + FigureUtilities.getTextExtents(value.toString, font).width
-      }.max
+      for (vertex ← graph.vertices) {
+        val node = new Node(vertex.name)
+        for ((name, value) ← vertex.attributes)
+          node.addAttribute(name, value)
+        val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
+        node.attributes = attributes
 
-      val width = max(FigureUtilities.getTextExtents(node.name.name.simpleName, font).width, widestAttribute) + 65
+        val NodeContentsLayoutInfo(_, _, _, minimumRequiredWidth, minimumRequiredHeight) =
+          NodeContentsLayouter.layout(node, font)
 
-      node.bounds = new Rectangle(150, 150, width, height)
-      diagram.add(node)
-      vertexToNode = vertexToNode + (vertex -> node)
+        node.bounds = new Rectangle(150, 150, minimumRequiredWidth, minimumRequiredHeight)
+        diagram.add(node)
+        vertexToNode = vertexToNode + (vertex -> node)
+      }
+      for (edge ← graph.edges)
+        Connection.connect(vertexToNode(edge.source), vertexToNode(edge.target))
+
+      diagram
     }
-    for (edge ← graph.edges)
-      Connection.connect(vertexToNode(edge.source), vertexToNode(edge.target))
-
-    diagram
   }
 }
 
