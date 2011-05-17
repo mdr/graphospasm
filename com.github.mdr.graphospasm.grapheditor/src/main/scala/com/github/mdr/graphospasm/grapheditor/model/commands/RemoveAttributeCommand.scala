@@ -8,14 +8,15 @@ import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 
-class AddAttributeCommand(node: Node) extends Command {
+class RemoveAttributeCommand(node: Node, attributeName: AttributeName) extends Command {
 
-  private var attributeName: AttributeName = _
+  private var attributeValue: AttributeValue = _
   private var previousDimension: Option[Dimension] = None
 
   override def execute() {
-    // TODO: Ensure unique name
-    val (newName, _) = node.addAttribute(Name("name"), "value")
+    val map = node.getAttributes.toMap
+    attributeValue = map(attributeName)
+    node.removeAttribute(attributeName)
 
     Utils.withFont { font ⇒
       val nodeContentsLayoutInfo = NodeContentsLayouter.layout(node, font)
@@ -26,13 +27,12 @@ class AddAttributeCommand(node: Node) extends Command {
         node.size = newSize
       }
     }
-    attributeName = newName
 
   }
 
   override def undo() {
     previousDimension foreach { node.size = _ }
-    node.removeAttribute(attributeName)
+    node.addAttribute(attributeName, attributeValue)
   }
 
 }

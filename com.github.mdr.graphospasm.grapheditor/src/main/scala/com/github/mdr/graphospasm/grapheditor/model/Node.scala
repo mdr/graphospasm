@@ -20,6 +20,10 @@ class Node(initialName: Name) extends Observable {
     require(!attributeNameValues.exists(_._1.name == name))
     val attributeName = new AttributeName(name)
     val attributeValue = new AttributeValue(value)
+    addAttribute(attributeName, attributeValue)
+  }
+
+  def addAttribute(attributeName: AttributeName, attributeValue: AttributeValue): (AttributeName, AttributeValue) = {
     attributeNameValues = attributeNameValues :+ (attributeName, attributeValue)
     fireEvent(LocalPropertyChanged)
     (attributeName, attributeValue)

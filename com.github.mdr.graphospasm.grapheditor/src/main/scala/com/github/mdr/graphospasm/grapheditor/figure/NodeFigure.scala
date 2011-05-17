@@ -65,7 +65,7 @@ class NodeFigure extends Figure {
       g.asInstanceOf[ScaledGraphics].setBackgroundPattern(display, contentArea.x, contentArea.y, contentArea.x, contentArea.y + gradientHeight, gradientColour, ColorConstants.white)
     else
       g.setBackgroundPattern(pattern)
-    g.fillRoundRectangle(new Rectangle(contentArea.x, contentArea.y, contentArea.width - 1, gradientHeight - 2), 10, 10)
+    g.fillRoundRectangle(new Rectangle(contentArea.x, contentArea.y, contentArea.width - 1, gradientHeight - 3 /* <= adjusted for a couple of glitches */ ), 10, 10)
     pattern.dispose()
     g.setBackgroundPattern(null)
     g.popState()

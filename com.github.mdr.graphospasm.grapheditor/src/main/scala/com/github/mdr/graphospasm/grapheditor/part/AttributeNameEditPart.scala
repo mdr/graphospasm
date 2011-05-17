@@ -20,4 +20,9 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends AbstractNa
   override def getModel = super.getModel.asInstanceOf[AttributeName]
   override def createFigure = new AttributeNameFigure
 
+  override def createEditPolicies() {
+    super.createEditPolicies()
+    installEditPolicy(EditPolicy.COMPONENT_ROLE, new AttributeNameComponentEditPolicy)
+  }
+
 }
