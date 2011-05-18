@@ -1,9 +1,10 @@
 package com.github.mdr.graphospasm.grapheditor.model
 
+import com.github.mdr.graphospasm.core.graph.mutable._
 import com.github.mdr.graphospasm.grapheditor.utils.Utils
+import com.github.mdr.graphospasm.core.graph._
 import org.eclipse.draw2d.FigureUtilities
 import org.eclipse.swt.graphics.GC
-import com.github.mdr.graphospasm.core.graph._
 import org.eclipse.draw2d.geometry._
 import org.eclipse.draw2d._
 import org.eclipse.swt.widgets.Shell
@@ -11,7 +12,7 @@ import scala.math.max
 
 object GraphDiagram {
 
-  def create(graph: Graph): GraphDiagram = {
+  def fromGraph(graph: Graph): GraphDiagram = {
     Utils.withFont { font ⇒
       val diagram = new GraphDiagram
       var vertexToNode = Map[Vertex, Node]()
@@ -35,6 +36,15 @@ object GraphDiagram {
       diagram
     }
   }
+
+  def toGraph(graphDiagram: GraphDiagram): Graph = {
+    val graph = new MutableGraphImpl
+    for (node ← graphDiagram.nodes) {
+      //       graph.ad
+    }
+    graph
+  }
+
 }
 
 class GraphDiagram extends Observable {
