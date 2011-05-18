@@ -15,7 +15,17 @@ class AddAttributeCommand(node: Node) extends Command {
 
   override def execute() {
     // TODO: Ensure unique name
-    val (newName, _) = node.addAttribute(Name("name"), "value")
+
+    val existingAttributes = node.getAttributes.map(_._1.name.simpleName).toSet
+
+    var candidateName = "name"
+    var i = 0
+    while (existingAttributes contains candidateName) {
+      i += 1
+      candidateName = "name" + i
+    }
+
+    val (newName, _) = node.addAttribute(Name(candidateName), "value")
 
     Utils.withFont { font ⇒
       val nodeContentsLayoutInfo = NodeContentsLayouter.layout(node, font)

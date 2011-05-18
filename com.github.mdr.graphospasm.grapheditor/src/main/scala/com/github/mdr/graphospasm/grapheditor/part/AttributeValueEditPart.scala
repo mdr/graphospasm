@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.figure._
@@ -44,11 +45,18 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
   def changed(event: Event) {
     refreshVisuals()
   }
+
   override def performRequest(request: Request) = request.getType match {
     case RequestConstants.REQ_OPEN | RequestConstants.REQ_DIRECT_EDIT ⇒
-      val cellEditorLocatior = new RenameCellEditorLocator(getFigure)
-      new RenameEditManager(this, cellEditorLocatior).show()
+      Utils.withFont { font ⇒
+        val nodeContentsLayoutInfo = NodeContentsLayouter.layout(getParent.getModel, font)
+        val location = getFigure.getClientArea.getCopy
+        location.width = nodeContentsLayoutInfo.attributeValueColumnWidth
+        val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure, location)
+        new RenameEditManager(this, cellEditorLocator).show()
+      }
     case _ ⇒
       super.performRequest(request)
   }
+
 }

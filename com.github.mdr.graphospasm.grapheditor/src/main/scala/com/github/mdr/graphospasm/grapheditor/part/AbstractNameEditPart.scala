@@ -49,10 +49,11 @@ abstract class AbstractNameEditPart(nodeName: AbstractName) extends NodeChildEdi
     refreshVisuals()
   }
 
+  // TODO: Delete, override in subclasses
   override def performRequest(request: Request) = request.getType match {
     case RequestConstants.REQ_OPEN | RequestConstants.REQ_DIRECT_EDIT ⇒
-      val cellEditorLocatior = new RenameCellEditorLocator(getFigure)
-      new RenameEditManager(this, cellEditorLocatior).show()
+      val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure, getFigure.getClientArea)
+      new RenameEditManager(this, cellEditorLocator).show()
     case _ ⇒
       super.performRequest(request)
   }

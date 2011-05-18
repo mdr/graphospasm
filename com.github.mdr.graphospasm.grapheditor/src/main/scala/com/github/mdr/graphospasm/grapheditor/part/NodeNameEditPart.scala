@@ -12,7 +12,7 @@ import org.eclipse.draw2d.geometry._
 import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
-
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
 class NodeNameEditPart(nodeName: NodeName) extends AbstractNameEditPart(nodeName) {
 
   override def getFigure = super.getFigure.asInstanceOf[NodeNameFigure]
@@ -20,4 +20,11 @@ class NodeNameEditPart(nodeName: NodeName) extends AbstractNameEditPart(nodeName
   override def getModel = super.getModel.asInstanceOf[NodeName]
   override def createFigure = new NodeNameFigure
 
+  override def performRequest(request: Request) = request.getType match {
+    case RequestConstants.REQ_OPEN | RequestConstants.REQ_DIRECT_EDIT ⇒
+      val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure, getFigure.getClientArea)
+      new RenameEditManager(this, cellEditorLocator).show()
+    case _ ⇒
+      super.performRequest(request)
+  }
 }

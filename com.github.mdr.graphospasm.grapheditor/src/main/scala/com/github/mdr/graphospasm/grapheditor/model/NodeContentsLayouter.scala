@@ -10,7 +10,9 @@ case class NodeContentsLayoutInfo(
   attributeNameBounds: Map[AttributeName, Rectangle],
   attributeValueBounds: Map[AttributeValue, Rectangle],
   minimumRequiredWidth: Int,
-  minimumRequiredHeight: Int)
+  minimumRequiredHeight: Int,
+  attributeNameColumnWidth: Int,
+  attributeValueColumnWidth: Int)
 
 object NodeContentsLayouter {
 
@@ -57,6 +59,8 @@ object NodeContentsLayouter {
     var attributeValueBounds: Map[AttributeValue, Rectangle] = Map()
 
     val attributeMap = node.getAttributes.toMap
+    var attributeValueColumnWidth = 0
+    var attributeNameColumnWidth = 0
     if (attributeMap.nonEmpty) {
       currentY += NAME_ATTRIBUTES_GAP_Y
       val sortedAttributeNames = attributeMap.toList.map(_._1).sortBy(p ⇒ p.name.simpleName)
@@ -64,6 +68,9 @@ object NodeContentsLayouter {
       val widestAttributeValue = sortedAttributeNames.map(n ⇒ widthRequired(attributeMap(n))).max
 
       val attributeValueX = ATTRIBUTE_NAME_INDENT_X + widestAttributeName + ATTRIBUTE_NAME_VALUE_GAP_X
+      attributeNameColumnWidth = widestAttributeName
+      attributeValueColumnWidth = contentArea.width - attributeValueX - SHADOW_SIZE
+
       for ((attributeName, attributeValue) ← attributeMap.toList.sortBy(_._1.name.simpleName)) {
         val attributeNameDimension = {
           val dimension = dimensionRequired(attributeName)
@@ -86,7 +93,7 @@ object NodeContentsLayouter {
     }
     minimumRequiredWidth += SHADOW_SIZE + RIGHT_PADDING
     val minimumRequiredHeight = currentY + SHADOW_SIZE + BOTTOM_PADDING
-    NodeContentsLayoutInfo(nameBounds, attributeNameBounds, attributeValueBounds, minimumRequiredWidth, minimumRequiredHeight)
+    NodeContentsLayoutInfo(nameBounds, attributeNameBounds, attributeValueBounds, minimumRequiredWidth, minimumRequiredHeight, attributeNameColumnWidth, attributeValueColumnWidth)
   }
 
   private def dimensionRequired(attributeName: AttributeName)(implicit font: Font) =

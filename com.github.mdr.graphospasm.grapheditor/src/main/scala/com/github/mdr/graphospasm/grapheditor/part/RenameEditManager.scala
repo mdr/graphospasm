@@ -21,14 +21,12 @@ import org.eclipse.gef.editparts.ZoomManager
 import org.eclipse.gef.tools.CellEditorLocator
 import org.eclipse.gef.tools.DirectEditManager
 
-class RenameEditManager(source: GraphicalEditPart, locator: RenameCellEditorLocator)
-  extends DirectEditManager(source, null, locator) {
+class RenameEditManager(source: GraphicalEditPart, locator: CellEditorLocator) extends DirectEditManager(source, null, locator) {
 
   private var actionBars: IActionBars = _
   private var actionHandler: CellEditorActionHandler = _
 
-  override def createCellEditorOn(composite: Composite): CellEditor =
-    new TextCellEditor(composite /*, SWT.MULTI | SWT.WRAP */ )
+  override def createCellEditorOn(composite: Composite) = new TextCellEditor(composite /*, SWT.MULTI | SWT.WRAP */ )
 
   override def initCellEditor() {
     val figure = getEditPart.getFigure.asInstanceOf[AbstractNameFigure]
