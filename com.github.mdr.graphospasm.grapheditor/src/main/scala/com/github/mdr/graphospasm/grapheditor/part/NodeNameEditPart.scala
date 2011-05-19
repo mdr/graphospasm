@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import org.eclipse.gef.tools.SelectEditPartTracker
 import org.eclipse.swt.events.MouseEvent
 import org.eclipse.gef.tools.DragEditPartsTracker
 import com.github.mdr.graphospasm.core.graph._
@@ -40,13 +41,18 @@ class NodeNameEditPart(nodeName: NodeName) extends AbstractNameEditPart(nodeName
       super.performRequest(request)
   }
 
-  override def getDragTracker(request: Request): DragTracker = new DragEditPartsTracker2
+  override def getDragTracker(request: Request): DragTracker = new HybridDragEditPartsTracker
 
-  class DragEditPartsTracker2 extends DragEditPartsTracker(getParent) {
+  class HybridDragEditPartsTracker extends DragEditPartsTracker(getParent) {
 
     val thisDragTracker = new DragEditPartsTracker(NodeNameEditPart.this) {
 
       override def createOperationSet() = super.createOperationSet() // List(getParent)
+
+      def setAsUnselected() {
+        // TODO: use SelectEditPartTracker.FLAG_SELECTION_PERFORMED
+        setFlag((8 << 2) << 1, false)
+      }
 
     }
 
@@ -64,8 +70,9 @@ class NodeNameEditPart(nodeName: NodeName) extends AbstractNameEditPart(nodeName
     }
 
     override def mouseUp(mouseEvent: MouseEvent, viewer: EditPartViewer) = {
-      thisDragTracker.mouseUp(mouseEvent, viewer)
       super.mouseUp(mouseEvent, viewer)
+      thisDragTracker.setAsUnselected()
+      thisDragTracker.mouseUp(mouseEvent, viewer)
     }
 
     override def activate() {
@@ -85,41 +92,4 @@ class NodeNameEditPart(nodeName: NodeName) extends AbstractNameEditPart(nodeName
 
   }
 
-  class DragEditPartsTracker1 extends DragEditPartsTracker(this) {
-
-    val parentDelegateDragTracker = new DragEditPartsTracker(getParent) {
-      override def createOperationSet() = List(getParent)
-
-      override def isMove() = true
-
-    }
-
-    override def mouseDrag(mouseEvent: MouseEvent, viewer: EditPartViewer) = parentDelegateDragTracker.mouseDrag(mouseEvent, viewer)
-
-    override def mouseDown(mouseEvent: MouseEvent, viewer: EditPartViewer) = {
-      parentDelegateDragTracker.mouseDown(mouseEvent, viewer)
-      super.mouseDown(mouseEvent, viewer)
-    }
-
-    override def mouseUp(mouseEvent: MouseEvent, viewer: EditPartViewer) = {
-      parentDelegateDragTracker.mouseUp(mouseEvent, viewer)
-      super.mouseUp(mouseEvent, viewer)
-    }
-
-    override def activate() {
-      parentDelegateDragTracker.activate()
-      super.activate()
-    }
-
-    override def setEditDomain(domain: EditDomain) {
-      parentDelegateDragTracker.setEditDomain(domain)
-      super.setEditDomain(domain)
-    }
-
-    override def setViewer(viewer: EditPartViewer) {
-      parentDelegateDragTracker.setViewer(viewer)
-      super.setViewer(viewer)
-    }
-
-  }
 }
