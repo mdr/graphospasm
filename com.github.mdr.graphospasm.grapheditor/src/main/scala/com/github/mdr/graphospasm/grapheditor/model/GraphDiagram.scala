@@ -37,13 +37,13 @@ object GraphDiagram {
     }
   }
 
-  def toGraph(graphDiagram: GraphDiagram): Graph = {
-    val graph = new MutableGraphImpl
-    for (node ← graphDiagram.nodes) {
-      //       graph.ad
-    }
-    graph
-  }
+  //  def toGraph(graphDiagram: GraphDiagram): Graph = {
+  //    val graph = new MutableGraphImpl
+  //    for (node ← graphDiagram.nodes) {
+  //      //       graph.ad
+  //    }
+  //    graph
+  //  }
 
 }
 

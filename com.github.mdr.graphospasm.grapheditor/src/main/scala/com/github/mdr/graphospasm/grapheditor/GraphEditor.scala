@@ -1,5 +1,8 @@
 package com.github.mdr.graphospasm.grapheditor
 
+import com.github.mdr.graphospasm.grapheditor.actions.RelayoutAction
+import scala.xml.PrettyPrinter
+import java.io.ByteArrayInputStream
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.swt.custom.SashForm
@@ -131,21 +134,31 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
 
   override def setInput(input: IEditorInput) {
     super.setInput(input)
-    val file = input.asInstanceOf[IFileEditorInput].getFile()
+    val file = input.asInstanceOf[IFileEditorInput].getFile
     val xml = XML.load(file.getContents)
-    val importSpec = XmlImportSpec(blackList = true, directives = List())
-    val graph = new XmlImporter(importSpec).makeGraph(xml)
-    diagram = GraphDiagram.create(graph)
-    AutoLayouter.autolayoutDiagram(diagram)
-
+    diagram = GraphDiagramXmlSerializer.deserialize(xml)
     setPartName(file.getName)
   }
 
+  //  override def setInput(input: IEditorInput) {
+  //    super.setInput(input)
+  //    val file = input.asInstanceOf[IFileEditorInput].getFile()
+  //    val xml = XML.load(file.getContents)
+  //    val importSpec = XmlImportSpec(blackList = true, directives = List())
+  //    val graph = new XmlImporter(importSpec).makeGraph(xml)
+  //    diagram = GraphDiagram.fromGraph(graph)
+  //    AutoLayouter.autolayoutDiagram(diagram)
+  //    setPartName(file.getName)
+  //  }
+
   def doSave(monitor: IProgressMonitor) {
-    //    val file = getEditorInput.asInstanceOf[IFileEditorInput].getFile
-    //    file.setContents(new ByteArrayInputStream(modelAsText.getBytes), true, false, monitor)
-    //    getCommandStack().markSaveLocation()
+    val file = getEditorInput.asInstanceOf[IFileEditorInput].getFile
+    file.setContents(new ByteArrayInputStream(diagramAsText.getBytes), true, false, monitor)
+    getCommandStack().markSaveLocation()
   }
+
+  private def diagramAsText: String =
+    new PrettyPrinter(240, 2).format(GraphDiagramXmlSerializer.serialize(diagram))
 
   override def getAdapter(type_ : Class[_]) =
     if (type_ == classOf[CommandStack])
@@ -177,7 +190,7 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     //    createSelectionAction(new CopyAction(this))
     //    createSelectionAction(new PasteAction(this))
     //    createSelectionAction(new CutAction(this))
-    //    createSelectionAction(new RelayoutAction(this))
+    createSelectionAction(new RelayoutAction(this))
     createSelectionAction(new MatchWidthAction(this))
     createSelectionAction(new MatchHeightAction(this))
     createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.LEFT))

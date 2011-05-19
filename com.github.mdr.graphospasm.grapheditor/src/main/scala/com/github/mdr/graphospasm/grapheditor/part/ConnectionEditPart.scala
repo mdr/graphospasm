@@ -28,7 +28,7 @@ class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditP
     decoration.setTemplate(PolygonDecoration.TRIANGLE_TIP)
     polylineConnection.setTargetDecoration(decoration)
 
-    //    val label = new Label("middle")
+    val label = new Label("middle")
     //    polylineConnection.add(label, new ConnectionLocator(polylineConnection, ConnectionLocator.MIDDLE))
 
     polylineConnection

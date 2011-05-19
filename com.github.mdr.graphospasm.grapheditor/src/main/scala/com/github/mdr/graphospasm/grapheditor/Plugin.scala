@@ -30,4 +30,5 @@ object Plugin {
   lazy val newConnection16Descriptor = imageDescriptor("icons/connection_s16.gif")
   lazy val newConnection24Descriptor = imageDescriptor("icons/connection_s24.gif")
 
+  lazy val relayout16 = imageDescriptor("icons/relayout-16.png")
 }
