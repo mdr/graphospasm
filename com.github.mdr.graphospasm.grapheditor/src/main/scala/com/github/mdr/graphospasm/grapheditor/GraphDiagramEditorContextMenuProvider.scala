@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor
 
+import com.github.mdr.graphospasm.grapheditor.actions.RelayoutAction
 import org.eclipse.jface.action.IAction
 import org.eclipse.jface.action.IMenuManager
 import org.eclipse.ui.actions.ActionFactory
@@ -10,14 +11,14 @@ import org.eclipse.gef.ui.actions.GEFActionConstants
 import org.eclipse.jface.action.MenuManager
 import org.eclipse.jface.action.Separator
 
-class GraphEditorContextMenuProvider(viewer: EditPartViewer, actionRegistry: ActionRegistry) extends ContextMenuProvider(viewer) {
+class GraphDiagramEditorContextMenuProvider(viewer: EditPartViewer, actionRegistry: ActionRegistry) extends ContextMenuProvider(viewer) {
 
   def buildContextMenu(menu: IMenuManager) {
     GEFActionConstants.addStandardActionGroups(menu)
 
     def getAction(actionId: String) = actionRegistry.getAction(actionId)
-    //    menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.UNDO.getId))
-    //    menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.REDO.getId))
+    menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.UNDO.getId))
+    menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.REDO.getId))
 
     //    val cutAction = actionRegistry.getAction(ActionFactory.CUT.getId)
     //    if (cutAction.isEnabled)
@@ -38,9 +39,9 @@ class GraphEditorContextMenuProvider(viewer: EditPartViewer, actionRegistry: Act
     if (editAction.isEnabled)
       menu.appendToGroup(GEFActionConstants.GROUP_EDIT, editAction)
 
-    //    val relayoutAction = getAction(RelayoutAction.actionId)
-    //    if (relayoutAction.isEnabled)
-    //      menu.appendToGroup(GEFActionConstants.GROUP_REST, relayoutAction)
+    val relayoutAction = getAction(RelayoutAction.actionId)
+    if (relayoutAction.isEnabled)
+      menu.appendToGroup(GEFActionConstants.GROUP_REST, relayoutAction)
 
     {
       val submenu = new MenuManager("Align")

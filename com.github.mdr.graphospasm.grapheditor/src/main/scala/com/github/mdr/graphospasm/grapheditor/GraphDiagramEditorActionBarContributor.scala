@@ -12,7 +12,7 @@ import org.eclipse.ui.actions.RetargetAction
 import org.eclipse.gef.internal.GEFMessages
 import org.eclipse.draw2d.PositionConstants
 
-class GraphEditorActionBarContributor extends ActionBarContributor {
+class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
 
   override def buildActions() {
 
@@ -52,7 +52,7 @@ class GraphEditorActionBarContributor extends ActionBarContributor {
   }
 
   def declareGlobalActionKeys {
-    //    addGlobalActionKey(ActionFactory.PRINT.getId)
+    addGlobalActionKey(ActionFactory.PRINT.getId)
     addGlobalActionKey(ActionFactory.SELECT_ALL.getId)
     //    addGlobalActionKey(ActionFactory.CUT.getId)
     //    addGlobalActionKey(ActionFactory.COPY.getId)

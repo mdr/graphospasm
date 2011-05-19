@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import org.eclipse.swt.accessibility.AccessibleEvent
 import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.model._
@@ -57,6 +58,10 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
       }
     case _ ⇒
       super.performRequest(request)
+  }
+
+  override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
+    def getName(e: AccessibleEvent) { e.result = attributeValue.presentationString }
   }
 
 }

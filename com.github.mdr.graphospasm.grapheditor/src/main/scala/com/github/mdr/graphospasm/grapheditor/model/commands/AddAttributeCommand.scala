@@ -8,10 +8,12 @@ import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 
-class AddAttributeCommand(node: Node) extends Command {
+class AddAttributeCommand(val node: Node) extends Command {
 
-  private var attributeName: AttributeName = _
+  private var attributeName_ : AttributeName = _
   private var previousDimension: Option[Dimension] = None
+
+  def attributeName = attributeName_
 
   override def execute() {
     // TODO: Ensure unique name
@@ -36,13 +38,13 @@ class AddAttributeCommand(node: Node) extends Command {
         node.size = newSize
       }
     }
-    attributeName = newName
+    attributeName_ = newName
 
   }
 
   override def undo() {
     previousDimension foreach { node.size = _ }
-    node.removeAttribute(attributeName)
+    node.removeAttribute(attributeName_)
   }
 
 }

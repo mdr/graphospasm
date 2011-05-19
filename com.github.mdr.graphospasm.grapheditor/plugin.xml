@@ -4,12 +4,12 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="com.github.mdr.graphospasm.grapheditor.GraphEditor"
-            contributorClass="com.github.mdr.graphospasm.grapheditor.GraphEditorActionBarContributor"
+            class="com.github.mdr.graphospasm.grapheditor.GraphDiagramEditor"
+            contributorClass="com.github.mdr.graphospasm.grapheditor.GraphDiagramEditorActionBarContributor"
             default="true"
             extensions="graph,xml"
             icon="icons/graph-16.png"
-            id="com.github.mdr.graphospasm.grapheditor.GraphEditor"
+            id="com.github.mdr.graphospasm.grapheditor.GraphDiagramEditor"
             name="Graph Editor">
       </editor>
    </extension>

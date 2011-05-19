@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
-
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
+import org.eclipse.swt.accessibility.AccessibleEvent
 import com.github.mdr.graphospasm.grapheditor.model.commands.AddAttributeCommand
 import com.github.mdr.graphospasm.grapheditor.Attribute
 import com.github.mdr.graphospasm.grapheditor.model.commands.DeleteNodeCommand
@@ -42,9 +43,11 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
     installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeLayoutEditPolicy)
     installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateConnectionsEditPolicy)
     installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeComponentEditPolicy)
+    installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new TargetFeedbackEditPolicy)
   }
 
   override def refreshVisuals() {
+    relayout()
     getFigure.name = node.name.name.simpleName
     getFigure.hasAttributes = node.getAttributes.nonEmpty
     getParent.setLayoutConstraint(this, getFigure, node.bounds)
@@ -56,6 +59,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   private var attributeValueEditParts: Map[AttributeValue, AttributeValueEditPart] = Map()
 
   private def findCurrentChildEditParts() {
+    nodeNameEditPart = null
     attributeNameEditParts = Map()
     attributeValueEditParts = Map()
     for (child ← getChildren)
@@ -72,13 +76,15 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
 
   private def layoutChildren() {
     findCurrentChildEditParts()
-    if (attributeNameEditParts.size == node.getAttributes.size && attributeValueEditParts.size == node.getAttributes.size) {
-      val layoutInfo = NodeContentsLayouter.layout(node, nodeNameEditPart.getFigure.getFont)
-      getFigure.setConstraint(nodeNameEditPart.getFigure, layoutInfo.nameBounds)
-      for ((attributeName, bounds) ← layoutInfo.attributeNameBounds)
-        getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)
-      for ((attributeValue, bounds) ← layoutInfo.attributeValueBounds)
-        getFigure.setConstraint(attributeValueEditParts(attributeValue).getFigure, bounds)
+    if (nodeNameEditPart != null && attributeNameEditParts.size == node.getAttributes.size && attributeValueEditParts.size == node.getAttributes.size) {
+      Utils.withFont { font ⇒
+        val layoutInfo = NodeContentsLayouter.layout(node, font)
+        getFigure.setConstraint(nodeNameEditPart.getFigure, layoutInfo.nameBounds)
+        for ((attributeName, bounds) ← layoutInfo.attributeNameBounds)
+          getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)
+        for ((attributeValue, bounds) ← layoutInfo.attributeValueBounds)
+          getFigure.setConstraint(attributeValueEditParts(attributeValue).getFigure, bounds)
+      }
     }
   }
 
@@ -97,11 +103,11 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   }
 
   def changed(event: Event) {
+    refreshChildren()
     refreshVisuals()
     for (child ← getChildren) {
       child.asInstanceOf[NodeChildEditPart].refreshVisuals()
     }
-    refreshChildren()
     refreshSourceConnections()
     refreshTargetConnections()
   }
@@ -113,6 +119,10 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   def getTargetConnectionAnchor(request: Request) = getFigure.connectionAnchor
   def getTargetConnectionAnchor(connection: gef.ConnectionEditPart) = getFigure.connectionAnchor
   def getSourceConnectionAnchor(connection: gef.ConnectionEditPart) = getFigure.connectionAnchor
+
+  override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
+    def getName(e: AccessibleEvent) { e.result = node.name.name.simpleName }
+  }
 
 }
 

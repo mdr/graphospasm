@@ -46,11 +46,11 @@ import scala.xml._
 import scala.collection.JavaConversions._
 import org.eclipse.jface.viewers.ISelection
 
-class GraphEditor extends GraphicalEditorWithFlyoutPalette {
+class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
   setEditDomain(new DefaultEditDomain(this))
 
-  override def getPaletteRoot = new GraphEditorPalette
+  override def getPaletteRoot = new GraphDiagramEditorPalette
 
   private var diagram: GraphDiagram = _
 
@@ -69,19 +69,19 @@ class GraphEditor extends GraphicalEditorWithFlyoutPalette {
     useAntialiasingForConnections()
     configureZoom()
     configureSnapToGeometry(viewer)
-    addKeyBindingForDirectEdit()
+    customiseKeyBindings()
     setUpContextMenu()
   }
 
   private def setUpContextMenu() {
     val viewer = getGraphicalViewer
-    val contextMenuProvider = new GraphEditorContextMenuProvider(viewer, getActionRegistry)
+    val contextMenuProvider = new GraphDiagramEditorContextMenuProvider(viewer, getActionRegistry)
     viewer.setContextMenu(contextMenuProvider)
     getSite.registerContextMenu(contextMenuProvider, viewer)
   }
 
-  private def addKeyBindingForDirectEdit() {
-    val keyHandler = new GraphicalViewerKeyHandler(getGraphicalViewer)
+  private def customiseKeyBindings() {
+    val keyHandler = new CustomGraphicalViewerKeyHandler(getGraphicalViewer)
     getGraphicalViewer.setKeyHandler(keyHandler)
     val directEditAction = getActionRegistry.getAction(GEFActionConstants.DIRECT_EDIT)
     keyHandler.put(KeyStroke.getPressed(SWT.F2, 0), directEditAction)

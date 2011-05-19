@@ -17,10 +17,8 @@ object Plugin {
 
   private var plugin: Plugin = _
 
-  private def imageDescriptor(path: String) = {
-    val url = new URL(instance.getDescriptor.getInstallURL, path)
-    ImageDescriptor.createFromURL(url)
-  }
+  private def imageDescriptor(path: String) =
+    ImageDescriptor.createFromURL(instance.getBundle.getEntry(path))
 
   lazy val newNode16Descriptor = imageDescriptor("icons/newNode-16.png")
   lazy val newNode24Descriptor = imageDescriptor("icons/newNode-24.png")
@@ -31,4 +29,7 @@ object Plugin {
   lazy val newConnection24Descriptor = imageDescriptor("icons/connection_s24.gif")
 
   lazy val relayout16 = imageDescriptor("icons/relayout-16.png")
+
+  val backgroundBlue = new Color(null, 200, 200, 240)
+
 }

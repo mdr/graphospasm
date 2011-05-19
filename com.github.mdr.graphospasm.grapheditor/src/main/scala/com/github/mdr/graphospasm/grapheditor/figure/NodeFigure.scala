@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.figure
 
+import com.github.mdr.graphospasm.grapheditor.Plugin
 import com.github.mdr.graphospasm.grapheditor.ScaledGraphics
 import org.eclipse.swt.graphics.Color
 import org.eclipse.draw2d.geometry.Rectangle
@@ -24,6 +25,15 @@ class NodeFigure extends Figure {
   import NodeFigure._
 
   setLayoutManager(new XYLayout)
+
+  private var targetFeedback_ = false
+
+  def targetFeedback = targetFeedback_
+
+  def targetFeedback_=(b: Boolean) {
+    targetFeedback_ = b
+    repaint()
+  }
 
   private var name_ : String = ""
 
@@ -55,14 +65,15 @@ class NodeFigure extends Figure {
     g.fillRoundRectangle(new Rectangle(contentArea.x + shadowSize, contentArea.y + shadowSize, contentArea.width - 1, contentArea.height - 1), 10, 10)
 
     // Background
-    g.setBackgroundColor(ColorConstants.white)
+    val backgroundColour = if (targetFeedback) Plugin.backgroundBlue else ColorConstants.white
+    g.setBackgroundColor(backgroundColour)
     g.fillRoundRectangle(new Rectangle(contentArea.x, contentArea.y, contentArea.width - 1, contentArea.height - 1), 10, 10)
 
     // Gradient
     g.pushState()
-    val pattern = new Pattern(display, contentArea.x, contentArea.y, contentArea.x, contentArea.y + gradientHeight, gradientColour, ColorConstants.white)
+    val pattern = new Pattern(display, contentArea.x, contentArea.y, contentArea.x, contentArea.y + gradientHeight, gradientColour, backgroundColour)
     if (g.isInstanceOf[ScaledGraphics])
-      g.asInstanceOf[ScaledGraphics].setBackgroundPattern(display, contentArea.x, contentArea.y, contentArea.x, contentArea.y + gradientHeight, gradientColour, ColorConstants.white)
+      g.asInstanceOf[ScaledGraphics].setBackgroundPattern(display, contentArea.x, contentArea.y, contentArea.x, contentArea.y + gradientHeight, gradientColour, backgroundColour)
     else
       g.setBackgroundPattern(pattern)
     g.fillRoundRectangle(new Rectangle(contentArea.x, contentArea.y, contentArea.width - 1, gradientHeight - 3 /* <= adjusted for a couple of glitches */ ), 10, 10)

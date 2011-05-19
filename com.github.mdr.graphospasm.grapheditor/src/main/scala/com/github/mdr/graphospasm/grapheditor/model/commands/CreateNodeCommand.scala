@@ -13,7 +13,7 @@ object CreateNodeCommand {
 
 }
 
-class CreateNodeCommand(node: Node, location: Point, size: Dimension, graphDiagram: GraphDiagram) extends Command {
+class CreateNodeCommand(val node: Node, location: Point, size: Dimension, graphDiagram: GraphDiagram) extends Command {
 
   import CreateNodeCommand._
 

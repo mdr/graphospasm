@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import org.eclipse.swt.accessibility.AccessibleEvent
 import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.figure._
@@ -37,6 +38,10 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends AbstractNa
       }
     case _ ⇒
       super.performRequest(request)
+  }
+
+  override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
+    def getName(e: AccessibleEvent) { e.result = attributeName.name.simpleName }
   }
 
 }

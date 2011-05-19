@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
+import org.eclipse.gef.AccessibleEditPart
 import org.eclipse.gef.commands.CompoundCommand
 import org.eclipse.gef.Request
 import org.eclipse.gef.requests.ChangeBoundsRequest
@@ -59,6 +60,11 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
     refreshVisuals()
     refreshChildren()
   }
+
+  override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
+    def getName(e: AccessibleEvent) { e.result = "diagram" }
+  }
+
   override def getAdapter(type_ : Class[_]) =
     if (type_ == classOf[SnapToHelper])
       makeSnapToStrategies

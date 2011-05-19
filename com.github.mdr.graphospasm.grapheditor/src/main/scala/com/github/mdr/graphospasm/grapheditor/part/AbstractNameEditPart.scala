@@ -13,16 +13,16 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 
-abstract class AbstractNameEditPart(nodeName: AbstractName) extends NodeChildEditPart with Listener {
+abstract class AbstractNameEditPart(abstractName: AbstractName) extends NodeChildEditPart with Listener {
 
-  setModel(nodeName)
+  setModel(abstractName)
 
   override def getFigure = super.getFigure.asInstanceOf[AbstractNameFigure]
   override def getParent = super.getParent.asInstanceOf[NodeEditPart]
   override def getModel = super.getModel.asInstanceOf[AbstractName]
 
   override def refreshVisuals() {
-    getFigure.name = nodeName.name.simpleName
+    getFigure.name = abstractName.name.simpleName
     getParent.relayout()
   }
 
@@ -36,12 +36,12 @@ abstract class AbstractNameEditPart(nodeName: AbstractName) extends NodeChildEdi
   //  }
 
   override def activate() {
-    if (!isActive) nodeName.addListener(this)
+    if (!isActive) abstractName.addListener(this)
     super.activate()
   }
 
   override def deactivate() {
-    if (isActive) nodeName.removeListener(this)
+    if (isActive) abstractName.removeListener(this)
     super.deactivate()
   }
 

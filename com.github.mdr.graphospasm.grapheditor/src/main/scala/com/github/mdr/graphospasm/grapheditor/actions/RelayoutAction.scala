@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor.actions
 
+import com.github.mdr.graphospasm.grapheditor.part.NodeEditPart
 import com.github.mdr.graphospasm.grapheditor.part.GraphDiagramEditPart
 import com.github.mdr.graphospasm.grapheditor.model.commands.RelayoutCommand
 import com.github.mdr.graphospasm.grapheditor.Plugin
@@ -32,11 +33,12 @@ class RelayoutAction(part: IWorkbenchPart) extends SelectionAction(part) {
   def calculateEnabled = true //getSelectedObjects.nonEmpty && getSelectedObjects.forall(_.isInstanceOf[NodeContainerEditPart])
 
   private def getCommand: RelayoutCommand = {
-    for (selectedObject ← getSelectedObjects) {
+    for (selectedObject ← getSelectedObjects)
       selectedObject match {
         case part: GraphDiagramEditPart ⇒ return new RelayoutCommand(part.getModel)
+        case nodeEditPart: NodeEditPart ⇒ return new RelayoutCommand(nodeEditPart.getModel.diagram)
+        case _                          ⇒
       }
-    }
     null
   }
 
