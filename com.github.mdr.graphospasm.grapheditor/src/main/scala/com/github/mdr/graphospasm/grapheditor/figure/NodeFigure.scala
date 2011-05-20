@@ -1,5 +1,7 @@
 package com.github.mdr.graphospasm.grapheditor.figure
 
+import com.github.mdr.graphospasm.grapheditor.model.NodeContentsLayouter
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import com.github.mdr.graphospasm.grapheditor.Plugin
 import com.github.mdr.graphospasm.grapheditor.ScaledGraphics
 import org.eclipse.swt.graphics.Color
@@ -39,10 +41,31 @@ class NodeFigure extends Figure {
 
   def name_=(s: String) {
     name_ = s
+    nameLabel.setText(s)
     repaint()
   }
 
   def name = name_
+
+  private var nameBounds_ : Rectangle = new Rectangle(0, 0, 0, 0)
+
+  def nameBounds = nameBounds_
+
+  def nameBounds_=(bounds: Rectangle) {
+    nameBounds_ = bounds
+    setConstraint(nameLabel, bounds)
+    invalidate()
+    repaint()
+  }
+
+  val nameLabel = new Label(name) {
+    override def paintFigure(g: Graphics) {
+      g.setForegroundColor(ColorConstants.black)
+      super.paintFigure(g)
+    }
+  }
+
+  add(nameLabel, bounds)
 
   private final var hasAttributes_ = false
 
@@ -86,12 +109,10 @@ class NodeFigure extends Figure {
     g.drawRoundRectangle(new Rectangle(contentArea.x, contentArea.y, contentArea.width - 1, contentArea.height - 1), 10, 10)
 
     // Name - attribute divider line
-    val nameDimension = FigureUtilities.getTextExtents(name, g.getFont)
-    val titleTextPos = contentArea.getTopLeft.getTranslated(new Dimension((contentArea.width - nameDimension.width) / 2, 3))
-    val lineY = titleTextPos.y + nameDimension.height + 2
+    val titleTextPos = contentArea.getTopLeft.getTranslated(new Dimension((contentArea.width - nameBounds.width) / 2, 3))
+    val lineY = titleTextPos.y + nameBounds.height + 2
     if (hasAttributes_)
       g.drawLine(contentArea.x, lineY, contentArea.getRight.x - 1, lineY)
-
     g.popState()
   }
 

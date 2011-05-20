@@ -5,7 +5,14 @@ import org.eclipse.draw2d.geometry._
 
 class Node(initialName: Name) extends Observable {
 
-  val name: NodeName = new NodeName(initialName)
+  private var name_ : Name = initialName
+
+  def name = name_
+
+  def name_=(newName: Name) {
+    name_ = newName
+    fireEvent(LocalPropertyChanged)
+  }
 
   def getAttributes = attributeNameValues
 

@@ -12,7 +12,6 @@ import org.eclipse.gef.editpolicies.NonResizableEditPolicy
 import org.eclipse.gef.commands.Command
 import org.eclipse.gef.requests.CreateRequest
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
-import com.github.mdr.graphospasm.grapheditor.model.NodeName
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.figure._
 
@@ -32,7 +31,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
 
   private def toList[T](p: (T, T)): List[T] = List(p._1, p._2)
 
-  override protected def getModelChildren: JList[AnyRef] = List(node.name) ++ node.getAttributes.flatMap(toList)
+  override protected def getModelChildren: JList[AnyRef] = node.getAttributes.flatMap(toList)
 
   override def getFigure = super.getFigure.asInstanceOf[NodeFigure]
   override def getParent = super.getParent.asInstanceOf[GraphicalEditPart]
@@ -44,28 +43,26 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
     installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateConnectionsEditPolicy)
     installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeComponentEditPolicy)
     installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new TargetFeedbackEditPolicy)
+    installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new NodeDirectEditPolicy)
   }
 
   override def refreshVisuals() {
-    relayout()
-    getFigure.name = node.name.name.simpleName
+    for (nameBounds ← layoutChildren())
+      getFigure.nameBounds = nameBounds
+    getFigure.name = node.name.simpleName
     getFigure.hasAttributes = node.getAttributes.nonEmpty
     getParent.setLayoutConstraint(this, getFigure, node.bounds)
     // getParent.refresh()
   }
 
-  private var nodeNameEditPart: NodeNameEditPart = _
   private var attributeNameEditParts: Map[AttributeName, AttributeNameEditPart] = Map()
   private var attributeValueEditParts: Map[AttributeValue, AttributeValueEditPart] = Map()
 
   private def findCurrentChildEditParts() {
-    nodeNameEditPart = null
     attributeNameEditParts = Map()
     attributeValueEditParts = Map()
     for (child ← getChildren)
       child match {
-        case editPart: NodeNameEditPart ⇒
-          this.nodeNameEditPart = editPart
         case editPart: AttributeNameEditPart ⇒
           attributeNameEditParts = attributeNameEditParts + (editPart.attributeName -> editPart)
         case editPart: AttributeValueEditPart ⇒
@@ -74,22 +71,23 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
 
   }
 
-  private def layoutChildren() {
+  /**
+   * @return bounds for name
+   */
+  def layoutChildren(): Option[Rectangle] = {
     findCurrentChildEditParts()
-    if (nodeNameEditPart != null && attributeNameEditParts.size == node.getAttributes.size && attributeValueEditParts.size == node.getAttributes.size) {
+    if (attributeNameEditParts.size == node.getAttributes.size && attributeValueEditParts.size == node.getAttributes.size)
       Utils.withFont { font ⇒
         val layoutInfo = NodeContentsLayouter.layout(node, font)
-        getFigure.setConstraint(nodeNameEditPart.getFigure, layoutInfo.nameBounds)
         for ((attributeName, bounds) ← layoutInfo.attributeNameBounds)
           getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)
         for ((attributeValue, bounds) ← layoutInfo.attributeValueBounds)
           getFigure.setConstraint(attributeValueEditParts(attributeValue).getFigure, bounds)
+        getFigure.nameBounds = layoutInfo.nameBounds
+        Some(layoutInfo.nameBounds)
       }
-    }
-  }
-
-  def relayout() {
-    layoutChildren()
+    else
+      None
   }
 
   override def activate() {
@@ -121,30 +119,16 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   def getSourceConnectionAnchor(connection: gef.ConnectionEditPart) = getFigure.connectionAnchor
 
   override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
-    def getName(e: AccessibleEvent) { e.result = node.name.name.simpleName }
+    def getName(e: AccessibleEvent) { e.result = node.name.simpleName }
   }
 
-}
-
-class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
-
-  override def getHost = super.getHost.asInstanceOf[NodeEditPart]
-
-  protected def createChangeConstraintCommand(child: EditPart, constraint: Object): Command = null
-
-  protected def getCreateCommand(request: CreateRequest): Command = {
-    val node = getHost.getModel
-    val newObjectClass = request.getNewObjectType.asInstanceOf[Class[_]]
-    if (newObjectClass == classOf[Attribute]) {
-      new AddAttributeCommand(node)
-    } else
-      null
-  }
-
-  override def createChildEditPolicy(child: EditPart) = {
-    val policy = new NonResizableEditPolicy
-    policy.setDragAllowed(false)
-    policy
+  override def performRequest(request: Request) = request.getType match {
+    case RequestConstants.REQ_OPEN | RequestConstants.REQ_DIRECT_EDIT ⇒
+      val editArea = getFigure.nameLabel.getClientArea.getCopy
+      val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure.nameLabel, editArea)
+      new RenameNodeNameEditManager(this, cellEditorLocator).show()
+    case _ ⇒
+      super.performRequest(request)
   }
 
 }

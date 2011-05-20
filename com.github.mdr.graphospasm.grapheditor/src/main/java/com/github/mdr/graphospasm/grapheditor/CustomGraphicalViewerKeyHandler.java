@@ -21,7 +21,6 @@ import org.eclipse.swt.events.KeyEvent;
 import com.github.mdr.graphospasm.grapheditor.figure.AttributeNameFigure;
 import com.github.mdr.graphospasm.grapheditor.figure.AttributeValueFigure;
 
-// Cloned to customise getNavigationPoint
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class CustomGraphicalViewerKeyHandler extends KeyHandler {
 

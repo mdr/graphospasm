@@ -11,7 +11,6 @@ object GraphEditPartFactory extends EditPartFactory {
       case graphDiagram: GraphDiagram     ⇒ new GraphDiagramEditPart(graphDiagram)
       case node: Node                     ⇒ new NodeEditPart(node)
       case connection: Connection         ⇒ new ConnectionEditPart(connection)
-      case nodeName: NodeName             ⇒ new NodeNameEditPart(nodeName)
       case attributeName: AttributeName   ⇒ new AttributeNameEditPart(attributeName)
       case attributeValue: AttributeValue ⇒ new AttributeValueEditPart(attributeValue)
     }

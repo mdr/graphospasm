@@ -23,7 +23,7 @@ abstract class AbstractNameEditPart(abstractName: AbstractName) extends NodeChil
 
   override def refreshVisuals() {
     getFigure.name = abstractName.name.simpleName
-    getParent.relayout()
+    getParent.layoutChildren()
   }
 
   protected def createEditPolicies() {

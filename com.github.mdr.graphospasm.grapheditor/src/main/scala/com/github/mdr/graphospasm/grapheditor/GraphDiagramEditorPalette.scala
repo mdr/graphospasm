@@ -1,9 +1,8 @@
 package com.github.mdr.graphospasm.grapheditor
 
+import com.github.mdr.graphospasm.grapheditor.part.NodeEditPart
 import com.github.mdr.graphospasm.grapheditor.part.AttributeNameEditPart
 import com.github.mdr.graphospasm.grapheditor.model.commands.AddAttributeCommand
-import com.github.mdr.graphospasm.grapheditor.part.NodeNameEditPart
-import com.github.mdr.graphospasm.grapheditor.part.NodeEditPart
 import org.eclipse.gef.RequestConstants
 import org.eclipse.gef.Request
 import org.eclipse.gef.EditPart
@@ -82,9 +81,7 @@ class AttributeCreationTool extends CreationTool {
     nodeEditPart.getFigure.validate()
 
     val request = new Request(RequestConstants.REQ_DIRECT_EDIT)
-    val nodeNameEditPart = editPartRegistry.get(addAttributeCommand.attributeName).asInstanceOf[AttributeNameEditPart]
-    nodeNameEditPart.performRequest(request)
-    //command.setLabel(command.getLabel() + node.getName());
+    nodeEditPart.performRequest(request)
   }
 }
 
@@ -100,9 +97,7 @@ class VertexCreationTool extends CreationTool {
     nodeEditPart.getFigure.validate()
 
     val request = new Request(RequestConstants.REQ_DIRECT_EDIT)
-    val nodeNameEditPart = editPartRegistry.get(node.name).asInstanceOf[NodeNameEditPart]
-    nodeNameEditPart.performRequest(request)
-    //command.setLabel(command.getLabel() + node.getName());
+    nodeEditPart.performRequest(request)
   }
 }
 

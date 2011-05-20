@@ -1,6 +1,5 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
-import com.github.mdr.graphospasm.grapheditor.model.NodeName
 import com.github.mdr.graphospasm.grapheditor.figure._
 import com.github.mdr.graphospasm.grapheditor.model.commands._
 

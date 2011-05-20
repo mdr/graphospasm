@@ -27,7 +27,7 @@ object GraphDiagramXmlSerializer {
     def serializeNode(node: Node): Elem = {
       val nodeId = assignIdToNode(node)
       val location = node.bounds; import location._
-      val nodeName = node.name.name
+      val nodeName = node.name
       val attributes = node.getAttributes.map { case (name, value) ⇒ makeAttribute(name, value) }
       <vertex id={ nodeId } x={ x.toString } y={ y.toString } width={ width.toString } height={ height.toString }>
         <name simpleName={ nodeName.simpleName } namespace={ nodeName.namespace }/>

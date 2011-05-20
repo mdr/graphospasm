@@ -27,7 +27,7 @@ object NodeContentsLayouter {
 
   def preferredWidth(node: Node, font: Font) = {
     implicit val f = font
-    val nameDimension = FigureUtilities.getTextExtents(node.name.name.simpleName, font)
+    val nameDimension = FigureUtilities.getTextExtents(node.name.simpleName, font)
     val nameWidth = nameDimension.width
     var preferredWidth = nameWidth + 32
     val attributeMap = node.getAttributes.toMap
@@ -46,7 +46,7 @@ object NodeContentsLayouter {
 
     implicit val f = font
 
-    val nameDimension = FigureUtilities.getTextExtents(node.name.name.simpleName, font)
+    val nameDimension = FigureUtilities.getTextExtents(node.name.simpleName, font)
     val nameX = max((contentArea.width - nameDimension.width) / 2, 0)
     val nameHeight = nameDimension.height + NAME_HEIGHT_ADJUST
     val nameWidth = min(nameDimension.width, contentArea.width)
