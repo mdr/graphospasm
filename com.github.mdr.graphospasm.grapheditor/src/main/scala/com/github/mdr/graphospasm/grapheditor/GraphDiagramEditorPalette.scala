@@ -77,11 +77,13 @@ class AttributeCreationTool extends CreationTool {
 
     val nodeEditPart = editPartRegistry.get(node).asInstanceOf[NodeEditPart]
     nodeEditPart.refreshVisuals()
+    nodeEditPart.refreshChildren()
     nodeEditPart.getParent.getFigure.validate()
     nodeEditPart.getFigure.validate()
 
     val request = new Request(RequestConstants.REQ_DIRECT_EDIT)
-    nodeEditPart.performRequest(request)
+    val attributeNameEditPart = editPartRegistry.get(addAttributeCommand.attributeName).asInstanceOf[AttributeNameEditPart]
+    attributeNameEditPart.performRequest(request)
   }
 }
 

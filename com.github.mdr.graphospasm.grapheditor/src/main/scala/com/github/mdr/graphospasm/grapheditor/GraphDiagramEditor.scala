@@ -136,25 +136,23 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     super.setInput(input)
     val file = input.asInstanceOf[IFileEditorInput].getFile
     val xml = XML.load(file.getContents)
-    diagram = GraphDiagramXmlSerializer.deserialize(xml)
+    if (file.getFileExtension == "graph")
+      diagram = GraphDiagramXmlSerializer.deserialize(xml)
+    else {
+      val importSpec = XmlImportSpec(blackList = true, directives = List())
+      val graph = new XmlImporter(importSpec).makeGraph(xml)
+      diagram = GraphDiagram.fromGraph(graph)
+      AutoLayouter.autolayoutDiagram(diagram)
+    }
     setPartName(file.getName)
   }
 
-  //  override def setInput(input: IEditorInput) {
-  //    super.setInput(input)
-  //    val file = input.asInstanceOf[IFileEditorInput].getFile()
-  //    val xml = XML.load(file.getContents)
-  //    val importSpec = XmlImportSpec(blackList = true, directives = List())
-  //    val graph = new XmlImporter(importSpec).makeGraph(xml)
-  //    diagram = GraphDiagram.fromGraph(graph)
-  //    AutoLayouter.autolayoutDiagram(diagram)
-  //    setPartName(file.getName)
-  //  }
-
   def doSave(monitor: IProgressMonitor) {
     val file = getEditorInput.asInstanceOf[IFileEditorInput].getFile
-    file.setContents(new ByteArrayInputStream(diagramAsText.getBytes), true, false, monitor)
-    getCommandStack().markSaveLocation()
+    if (file.getFileExtension == "graph") {
+      file.setContents(new ByteArrayInputStream(diagramAsText.getBytes), true, false, monitor)
+      getCommandStack().markSaveLocation()
+    }
   }
 
   private def diagramAsText: String =

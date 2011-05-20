@@ -26,6 +26,7 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
 
   protected def createEditPolicies() {
     installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new AttributeValueDirectEditPolicy)
+    installEditPolicy(EditPolicy.COMPONENT_ROLE, new AttributeValueComponentEditPolicy)
   }
 
   override def refreshVisuals() {

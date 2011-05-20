@@ -15,7 +15,7 @@ class NodeDirectEditPolicy extends DirectEditPolicy {
     val name = edit.getCellEditor.getValue.toString
     val editPart = getHost.asInstanceOf[NodeEditPart]
     val node = editPart.getModel
-    new RenameCommand(node, name)
+    new RenameNodeCommand(node, name)
   }
 
   def showCurrentEditValue(request: DirectEditRequest) {

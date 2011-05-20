@@ -8,6 +8,9 @@ import org.eclipse.gef.requests.CreateRequest
 import org.eclipse.gef.commands.Command
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
+import org.eclipse.gef.requests.ChangeBoundsRequest
+import org.eclipse.draw2d.geometry.Rectangle
+import scala.collection.JavaConversions._
 
 class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
 

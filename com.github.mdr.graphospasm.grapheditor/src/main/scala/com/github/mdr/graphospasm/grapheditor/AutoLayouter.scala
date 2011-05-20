@@ -60,7 +60,7 @@ object AutoLayouter {
 
     directedGraphLayout.visit(graph)
     for ((node, draw2DNode) ← nodeToDraw2dNodeMap) {
-      val bounds = new Rectangle(draw2DNode.x + 2, draw2DNode.y + 2, draw2DNode.width, draw2DNode.height)
+      val bounds = new Rectangle(draw2DNode.x + 2, draw2DNode.y + 2, node.width, node.height)
       node.bounds = bounds
     }
     oldLocations

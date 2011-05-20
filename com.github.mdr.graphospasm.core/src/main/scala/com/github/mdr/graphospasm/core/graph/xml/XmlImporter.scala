@@ -74,6 +74,10 @@ class XmlImporter(importSpec: XmlImportSpec) {
     def visitElem(elem: Elem): Option[MutableVertex] = {
       val elementName = getName(elem)
 
+      def same(e1: Elem, e2: Elem) = e1.label == e2.label && e1.namespace == e2.namespace
+
+      def isUnique(child: Elem) = elem.child.collect { case e: Elem ⇒ e }.count(same(_, child)) == 1
+
       if (includeElement(elementName)) {
         val vertex = graph.addVertex(rewriteElement(elementName))
         for (Attribute(attributeName, attributeValue) ← getAttributes(elem) if includeAttribute(elementName, attributeName))
@@ -82,7 +86,7 @@ class XmlImporter(importSpec: XmlImportSpec) {
           child ← elem.child
           childElement ← Some(child) collect { case e: Elem ⇒ e }
         } childElement.child.toList match {
-          case List(t: Text) if getAttributes(childElement).isEmpty ⇒
+          case List(t: Text) if getAttributes(childElement).isEmpty && isUnique(childElement) ⇒
             val childElementName = getName(childElement)
             if (includeElement(childElementName))
               vertex.setAttribute(rewriteElement(childElementName), coerceElement(childElementName, t.text))

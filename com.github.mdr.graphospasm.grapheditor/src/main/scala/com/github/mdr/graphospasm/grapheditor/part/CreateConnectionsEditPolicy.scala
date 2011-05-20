@@ -9,6 +9,11 @@ import org.eclipse.gef.requests.ReconnectRequest
 
 class CreateConnectionsEditPolicy extends GraphicalNodeEditPolicy {
 
+  protected def getConnectionCreateCommand(request: CreateConnectionRequest) = {
+    val result = new CreateConnectionCommand(getHost.getModel)
+    request.setStartCommand(result)
+    result
+  }
   protected def getConnectionCompleteCommand(request: CreateConnectionRequest) = {
     val result = request.getStartCommand.asInstanceOf[CreateConnectionCommand]
     result.setTarget(getHost.getModel)
@@ -17,14 +22,15 @@ class CreateConnectionsEditPolicy extends GraphicalNodeEditPolicy {
 
   override def getHost = super.getHost.asInstanceOf[NodeEditPart]
 
-  protected def getConnectionCreateCommand(request: CreateConnectionRequest) = {
-    val result = new CreateConnectionCommand(getHost.getModel)
-    request.setStartCommand(result)
-    result
+  protected def getReconnectTargetCommand(request: ReconnectRequest) = request.getTarget match {
+    case nodeEditPart: NodeEditPart ⇒
+      new ReconnectTargetCommand(request.getConnectionEditPart.asInstanceOf[ConnectionEditPart].getModel, nodeEditPart.getModel)
+    case _ ⇒ null
   }
 
-  protected def getReconnectTargetCommand(request: ReconnectRequest) = null
-
-  protected def getReconnectSourceCommand(request: ReconnectRequest) = null
-
+  protected def getReconnectSourceCommand(request: ReconnectRequest) = request.getTarget match {
+    case nodeEditPart: NodeEditPart ⇒
+      new ReconnectSourceCommand(request.getConnectionEditPart.asInstanceOf[ConnectionEditPart].getModel, nodeEditPart.getModel)
+    case _ ⇒ null
+  }
 }

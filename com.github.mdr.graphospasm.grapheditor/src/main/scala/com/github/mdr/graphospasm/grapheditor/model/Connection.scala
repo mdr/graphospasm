@@ -31,9 +31,18 @@ class Connection private (initialSource: Node, initialTarget: Node) {
     target_.addTargetConnection(this)
   }
 
+  var isDeleted: Boolean = false
+
   def delete() {
     source_.removeSourceConnection(this)
     target_.removeTargetConnection(this)
+    isDeleted = true
+  }
+
+  def undelete() {
+    source_.addSourceConnection(this)
+    target_.addTargetConnection(this)
+    isDeleted = false
   }
 
 }

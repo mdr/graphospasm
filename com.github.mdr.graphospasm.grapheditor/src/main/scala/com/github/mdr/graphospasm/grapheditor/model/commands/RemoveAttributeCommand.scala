@@ -10,29 +10,21 @@ import org.eclipse.gef.commands.Command
 
 class RemoveAttributeCommand(node: Node, attributeName: AttributeName) extends Command {
 
-  private var attributeValue: AttributeValue = _
+  private var oldAttributeValue: Option[AttributeValue] = None
   private var previousDimension: Option[Dimension] = None
 
   override def execute() {
-    val map = node.getAttributes.toMap
-    attributeValue = map(attributeName)
-    node.removeAttribute(attributeName)
-
-    //    Utils.withFont { font ⇒
-    //      val nodeContentsLayoutInfo = NodeContentsLayouter.layout(node, font)
-    //      if (nodeContentsLayoutInfo.minimumRequiredHeight != node.height) {
-    //        previousDimension = Some(node.size)
-    //        val newSize = node.size.getCopy
-    //        newSize.height = nodeContentsLayoutInfo.minimumRequiredHeight
-    //        node.size = newSize
-    //      }
-    //    }
-
+    val attributeMap = node.getAttributes.toMap
+    oldAttributeValue = attributeMap.get(attributeName)
+    if (oldAttributeValue.isDefined) // It's possible that the attribute has already been removed (e.g. a multiple delete of both name and value)
+      node.removeAttribute(attributeName)
   }
 
   override def undo() {
     previousDimension foreach { node.size = _ }
-    node.addAttribute(attributeName, attributeValue)
+    oldAttributeValue foreach { node.addAttribute(attributeName, _) }
+    previousDimension = None
+    oldAttributeValue = None
   }
 
 }

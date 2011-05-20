@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.github.mdr.graphospasm.feature_0.0.1.qualifier.jar" id="com.github.mdr.graphospasm.feature" version="0.0.1.qualifier"/>
+   <feature url="features/com.github.mdr.graphospasm.feature_0.0.1.qualifier.jar" id="com.github.mdr.graphospasm.feature" version="0.0.1.qualifier">
+      <category name="com.github.mdr.graphospasm.update.category"/>
+   </feature>
+   <category-def name="com.github.mdr.graphospasm.update.category" label="Graphospasm"/>
 </site>

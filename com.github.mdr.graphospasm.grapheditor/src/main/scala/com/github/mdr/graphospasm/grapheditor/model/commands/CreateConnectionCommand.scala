@@ -4,7 +4,7 @@ import org.eclipse.gef.commands.Command
 
 class CreateConnectionCommand(source: Node) extends Command {
 
-  private var connection: Connection = _
+  private var connectionOpt: Option[Connection] = None
 
   private var targetOpt: Option[Node] = None
 
@@ -13,11 +13,16 @@ class CreateConnectionCommand(source: Node) extends Command {
   override def canExecute = targetOpt.isDefined
 
   override def execute() {
-    connection = Connection.connect(source, targetOpt.get)
+    connectionOpt match {
+      case None ⇒
+        connectionOpt = Some(Connection.connect(source, targetOpt.get))
+      case Some(connection) ⇒
+        connection.undelete()
+    }
   }
 
   override def undo() {
-    connection.delete()
+    connectionOpt.get.delete()
   }
 
 }

@@ -21,8 +21,6 @@ object GraphDiagram {
         val node = new Node(vertex.name)
         for ((name, value) ← vertex.attributes)
           node.addAttribute(name, value)
-        val attributes = vertex.attributes map { case (Name(simpleName, _), value) ⇒ (simpleName, value) }
-        node.attributes = attributes
 
         val height = NodeContentsLayouter.layout(node, font).minimumRequiredHeight
         val width = NodeContentsLayouter.preferredWidth(node, font)

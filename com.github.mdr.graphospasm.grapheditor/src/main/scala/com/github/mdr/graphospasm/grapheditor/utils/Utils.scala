@@ -6,12 +6,17 @@ import org.eclipse.swt.graphics.Font
 
 object Utils {
 
+  private var font: Font = null
+
   def withFont[T](p: Font ⇒ T): T = {
-    val gc = new GC(new Shell)
-    try
-      p(gc.getFont)
-    finally
-      gc.dispose()
+    if (font == null) {
+      val gc = new GC(new Shell)
+      try
+        font = gc.getFont
+      finally
+        gc.dispose()
+    }
+    p(font)
   }
 }
 

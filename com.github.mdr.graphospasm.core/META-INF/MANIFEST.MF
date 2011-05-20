@@ -9,4 +9,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.github.mdr.graphospasm.core.graph,
  com.github.mdr.graphospasm.core.graph.mutable,
  com.github.mdr.graphospasm.core.graph.xml
-Require-Bundle: org.scala-ide.scala.library
+Require-Bundle: org.scala-ide.scala.library;bundle-version="[2.9.0,2.10.0)"

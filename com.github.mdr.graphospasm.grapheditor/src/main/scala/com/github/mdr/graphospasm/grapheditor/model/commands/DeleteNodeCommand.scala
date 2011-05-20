@@ -9,15 +9,18 @@ import org.eclipse.gef.commands.Command
 
 class DeleteNodeCommand(node: Node) extends Command {
 
-  private val diagram = node.diagram
+  private final val diagram = node.diagram
   private var priorIndex: Int = _
-  private val outgoingConnectionTargets = node.sourceConnections.map(_.target)
-  private val incomingConnectionSources = node.targetConnections.map(_.source)
+  private var outgoingConnectionTargets: List[Node] = Nil
+  private var incomingConnectionSources: List[Node] = Nil
 
   override def execute() {
     priorIndex = diagram indexOf node
     diagram.remove(node)
+
+    outgoingConnectionTargets = node.sourceConnections.map(_.target)
     node.sourceConnections foreach { _.delete() }
+    incomingConnectionSources = node.targetConnections.map(_.source)
     node.targetConnections foreach { _.delete() }
   }
 

@@ -100,6 +100,8 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
     super.deactivate()
   }
 
+  override def refreshChildren() = super.refreshChildren()
+
   def changed(event: Event) {
     refreshChildren()
     refreshVisuals()

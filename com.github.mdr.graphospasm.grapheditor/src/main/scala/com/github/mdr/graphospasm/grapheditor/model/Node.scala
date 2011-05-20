@@ -36,8 +36,6 @@ class Node(initialName: Name) extends Observable {
     (attributeName, attributeValue)
   }
 
-  private var attributes_ : Map[String, AnyRef] = Map()
-
   private var sourceConnections_ : List[Connection] = Nil
 
   private var targetConnections_ : List[Connection] = Nil
@@ -45,9 +43,6 @@ class Node(initialName: Name) extends Observable {
   private var bounds_ = new Rectangle(0, 0, 0, 0)
 
   private var diagram_ : GraphDiagram = _
-
-  def attributes_=(atts: Map[String, AnyRef]) { attributes_ = atts }
-  def attributes = attributes_
 
   def sourceConnections: List[Connection] = sourceConnections_
 
@@ -100,6 +95,14 @@ class Node(initialName: Name) extends Observable {
   def size_=(dimension: Dimension) {
     bounds_ = bounds_.getCopy.setSize(dimension)
     fireEvent(LocalPropertyChanged)
+  }
+
+  def copy: Node = {
+    val node = new Node(name)
+    node.bounds = bounds
+    for ((name, value) ← attributeNameValues)
+      node.addAttribute(name, value)
+    node
   }
 
 }
