@@ -1,5 +1,5 @@
 package com.github.mdr.graphospasm.grapheditor.model
-
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import org.eclipse.draw2d.FigureUtilities
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.swt.graphics.Font
@@ -27,7 +27,7 @@ object NodeContentsLayouter {
 
   def preferredWidth(node: Node, font: Font) = {
     implicit val f = font
-    val nameDimension = FigureUtilities.getTextExtents(node.name.simpleName, font)
+    val nameDimension = Utils.getTextExtents(node.name.simpleName)
     val nameWidth = nameDimension.width
     var preferredWidth = nameWidth + 32
     val attributeMap = node.getAttributes.toMap
@@ -46,7 +46,7 @@ object NodeContentsLayouter {
 
     implicit val f = font
 
-    val nameDimension = FigureUtilities.getTextExtents(node.name.simpleName, font)
+    val nameDimension = Utils.getTextExtents(node.name.simpleName)
     val nameX = max((contentArea.width - nameDimension.width) / 2, 0)
     val nameHeight = nameDimension.height + NAME_HEIGHT_ADJUST
     val nameWidth = min(nameDimension.width, contentArea.width)
@@ -97,12 +97,12 @@ object NodeContentsLayouter {
   }
 
   private def dimensionRequired(attributeName: AttributeName)(implicit font: Font) =
-    FigureUtilities.getTextExtents(attributeName.name.simpleName, font)
+    Utils.getTextExtents(attributeName.name.simpleName)
 
   private def widthRequired(attributeName: AttributeName)(implicit font: Font) = dimensionRequired(attributeName).width
 
   private def dimensionRequired(attributeValue: AttributeValue)(implicit font: Font) =
-    FigureUtilities.getTextExtents(attributeValue.presentationString, font)
+    Utils.getTextExtents(attributeValue.presentationString)
 
   private def widthRequired(attributeValue: AttributeValue)(implicit font: Font) = dimensionRequired(attributeValue).width
 
