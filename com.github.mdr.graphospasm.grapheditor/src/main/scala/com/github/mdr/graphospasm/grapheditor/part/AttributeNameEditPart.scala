@@ -4,7 +4,6 @@ import org.eclipse.swt.accessibility.AccessibleEvent
 import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.figure._
-
 import org.eclipse.gef.editparts._
 import org.eclipse.gef._
 import org.eclipse.gef
@@ -14,9 +13,11 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 import com.github.mdr.graphospasm.grapheditor.utils.Utils
+import org.eclipse.ui.views.properties.TextPropertyDescriptor
+import org.eclipse.ui.views.properties.IPropertySource
 
-class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildEditPart with Listener {
-
+class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildEditPart with Listener with SuspendableUpdates with IPropertySource {
+  import AttributeNameEditPart._
   setModel(attributeName)
 
   override def refreshVisuals() {
@@ -35,7 +36,10 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
   }
 
   def changed(event: Event) {
-    refreshVisuals()
+    if (updatesSuspended)
+      flagAsDirty()
+    else
+      refreshVisuals()
   }
 
   override def getFigure = super.getFigure.asInstanceOf[AttributeNameFigure]
@@ -64,5 +68,36 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
   override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
     def getName(e: AccessibleEvent) { e.result = attributeName.name.simpleName }
   }
+
+  def getEditableValue = getModel
+
+  def getPropertyDescriptors = Array(simpleNameProperty, namespaceProperty)
+
+  def getPropertyValue(id: AnyRef) =
+    if (id == simpleNameProperty.getId)
+      getModel.name.simpleName
+    else if (id == namespaceProperty.getId)
+      getModel.name.namespace
+    else
+      null
+
+  def isPropertySet(id: AnyRef) =
+    id == simpleNameProperty.getId || id == namespaceProperty.getId
+
+  def resetPropertyValue(id: AnyRef) {}
+
+  def setPropertyValue(id: AnyRef, value: AnyRef) = {
+    if (id == simpleNameProperty.getId)
+      getModel.name = getModel.name.copy(simpleName = value.toString)
+    else if (id == namespaceProperty.getId)
+      getModel.name = getModel.name.copy(namespace = value.toString)
+  }
+
+}
+
+object AttributeNameEditPart {
+
+  val simpleNameProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeName.simpleName", "Simple name")
+  val namespaceProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeName.namespace", "Namespace")
 
 }

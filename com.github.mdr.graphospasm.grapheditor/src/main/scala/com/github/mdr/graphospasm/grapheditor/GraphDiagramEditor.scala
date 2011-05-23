@@ -1,5 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor
 
+import com.github.mdr.graphospasm.grapheditor.part._
 import com.github.mdr.graphospasm.grapheditor.actions.RelayoutAction
 import scala.xml.PrettyPrinter
 import java.io.ByteArrayInputStream
@@ -33,18 +34,20 @@ import org.eclipse.draw2d.ConnectionLayer
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart
 import com.github.mdr.graphospasm.core.graph.xml._
 import com.github.mdr.graphospasm.core.graph._
-
 import com.github.mdr.graphospasm.grapheditor.part._
+import com.github.mdr.graphospasm.grapheditor.utils.Utils._
 import com.github.mdr.graphospasm.grapheditor.model._
-
 import org.eclipse.swt.graphics.GC
 import org.eclipse.gef.ui.parts._
-import org.eclipse.gef._
+import org.eclipse.gef.{ NodeEditPart ⇒ _, _ }
 import org.eclipse.core.runtime._
 import org.eclipse.ui.{ IEditorInput, IFileEditorInput, IWorkbenchPart }
 import scala.xml._
 import scala.collection.JavaConversions._
 import org.eclipse.jface.viewers.ISelection
+import org.eclipse.gef.commands.CommandStackEventListener
+import org.eclipse.gef.commands.CommandStackEvent
+import org.eclipse.jface.viewers.StructuredSelection
 
 class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
@@ -53,6 +56,15 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
   override def getPaletteRoot = new GraphDiagramEditorPalette
 
   private var diagram: GraphDiagram = _
+
+  override def createGraphicalViewer(parent: Composite) {
+    val viewer = new SuspendableSelectionsViewer
+    viewer.createControl(parent)
+    setGraphicalViewer(viewer)
+    configureGraphicalViewer()
+    hookGraphicalViewer()
+    initializeGraphicalViewer()
+  }
 
   override def configureGraphicalViewer() {
     super.configureGraphicalViewer()
@@ -71,6 +83,34 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     configureSnapToGeometry(viewer)
     customiseKeyBindings()
     setUpContextMenu()
+
+    getCommandStack.addCommandStackEventListener(new CommandStackEventListener {
+
+      private var start: Long = 0
+
+      def stackChanged(event: CommandStackEvent) {
+        if (event.isPreChangeEvent) {
+          Plugin.suspendUpdates = true
+          start = System.currentTimeMillis
+        } else {
+          Plugin.suspendUpdates = false
+          val middle = System.currentTimeMillis
+          getGraphicalViewer.suspendSelectionEvents = true
+          getGraphicalViewer.getEditPartRegistry.values.toList collect {
+            case part: EditPart with SuspendableUpdates if part.isActive && part.hasPendingUpdates ⇒
+              part.flushUpdates()
+          }
+          val end = System.currentTimeMillis
+          val modelTime = middle - start
+          val updateTime = end - middle
+          getGraphicalViewer.suspendSelectionEvents = false
+          getGraphicalViewer.fireSelectionChanged()
+          val end2 = System.currentTimeMillis
+          println("Model: " + modelTime + "ms, update: " + updateTime + "ms, sel: " + (end2 - end) + "ms")
+        }
+      }
+    })
+
   }
 
   private def setUpContextMenu() {
@@ -128,7 +168,7 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
   private final def getConnectionLayer = getRootEditPart.getLayer(LayerConstants.CONNECTION_LAYER).asInstanceOf[ConnectionLayer]
 
-  override def getGraphicalViewer = super.getGraphicalViewer.asInstanceOf[ScrollingGraphicalViewer]
+  override def getGraphicalViewer = super.getGraphicalViewer.asInstanceOf[SuspendableSelectionsViewer]
 
   private final def getRootEditPart = getGraphicalViewer.getRootEditPart.asInstanceOf[ScalableFreeformRootEditPart]
 
@@ -150,8 +190,10 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
   def doSave(monitor: IProgressMonitor) {
     val file = getEditorInput.asInstanceOf[IFileEditorInput].getFile
     if (file.getFileExtension == "graph") {
-      file.setContents(new ByteArrayInputStream(diagramAsText.getBytes), true, false, monitor)
-      getCommandStack().markSaveLocation()
+      val force = true
+      val keepHistory = true
+      file.setContents(new ByteArrayInputStream(diagramAsText.getBytes), force, keepHistory, monitor)
+      getCommandStack.markSaveLocation()
     }
   }
 
@@ -189,15 +231,16 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     //    createSelectionAction(new PasteAction(this))
     //    createSelectionAction(new CutAction(this))
     createSelectionAction(new RelayoutAction(this))
-    createSelectionAction(new MatchWidthAction(this))
-    createSelectionAction(new MatchHeightAction(this))
-    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.LEFT))
-    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.RIGHT))
-    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.TOP))
-    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.BOTTOM))
-    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.CENTER))
-    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.MIDDLE))
-
+    if (false) {
+      createSelectionAction(new MatchWidthAction(this))
+      createSelectionAction(new MatchHeightAction(this))
+      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.LEFT))
+      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.RIGHT))
+      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.TOP))
+      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.BOTTOM))
+      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.CENTER))
+      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.MIDDLE))
+    }
   }
 
   class GraphEditorOutlinePage extends ContentOutlinePage(new TreeViewer) with IAdaptable {

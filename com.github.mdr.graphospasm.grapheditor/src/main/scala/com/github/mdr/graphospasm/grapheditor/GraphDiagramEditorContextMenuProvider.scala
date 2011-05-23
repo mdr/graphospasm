@@ -43,7 +43,7 @@ class GraphDiagramEditorContextMenuProvider(viewer: EditPartViewer, actionRegist
     if (relayoutAction.isEnabled)
       menu.appendToGroup(GEFActionConstants.GROUP_REST, relayoutAction)
 
-    {
+    if (false) {
       val submenu = new MenuManager("Align")
 
       var action = actionRegistry.getAction(GEFActionConstants.ALIGN_LEFT)

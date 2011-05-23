@@ -13,6 +13,8 @@ class Plugin extends AbstractUIPlugin {
 
 object Plugin {
 
+  var suspendUpdates = false
+
   def instance = plugin
 
   private var plugin: Plugin = _

@@ -5,7 +5,6 @@ import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.figure._
-
 import org.eclipse.gef.editparts._
 import org.eclipse.gef._
 import org.eclipse.gef
@@ -14,8 +13,12 @@ import org.eclipse.draw2d.geometry._
 import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
+import org.eclipse.ui.views.properties.TextPropertyDescriptor
+import org.eclipse.ui.views.properties.IPropertySource
 
-class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChildEditPart with Listener {
+class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChildEditPart with Listener with SuspendableUpdates with IPropertySource {
+
+  import AttributeValueEditPart._
 
   setModel(attributeValue)
 
@@ -45,7 +48,10 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
   }
 
   def changed(event: Event) {
-    refreshVisuals()
+    if (updatesSuspended)
+      flagAsDirty()
+    else
+      refreshVisuals()
   }
 
   override def performRequest(request: Request) = request.getType match {
@@ -64,5 +70,36 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
   override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
     def getName(e: AccessibleEvent) { e.result = attributeValue.presentationString }
   }
+
+  def getEditableValue = getModel
+
+  def getPropertyDescriptors = Array(valueProperty, classProperty)
+
+  def getPropertyValue(id: AnyRef) =
+    if (id == valueProperty.getId)
+      getModel.presentationString
+    else if (id == classProperty.getId)
+      getModel.value match {
+        case o: AnyRef ⇒ o.getClass
+        case _         ⇒ ""
+      }
+    else
+      null
+
+  def isPropertySet(id: AnyRef) = id == valueProperty.getId || id == classProperty.getId
+
+  def resetPropertyValue(id: AnyRef) {}
+
+  def setPropertyValue(id: AnyRef, value: AnyRef) = {
+    if (id == valueProperty.getId)
+      getModel.value = value
+  }
+
+}
+
+object AttributeValueEditPart {
+
+  val valueProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeValue.value", "Value")
+  val classProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeValue.class", "Class")
 
 }

@@ -32,7 +32,7 @@ import org.eclipse.draw2d._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 
-class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditPart with Listener {
+class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditPart with Listener with SuspendableUpdates {
 
   setModel(diagram)
 
@@ -57,8 +57,12 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
   }
 
   def changed(event: Event) {
-    refreshVisuals()
-    refreshChildren()
+    if (updatesSuspended)
+      flagAsDirty()
+    else {
+      refreshVisuals()
+      refreshChildren()
+    }
   }
 
   override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {

@@ -14,7 +14,6 @@ import org.eclipse.gef.requests.CreateRequest
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.figure._
-
 import org.eclipse.gef.editparts._
 import org.eclipse.gef._
 import org.eclipse.gef
@@ -24,8 +23,11 @@ import scala.collection.JavaConversions._
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 import scala.math.{ min, max }
+import org.eclipse.ui.views.properties.TextPropertyDescriptor
+import org.eclipse.ui.views.properties.IPropertySource
 
-class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener with org.eclipse.gef.NodeEditPart {
+class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener with org.eclipse.gef.NodeEditPart with SuspendableUpdates with IPropertySource {
+  import NodeEditPart._
 
   setModel(node)
 
@@ -103,13 +105,15 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   override def refreshChildren() = super.refreshChildren()
 
   def changed(event: Event) {
-    refreshChildren()
-    refreshVisuals()
-    for (child ← getChildren) {
-      child.asInstanceOf[NodeChildEditPart].refreshVisuals()
+    if (updatesSuspended)
+      flagAsDirty()
+    else {
+      refreshChildren()
+      refreshVisuals()
+      getChildren collect { case part: NodeChildEditPart ⇒ part.refreshVisuals() }
+      refreshSourceConnections()
+      refreshTargetConnections()
     }
-    refreshSourceConnections()
-    refreshTargetConnections()
   }
 
   override protected def getModelSourceConnections = node.sourceConnections
@@ -132,5 +136,36 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
     case _ ⇒
       super.performRequest(request)
   }
+
+  def getEditableValue = node
+
+  def getPropertyDescriptors = Array(simpleNameProperty, namespaceProperty)
+
+  def getPropertyValue(id: AnyRef) =
+    if (id == simpleNameProperty.getId)
+      node.name.simpleName
+    else if (id == namespaceProperty.getId)
+      node.name.namespace
+    else
+      null
+
+  def isPropertySet(id: AnyRef) =
+    id == simpleNameProperty.getId || id == namespaceProperty.getId
+
+  def resetPropertyValue(id: AnyRef) {}
+
+  def setPropertyValue(id: AnyRef, value: AnyRef) = {
+    if (id == simpleNameProperty.getId)
+      node.name = node.name.copy(simpleName = value.toString)
+    else if (id == namespaceProperty.getId)
+      node.name = node.name.copy(namespace = value.toString)
+  }
+
+}
+
+object NodeEditPart {
+
+  val simpleNameProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.node.simpleName", "Simple name")
+  val namespaceProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.node.namespace", "Namespace")
 
 }

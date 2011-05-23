@@ -26,15 +26,19 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     addRetargetAction(new ZoomInRetargetAction)
     addRetargetAction(new ZoomOutRetargetAction)
 
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT))
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER))
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT))
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP))
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE))
-    addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM))
+    if (false) {
 
-    addRetargetAction(new MatchWidthRetargetAction)
-    addRetargetAction(new MatchHeightRetargetAction)
+      addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT))
+      addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER))
+      addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT))
+      addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP))
+      addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE))
+      addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM))
+
+      addRetargetAction(new MatchWidthRetargetAction)
+      addRetargetAction(new MatchHeightRetargetAction)
+
+    }
 
     addRetargetAction(new RelayoutRetargetAction)
     //
@@ -66,22 +70,26 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     add(getAction(ActionFactory.UNDO.getId))
     add(getAction(ActionFactory.REDO.getId))
 
-    add(new Separator())
+    if (false) {
 
-    add(getAction(GEFActionConstants.ALIGN_LEFT))
-    add(getAction(GEFActionConstants.ALIGN_CENTER))
-    add(getAction(GEFActionConstants.ALIGN_RIGHT))
+      add(new Separator())
 
-    add(new Separator)
+      add(getAction(GEFActionConstants.ALIGN_LEFT))
+      add(getAction(GEFActionConstants.ALIGN_CENTER))
+      add(getAction(GEFActionConstants.ALIGN_RIGHT))
 
-    add(getAction(GEFActionConstants.ALIGN_TOP))
-    add(getAction(GEFActionConstants.ALIGN_MIDDLE))
-    add(getAction(GEFActionConstants.ALIGN_BOTTOM))
+      add(new Separator)
 
-    add(new Separator)
+      add(getAction(GEFActionConstants.ALIGN_TOP))
+      add(getAction(GEFActionConstants.ALIGN_MIDDLE))
+      add(getAction(GEFActionConstants.ALIGN_BOTTOM))
 
-    add(getAction(GEFActionConstants.MATCH_WIDTH))
-    add(getAction(GEFActionConstants.MATCH_HEIGHT))
+      add(new Separator)
+
+      add(getAction(GEFActionConstants.MATCH_WIDTH))
+      add(getAction(GEFActionConstants.MATCH_HEIGHT))
+
+    }
 
     add(new Separator)
     //
@@ -101,9 +109,11 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     //    //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY))
     //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY))
     viewMenu.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY))
-    viewMenu.add(new Separator)
-    viewMenu.add(getAction(GEFActionConstants.MATCH_WIDTH))
-    viewMenu.add(getAction(GEFActionConstants.MATCH_HEIGHT))
+    if (false) {
+      viewMenu.add(new Separator)
+      viewMenu.add(getAction(GEFActionConstants.MATCH_WIDTH))
+      viewMenu.add(getAction(GEFActionConstants.MATCH_HEIGHT))
+    }
     menubar.insertAfter(IWorkbenchActionConstants.M_EDIT, viewMenu)
   }
 
