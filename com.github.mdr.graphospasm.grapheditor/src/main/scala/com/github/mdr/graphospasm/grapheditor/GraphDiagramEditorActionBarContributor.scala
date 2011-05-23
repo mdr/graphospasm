@@ -11,14 +11,15 @@ import org.eclipse.jface.action.IMenuManager
 import org.eclipse.ui.actions.RetargetAction
 import org.eclipse.gef.internal.GEFMessages
 import org.eclipse.draw2d.PositionConstants
+import org.eclipse.ui.PlatformUI
 
 class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
 
   override def buildActions() {
 
-    addRetargetAction(new CopyRetargetAction)
-    addRetargetAction(new PasteRetargetAction)
-    //    addRetargetAction(new CutRetargetAction)
+    addRetargetAction(ActionFactory.COPY.create(getPage.getWorkbenchWindow).asInstanceOf[RetargetAction])
+    addRetargetAction(ActionFactory.PASTE.create(getPage.getWorkbenchWindow).asInstanceOf[RetargetAction])
+    addRetargetAction(ActionFactory.CUT.create(getPage.getWorkbenchWindow).asInstanceOf[RetargetAction])
 
     addRetargetAction(new DeleteRetargetAction)
     addRetargetAction(new UndoRetargetAction)
