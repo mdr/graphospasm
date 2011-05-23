@@ -1,6 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor
 
-import com.github.mdr.graphospasm.grapheditor.actions.RelayoutAction
+import com.github.mdr.graphospasm.grapheditor.actions._
 import org.eclipse.jface.action.IAction
 import org.eclipse.jface.action.IMenuManager
 import org.eclipse.ui.actions.ActionFactory
@@ -42,6 +42,10 @@ class GraphDiagramEditorContextMenuProvider(viewer: EditPartViewer, actionRegist
     val relayoutAction = getAction(RelayoutAction.actionId)
     if (relayoutAction.isEnabled)
       menu.appendToGroup(GEFActionConstants.GROUP_REST, relayoutAction)
+
+    val addEdgeLabelAction = getAction(AddEdgeLabelAction.actionId)
+    if (addEdgeLabelAction.isEnabled)
+      menu.appendToGroup(GEFActionConstants.GROUP_REST, addEdgeLabelAction)
 
     val submenu = new MenuManager("Align")
 

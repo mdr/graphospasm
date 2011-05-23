@@ -1,4 +1,5 @@
 package com.github.mdr.graphospasm.grapheditor.model
+import com.github.mdr.graphospasm.core.graph.Name
 
 object Connection {
 
@@ -6,7 +7,16 @@ object Connection {
 
 }
 
-class Connection private (initialSource: Node, initialTarget: Node) {
+class Connection private (initialSource: Node, initialTarget: Node) extends Observable {
+
+  private var nameOpt_ : Option[Name] = None
+
+  def nameOpt = nameOpt_
+
+  def nameOpt_=(newNameOpt: Option[Name]) {
+    nameOpt_ = newNameOpt
+    fireEvent(LocalPropertyChanged)
+  }
 
   private var source_ : Node = initialSource
   private var target_ : Node = initialTarget

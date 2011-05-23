@@ -26,7 +26,7 @@ class RelayoutAction(part: IWorkbenchPart) extends SelectionAction(part) {
   import RelayoutAction._
   setText("Relayout")
   setId(actionId)
-  setToolTipText("Relayout the contents of the diagram")
+  setToolTipText("Relayout the graph")
   setImageDescriptor(Plugin.relayout16)
   setHoverImageDescriptor(getImageDescriptor)
 

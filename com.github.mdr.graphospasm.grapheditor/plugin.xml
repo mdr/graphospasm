@@ -25,5 +25,14 @@
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.github.mdr.graphospasm.grapheditor.GraphospasmPerspectiveFactory"
+            fixed="false"
+            icon="icons/graph-16.png"
+            id="com.github.mdr.graphospasm.grapheditor.perspective"
+            name="Graphospasm">
+      </perspective>
+   </extension>
 </plugin>

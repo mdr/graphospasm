@@ -229,6 +229,7 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     createSelectionAction(new PasteAction(this))
     createSelectionAction(new CutAction(this))
     createSelectionAction(new RelayoutAction(this))
+    createSelectionAction(new AddEdgeLabelAction(this))
 
     createSelectionAction(new MatchWidthAction(this))
     createSelectionAction(new MatchHeightAction(this))

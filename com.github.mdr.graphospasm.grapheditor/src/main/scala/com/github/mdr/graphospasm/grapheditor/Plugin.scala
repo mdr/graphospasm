@@ -31,6 +31,7 @@ object Plugin {
   lazy val newConnection24Descriptor = imageDescriptor("icons/connection_s24.gif")
 
   lazy val relayout16 = imageDescriptor("icons/relayout-16.png")
+  lazy val addEdgeLabel16 = imageDescriptor("icons/addEdgeLabel-16.png")
 
   val backgroundBlue = new Color(null, 200, 200, 240)
 

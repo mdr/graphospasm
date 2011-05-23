@@ -42,7 +42,7 @@ object AutoLayouter {
       val draw2dNode = new Draw2DNode(node)
       draw2dNode.width = node.width
       draw2dNode.height = node.height
-      draw2dNode.setPadding(new Insets(8, 4, 8, 4))
+      draw2dNode.setPadding(new Insets(24, 4, 24, 4))
       nodeToDraw2dNodeMap += node -> draw2dNode
       graph.nodes.asInstanceOf[ArrayList[Draw2DNode]].add(draw2dNode)
       connections = connections ++ node.allConnections

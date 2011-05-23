@@ -16,7 +16,12 @@ object GraphDiagramXmlSerializer {
       childNodes.flatMap(_.allConnections).distinct.map { connection ⇒
         val sourceId = nodeIds(connection.source).toString
         val targetId = nodeIds(connection.target).toString
-        <edge source={ sourceId } target={ targetId }/>
+        val connectionNameOpt = connection.nameOpt.map {
+          case name ⇒ <name simpleName={ name.simpleName } namespace={ name.namespace }/>
+        }.toList
+        <edge source={ sourceId } target={ targetId }>
+          { connectionNameOpt }
+        </edge>
       }
 
     def makeAttribute(attributeName: AttributeName, attributeValue: AttributeValue): Elem = {
@@ -54,10 +59,13 @@ object GraphDiagramXmlSerializer {
     var nodeIds: Map[Int, Node] = Map()
 
     def createConnections(elem: Elem, nodeIds: Map[Int, Node]) =
-      elem \ "edge" foreach { connectionElem ⇒
-        val source = nodeIds((connectionElem \ "@source").text.toInt)
-        val target = nodeIds((connectionElem \ "@target").text.toInt)
+      elem \ "edge" foreach { edgeElem ⇒
+        val source = nodeIds((edgeElem \ "@source").text.toInt)
+        val target = nodeIds((edgeElem \ "@target").text.toInt)
         val connection = Connection.connect(source, target)
+        edgeElem \ "name" foreach { nameElem ⇒
+          connection.nameOpt = Some(getName(nameElem))
+        }
       }
 
     def getLocation(nodeElem: XmlNode): Rectangle = {

@@ -1,7 +1,6 @@
 package com.github.mdr.graphospasm.grapheditor
 
-import com.github.mdr.graphospasm.grapheditor.actions.RelayoutAction
-import com.github.mdr.graphospasm.grapheditor.actions.RelayoutRetargetAction
+import com.github.mdr.graphospasm.grapheditor.actions._
 import org.eclipse.ui.IWorkbenchActionConstants
 import org.eclipse.jface.action._
 import org.eclipse.ui.actions.ActionFactory
@@ -38,6 +37,7 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     addRetargetAction(new MatchHeightRetargetAction)
 
     addRetargetAction(new RelayoutRetargetAction)
+    addRetargetAction(new AddEdgeLabelRetargetAction)
     //
     //    //    addRetargetAction(new RetargetAction(
     //    //      GEFActionConstants.TOGGLE_RULER_VISIBILITY,
@@ -90,6 +90,7 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     add(new Separator)
     //
     add(getAction(RelayoutAction.actionId))
+    add(getAction(AddEdgeLabelAction.actionId))
     //
     //    add(new Separator)
     //

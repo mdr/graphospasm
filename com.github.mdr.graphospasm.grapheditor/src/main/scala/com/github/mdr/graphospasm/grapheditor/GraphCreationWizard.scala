@@ -21,6 +21,8 @@ object GraphCreationWizard {
   private var fileCount: Int = 1
   private val DEFAULT_EXTENSION = ".graph"
 
+  val ID = "com.github.mdr.graphospasm.grapheditor.GraphCreationWizard"
+
 }
 
 class GraphCreationWizard extends Wizard with INewWizard {
