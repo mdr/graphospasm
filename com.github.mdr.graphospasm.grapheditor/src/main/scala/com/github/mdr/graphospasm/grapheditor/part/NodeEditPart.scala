@@ -36,7 +36,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   override protected def getModelChildren: JList[AnyRef] = node.getAttributes.flatMap(toList)
 
   override def getFigure = super.getFigure.asInstanceOf[NodeFigure]
-  override def getParent = super.getParent.asInstanceOf[GraphicalEditPart]
+  override def getParent = super.getParent.asInstanceOf[GraphDiagramEditPart]
   override def getModel = super.getModel.asInstanceOf[Node]
   override def createFigure = new NodeFigure
 

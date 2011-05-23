@@ -16,29 +16,25 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
 
   override def buildActions() {
 
-    //    addRetargetAction(new CopyRetargetAction)
-    //    addRetargetAction(new PasteRetargetAction)
-    //    // addRetargetAction(new CutRetargetAction)
-    //
+    addRetargetAction(new CopyRetargetAction)
+    addRetargetAction(new PasteRetargetAction)
+    //    addRetargetAction(new CutRetargetAction)
+
     addRetargetAction(new DeleteRetargetAction)
     addRetargetAction(new UndoRetargetAction)
     addRetargetAction(new RedoRetargetAction)
     addRetargetAction(new ZoomInRetargetAction)
     addRetargetAction(new ZoomOutRetargetAction)
 
-    if (false) {
+    addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT))
+    addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER))
+    addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT))
+    addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP))
+    addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE))
+    addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM))
 
-      addRetargetAction(new AlignmentRetargetAction(PositionConstants.LEFT))
-      addRetargetAction(new AlignmentRetargetAction(PositionConstants.CENTER))
-      addRetargetAction(new AlignmentRetargetAction(PositionConstants.RIGHT))
-      addRetargetAction(new AlignmentRetargetAction(PositionConstants.TOP))
-      addRetargetAction(new AlignmentRetargetAction(PositionConstants.MIDDLE))
-      addRetargetAction(new AlignmentRetargetAction(PositionConstants.BOTTOM))
-
-      addRetargetAction(new MatchWidthRetargetAction)
-      addRetargetAction(new MatchHeightRetargetAction)
-
-    }
+    addRetargetAction(new MatchWidthRetargetAction)
+    addRetargetAction(new MatchHeightRetargetAction)
 
     addRetargetAction(new RelayoutRetargetAction)
     //
@@ -58,38 +54,37 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
   def declareGlobalActionKeys {
     addGlobalActionKey(ActionFactory.PRINT.getId)
     addGlobalActionKey(ActionFactory.SELECT_ALL.getId)
-    //    addGlobalActionKey(ActionFactory.CUT.getId)
-    //    addGlobalActionKey(ActionFactory.COPY.getId)
-    //    addGlobalActionKey(ActionFactory.PASTE.getId)
+    addGlobalActionKey(ActionFactory.CUT.getId)
+    addGlobalActionKey(ActionFactory.COPY.getId)
+    addGlobalActionKey(ActionFactory.PASTE.getId)
     addGlobalActionKey(ActionFactory.DELETE.getId)
   }
 
   override def contributeToToolBar(tbm: IToolBarManager) {
     import tbm.add
+    add(getAction(ActionFactory.COPY.getId))
+    //    add(getAction(ActionFactory.CUT.getId))
+    add(getAction(ActionFactory.PASTE.getId))
     add(getAction(ActionFactory.DELETE.getId))
     add(getAction(ActionFactory.UNDO.getId))
     add(getAction(ActionFactory.REDO.getId))
 
-    if (false) {
+    add(new Separator())
 
-      add(new Separator())
+    add(getAction(GEFActionConstants.ALIGN_LEFT))
+    add(getAction(GEFActionConstants.ALIGN_CENTER))
+    add(getAction(GEFActionConstants.ALIGN_RIGHT))
 
-      add(getAction(GEFActionConstants.ALIGN_LEFT))
-      add(getAction(GEFActionConstants.ALIGN_CENTER))
-      add(getAction(GEFActionConstants.ALIGN_RIGHT))
+    add(new Separator)
 
-      add(new Separator)
+    add(getAction(GEFActionConstants.ALIGN_TOP))
+    add(getAction(GEFActionConstants.ALIGN_MIDDLE))
+    add(getAction(GEFActionConstants.ALIGN_BOTTOM))
 
-      add(getAction(GEFActionConstants.ALIGN_TOP))
-      add(getAction(GEFActionConstants.ALIGN_MIDDLE))
-      add(getAction(GEFActionConstants.ALIGN_BOTTOM))
+    add(new Separator)
 
-      add(new Separator)
-
-      add(getAction(GEFActionConstants.MATCH_WIDTH))
-      add(getAction(GEFActionConstants.MATCH_HEIGHT))
-
-    }
+    add(getAction(GEFActionConstants.MATCH_WIDTH))
+    add(getAction(GEFActionConstants.MATCH_HEIGHT))
 
     add(new Separator)
     //
@@ -109,11 +104,9 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     //    //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY))
     //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY))
     viewMenu.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY))
-    if (false) {
-      viewMenu.add(new Separator)
-      viewMenu.add(getAction(GEFActionConstants.MATCH_WIDTH))
-      viewMenu.add(getAction(GEFActionConstants.MATCH_HEIGHT))
-    }
+    viewMenu.add(new Separator)
+    viewMenu.add(getAction(GEFActionConstants.MATCH_WIDTH))
+    viewMenu.add(getAction(GEFActionConstants.MATCH_HEIGHT))
     menubar.insertAfter(IWorkbenchActionConstants.M_EDIT, viewMenu)
   }
 

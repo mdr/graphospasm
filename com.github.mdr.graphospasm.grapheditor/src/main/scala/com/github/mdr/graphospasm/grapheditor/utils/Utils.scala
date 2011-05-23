@@ -3,6 +3,8 @@ package com.github.mdr.graphospasm.grapheditor.utils
 import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.graphics.GC
 import org.eclipse.swt.graphics.Font
+import org.eclipse.gef.commands.Command
+import org.eclipse.gef.commands.CompoundCommand
 
 object Utils {
 
@@ -25,6 +27,12 @@ object Utils {
     val duration = System.currentTimeMillis - start
     println(s + ": " + duration + "ms")
     result
+  }
+
+  def compoundCommand(commands: Seq[Command]) = {
+    val compoundCommand = new CompoundCommand
+    commands.foreach(compoundCommand.add)
+    compoundCommand.unwrap
   }
 
 }

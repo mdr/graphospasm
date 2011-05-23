@@ -65,6 +65,10 @@ class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditP
     }
   }
 
+  override def refreshVisuals() {
+    getLayer(LayerConstants.CONNECTION_LAYER).asInstanceOf[ConnectionLayer].setConnectionRouter(new ShortestPathConnectionRouter(getFigure))
+  }
+
   override def getAccessibleEditPart(): AccessibleEditPart = new AccessibleGraphicalEditPart() {
     def getName(e: AccessibleEvent) { e.result = "diagram" }
   }

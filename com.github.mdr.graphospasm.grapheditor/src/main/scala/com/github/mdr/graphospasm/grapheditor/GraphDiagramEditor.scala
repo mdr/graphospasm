@@ -1,7 +1,7 @@
 package com.github.mdr.graphospasm.grapheditor
 
 import com.github.mdr.graphospasm.grapheditor.part._
-import com.github.mdr.graphospasm.grapheditor.actions.RelayoutAction
+import com.github.mdr.graphospasm.grapheditor.actions._
 import scala.xml.PrettyPrinter
 import java.io.ByteArrayInputStream
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage
@@ -77,17 +77,15 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     viewer.setContents(diagram)
 
     getEditDomain.addViewer(viewer)
-    configureConnectionRouting()
     useAntialiasingForConnections()
     configureZoom()
+    configureConnectionRouting()
     configureSnapToGeometry(viewer)
     customiseKeyBindings()
     setUpContextMenu()
 
     getCommandStack.addCommandStackEventListener(new CommandStackEventListener {
-
       private var start: Long = 0
-
       def stackChanged(event: CommandStackEvent) {
         if (event.isPreChangeEvent) {
           Plugin.suspendUpdates = true
@@ -158,7 +156,7 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
   private def useAntialiasingForConnections() {
     if ((getGraphicalViewer.getControl.getStyle & SWT.MIRRORED) == 0)
-      getConnectionLayer.setAntialias(SWT.ON)
+      getConnectionLayer.setAntialias(SWT.ON) // See also TweakedFeedbackLayer
   }
 
   override def commandStackChanged(event: EventObject) {
@@ -227,20 +225,19 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     registry.registerAction(new SelectAllAction(this))
 
     createSelectionAction(new DirectEditAction(this))
-    //    createSelectionAction(new CopyAction(this))
-    //    createSelectionAction(new PasteAction(this))
-    //    createSelectionAction(new CutAction(this))
+    createSelectionAction(new CopyAction(this))
+    createSelectionAction(new PasteAction(this))
+    createSelectionAction(new CutAction(this))
     createSelectionAction(new RelayoutAction(this))
-    if (false) {
-      createSelectionAction(new MatchWidthAction(this))
-      createSelectionAction(new MatchHeightAction(this))
-      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.LEFT))
-      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.RIGHT))
-      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.TOP))
-      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.BOTTOM))
-      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.CENTER))
-      createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.MIDDLE))
-    }
+
+    createSelectionAction(new MatchWidthAction(this))
+    createSelectionAction(new MatchHeightAction(this))
+    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.LEFT))
+    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.RIGHT))
+    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.TOP))
+    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.BOTTOM))
+    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.CENTER))
+    createSelectionAction(new AlignmentAction(workbenchPart, PositionConstants.MIDDLE))
   }
 
   class GraphEditorOutlinePage extends ContentOutlinePage(new TreeViewer) with IAdaptable {

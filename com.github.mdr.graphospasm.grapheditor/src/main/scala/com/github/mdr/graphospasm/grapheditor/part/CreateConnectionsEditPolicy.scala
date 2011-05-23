@@ -6,6 +6,9 @@ import org.eclipse.gef.commands.Command
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy
 import org.eclipse.gef.requests.CreateConnectionRequest
 import org.eclipse.gef.requests.ReconnectRequest
+import org.eclipse.gef.LayerConstants
+import org.eclipse.gef.Request
+import com.github.mdr.graphospasm.grapheditor.figure.ConnectionFigure
 
 class CreateConnectionsEditPolicy extends GraphicalNodeEditPolicy {
 
@@ -33,4 +36,9 @@ class CreateConnectionsEditPolicy extends GraphicalNodeEditPolicy {
       new ReconnectSourceCommand(request.getConnectionEditPart.asInstanceOf[ConnectionEditPart].getModel, nodeEditPart.getModel)
     case _ ⇒ null
   }
+
+  override def getFeedbackLayer = getLayer(LayerConstants.SCALED_FEEDBACK_LAYER)
+
+  override def createDummyConnection(req: Request) = new ConnectionFigure
+
 }
