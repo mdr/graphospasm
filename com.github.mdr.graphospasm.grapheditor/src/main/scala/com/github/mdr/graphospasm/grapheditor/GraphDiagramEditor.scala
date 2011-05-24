@@ -48,6 +48,7 @@ import org.eclipse.jface.viewers.ISelection
 import org.eclipse.gef.commands.CommandStackEventListener
 import org.eclipse.gef.commands.CommandStackEvent
 import org.eclipse.jface.viewers.StructuredSelection
+import com.github.mdr.graphospasm.grapheditor.rdf.RdfImporter
 
 class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
@@ -176,7 +177,11 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     val xml = XML.load(file.getContents)
     if (file.getFileExtension == "graph")
       diagram = GraphDiagramXmlSerializer.deserialize(xml)
-    else {
+    else if (file.getFileExtension == "rdf") {
+      val graph = new RdfImporter().read(file.getContents)
+      diagram = GraphDiagram.fromGraph(graph)
+      AutoLayouter.autolayoutDiagram(diagram)
+    } else {
       val importSpec = XmlImportSpec(blackList = true, directives = List())
       val graph = new XmlImporter(importSpec).makeGraph(xml)
       diagram = GraphDiagram.fromGraph(graph)

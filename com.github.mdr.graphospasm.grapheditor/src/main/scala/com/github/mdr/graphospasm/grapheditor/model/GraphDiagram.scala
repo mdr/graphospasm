@@ -28,8 +28,10 @@ object GraphDiagram {
         diagram.add(node)
         vertexToNode = vertexToNode + (vertex -> node)
       }
-      for (edge ← graph.edges)
-        Connection.connect(vertexToNode(edge.source), vertexToNode(edge.target))
+      for (edge ← graph.edges) {
+        val connection = Connection.connect(vertexToNode(edge.source), vertexToNode(edge.target))
+        connection.nameOpt = edge.nameOpt
+      }
 
       diagram
     }

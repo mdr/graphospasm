@@ -20,3 +20,10 @@ Require-Bundle: com.github.mdr.graphospasm.core,
  org.scala-ide.scala.library;bundle-version="[2.9.0,2.10.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.github.mdr.graphospasm.grapheditor.Plugin
+Bundle-ClassPath: lib/jena-2.6.4.jar,
+ .,
+ lib/iri-0.8.jar,
+ lib/log4j-1.2.13.jar,
+ lib/slf4j-api-1.5.8.jar,
+ lib/slf4j-log4j12-1.5.8.jar,
+ lib/xercesImpl-2.7.1.jar
