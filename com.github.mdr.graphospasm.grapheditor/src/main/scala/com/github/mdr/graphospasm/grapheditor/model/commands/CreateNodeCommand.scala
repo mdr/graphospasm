@@ -17,8 +17,6 @@ class CreateNodeCommand(val node: Node, location: Point, size: Dimension, graphD
 
   import CreateNodeCommand._
 
-  private final val baseName = node.name
-
   override def execute() {
     val initialLocation = new Rectangle(location, Option(size) getOrElse INITIAL_NODE_DIMENSION)
     node.bounds = initialLocation

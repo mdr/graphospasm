@@ -14,15 +14,13 @@ class CloneNodesCommand(diagram: GraphDiagram, originalNodesAndCloneLocations: M
   type CommandExecutionData = CloneNodesData
 
   def execute(data: CloneNodesData) {
-    val CloneNodesData(nodes, connections) = data
-    nodes.foreach(diagram.add)
-    connections.foreach { _.undelete() }
+    data.nodes.foreach(diagram.add)
+    data.connections.foreach { _.undelete() }
   }
 
   def undo(data: CloneNodesData) {
-    val CloneNodesData(nodes, connections) = data
-    connections.reverse.foreach { _.delete() }
-    nodes.reverse.foreach(diagram.remove)
+    data.connections.reverse.foreach { _.delete() }
+    data.nodes.reverse.foreach(diagram.remove)
   }
 
   protected def createCommandExecutionData: CloneNodesData = {

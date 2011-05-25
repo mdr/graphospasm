@@ -1,10 +1,9 @@
 package com.github.mdr.graphospasm.grapheditor.model.commands
 import com.github.mdr.graphospasm.grapheditor.model._
+import com.github.mdr.graphospasm.core.graph._
 import org.eclipse.gef.commands.Command
 
-class CreateConnectionCommand(source: Node) extends Command {
-
-  private var connectionOpt: Option[Connection] = None
+class CreateConnectionCommand(source: Node, labelOpt: Option[Name] = None) extends AbstractCommand {
 
   private var targetOpt: Option[Node] = None
 
@@ -12,17 +11,16 @@ class CreateConnectionCommand(source: Node) extends Command {
 
   override def canExecute = targetOpt.isDefined
 
-  override def execute() {
-    connectionOpt match {
-      case None ⇒
-        connectionOpt = Some(Connection.connect(source, targetOpt.get))
-      case Some(connection) ⇒
-        connection.undelete()
-    }
+  type CommandExecutionData = Connection
+
+  protected def createCommandExecutionData = Connection.create(source, targetOpt.get, labelOpt)
+
+  protected def execute(connection: Connection) {
+    connection.undelete()
   }
 
-  override def undo() {
-    connectionOpt.get.delete()
+  protected def undo(connection: Connection) {
+    connection.delete()
   }
 
 }

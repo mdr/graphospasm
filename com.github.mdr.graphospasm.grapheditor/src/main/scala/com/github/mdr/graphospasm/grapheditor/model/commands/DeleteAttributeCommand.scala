@@ -12,16 +12,15 @@ class DeleteAttributeCommand(node: Node, attributeName: AttributeName) extends A
 
   type CommandExecutionData = Option[AttributeValue]
 
-  protected def createCommandExecutionData: Option[AttributeValue] =
-    node.getAttributes.toMap.get(attributeName)
+  protected def createCommandExecutionData: Option[AttributeValue] = node.getAttributes.toMap.get(attributeName)
 
-  def execute(attributeValue: Option[AttributeValue]) {
-    if (attributeValue.isDefined) // It's possible that the attribute has already been removed (e.g. a multiple delete of both name and value)
+  def execute(attributeValueOpt: Option[AttributeValue]) {
+    if (attributeValueOpt.isDefined) // It's possible that the attribute has already been removed (e.g. a multiple delete of both name and value)
       node.removeAttribute(attributeName)
   }
 
-  def undo(oldAttributeValue: Option[AttributeValue]) {
-    oldAttributeValue foreach { node.addAttribute(attributeName, _) }
+  def undo(oldAttributeValueOpt: Option[AttributeValue]) {
+    oldAttributeValueOpt foreach { node.addAttribute(attributeName, _) }
   }
 
 }
