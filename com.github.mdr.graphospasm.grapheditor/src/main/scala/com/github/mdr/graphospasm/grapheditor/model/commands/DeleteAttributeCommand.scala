@@ -8,7 +8,7 @@ import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 
-class RemoveAttributeCommand(node: Node, attributeName: AttributeName) extends Command {
+class DeleteAttributeCommand(node: Node, attributeName: AttributeName) extends Command {
 
   private var oldAttributeValue: Option[AttributeValue] = None
   private var previousDimension: Option[Dimension] = None

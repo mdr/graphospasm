@@ -19,15 +19,7 @@ class AddAttributeCommand(val node: Node, val attributeName: AttributeName, attr
 
     node.addAttribute(attributeName, attributeValue)
     addedAnAttribute = true
-    Utils.withFont { font ⇒
-      val nodeContentsLayoutInfo = NodeContentsLayouter.layout(node, font)
-      if (node.height < nodeContentsLayoutInfo.minimumRequiredHeight) {
-        previousDimension = Some(node.size)
-        val newSize = node.size.getCopy
-        newSize.height = nodeContentsLayoutInfo.minimumRequiredHeight
-        node.size = newSize
-      }
-    }
+    previousDimension = AttributeCommandHelper.expandToFitAttributesIfNecessary(node)
   }
 
   override def undo() {

@@ -14,10 +14,10 @@ class AttributeValueComponentEditPolicy extends ComponentEditPolicy {
     super.getOrphanCommand()
   }
 
-  override protected def createDeleteCommand(deleteRequest: GroupRequest): RemoveAttributeCommand = {
+  override protected def createDeleteCommand(deleteRequest: GroupRequest): DeleteAttributeCommand = {
     val node = getHost.getParent.getModel
     node.getAttributeName(getHost.getModel) match {
-      case Some(name) ⇒ new RemoveAttributeCommand(node, name)
+      case Some(name) ⇒ new DeleteAttributeCommand(node, name)
       case None       ⇒ null
     }
   }
