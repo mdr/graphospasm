@@ -6,17 +6,17 @@ import org.eclipse.gef.commands.Command
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command;
 
-class RenameCommand(val abstractName: AbstractName, val newName: String) extends Command {
+class RenameAttributeNameCommand(val attributeName: AttributeName, val newName: String) extends Command {
 
   private var oldName: Name = _
 
   override def execute() {
-    oldName = abstractName.name
-    abstractName.name = oldName.copy(simpleName = newName)
+    oldName = attributeName.name
+    attributeName.name = oldName.copy(simpleName = newName)
   }
 
   override def undo() {
-    abstractName.name = oldName
+    attributeName.name = oldName
   }
 
 }

@@ -6,10 +6,11 @@ import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 import com.github.mdr.graphospasm.grapheditor.model._
 
-class CloneCommand(diagram: GraphDiagram, originalNodesAndCloneLocations: Map[Node, Rectangle]) extends Command {
+class CloneNodesCommand(diagram: GraphDiagram, originalNodesAndCloneLocations: Map[Node, Rectangle]) extends Command {
 
   private var addedChildren: List[Node] = Nil
 
+  // TODO: remember clones and new connections
   override def execute() {
     var originalToClone: Map[Node, Node] = Map()
     originalNodesAndCloneLocations foreach {

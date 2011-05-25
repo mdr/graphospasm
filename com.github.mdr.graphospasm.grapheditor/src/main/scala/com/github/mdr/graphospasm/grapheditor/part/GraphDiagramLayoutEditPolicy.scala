@@ -15,7 +15,7 @@ import org.eclipse.gef.requests.CreateRequest
 import org.eclipse.gef.commands.Command
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
-import com.github.mdr.graphospasm.grapheditor.model.commands.CloneCommand
+import com.github.mdr.graphospasm.grapheditor.model.commands.CloneNodesCommand
 import scala.collection.JavaConversions._
 
 object GraphDiagramLayoutEditPolicy {
@@ -50,10 +50,10 @@ class GraphDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
   }
 
   override def getCloneCommand(request: ChangeBoundsRequest): Command = {
-    val nodes: Map[Node, Rectangle] = request.getEditParts.map { part ⇒
-      val nodePart = part.asInstanceOf[NodeEditPart]
-      (nodePart.getModel, getConstraintForClone(nodePart, request).asInstanceOf[Rectangle])
+    val nodes: Map[Node, Rectangle] = request.getEditParts.collect {
+      case part: NodeEditPart ⇒ (part.getModel, getConstraintForClone(part, request).asInstanceOf[Rectangle])
     }.toMap
-    new CloneCommand(getHost.getModel, nodes)
+    new CloneNodesCommand(getHost.getModel, nodes)
   }
+
 }

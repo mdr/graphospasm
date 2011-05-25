@@ -14,6 +14,8 @@ import org.eclipse.gef.palette._
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.gef.palette._
 import org.eclipse.gef.tools._
+import com.github.mdr.graphospasm.grapheditor.model.commands.SetEdgeLabelCommand
+import com.github.mdr.graphospasm.grapheditor.part.ConnectionEditPart
 
 object GraphDiagramEditorPalette {
 
@@ -54,6 +56,12 @@ class GraphDiagramEditorPalette extends PaletteRoot {
     paletteGroup.add(entry)
   }
   {
+    val entry = new ConnectionCreationToolEntry("Edge", "Creates a new edge", new ConnectionInProgressFactory,
+      Plugin.newConnection16Descriptor, Plugin.newConnection24Descriptor)
+    entry.setId("palette.connection")
+    paletteGroup.add(entry)
+  }
+  {
     val entry = new ToolEntry("Attribute", "Creates a new attribute", Plugin.addAttribute16Descriptor, Plugin.addAttribute16Descriptor, classOf[AttributeCreationTool]) {
       setToolProperty(CreationTool.PROPERTY_CREATION_FACTORY, new AttributeFactory)
     }
@@ -61,10 +69,26 @@ class GraphDiagramEditorPalette extends PaletteRoot {
     paletteGroup.add(entry)
   }
   {
-    val entry = new ConnectionCreationToolEntry("Edge", "Creates a new edge", new ConnectionInProgressFactory,
-      Plugin.newConnection16Descriptor, Plugin.newConnection24Descriptor)
-    entry.setId("palette.connection")
+    val entry = new ToolEntry("Edge label", "Creates a new edge label", Plugin.addEdgeLabel16, Plugin.addEdgeLabel16, classOf[EdgeLabelCreationTool]) {
+      setToolProperty(CreationTool.PROPERTY_CREATION_FACTORY, new EdgeLabelFactory)
+    }
+    entry.setId("palette.attribute")
     paletteGroup.add(entry)
+  }
+
+}
+
+class EdgeLabelCreationTool extends CreationTool {
+  override def executeCommand(command: Command) {
+    super.executeCommand(command)
+    val setEdgeLabelCommand = command.asInstanceOf[SetEdgeLabelCommand]
+
+    val connection = setEdgeLabelCommand.connection
+    val editPartRegistry = getCurrentViewer.getEditPartRegistry
+    val connectionEditPart = editPartRegistry.get(connection).asInstanceOf[ConnectionEditPart]
+
+    val request = new Request(RequestConstants.REQ_DIRECT_EDIT)
+    connectionEditPart.performRequest(request)
   }
 }
 
@@ -120,5 +144,15 @@ class ConnectionInProgressFactory extends CreationFactory {
   def getNewObject = new ConnectionInProgress
 
   def getObjectType = classOf[ConnectionInProgress]
+
+}
+
+class EdgeLabel
+
+class EdgeLabelFactory extends CreationFactory {
+
+  def getNewObject = new EdgeLabel
+
+  def getObjectType = classOf[EdgeLabel]
 
 }

@@ -7,7 +7,7 @@
             class="com.github.mdr.graphospasm.grapheditor.GraphDiagramEditor"
             contributorClass="com.github.mdr.graphospasm.grapheditor.GraphDiagramEditorActionBarContributor"
             default="true"
-            extensions="graph"
+            extensions="graph,rdf"
             icon="icons/graph-16.png"
             id="com.github.mdr.graphospasm.grapheditor.GraphDiagramEditor"
             name="Graph Editor">

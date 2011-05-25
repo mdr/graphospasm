@@ -10,14 +10,15 @@ class AttributeValueComponentEditPolicy extends ComponentEditPolicy {
 
   override def getHost = super.getHost.asInstanceOf[AttributeValueEditPart]
 
-  override protected def createDeleteCommand(deleteRequest: GroupRequest): RemoveAttributeCommand = {
-    val viewer = getHost.getViewer
-    val attributeValue = getHost.getModel
-    val node = getHost.getParent.getModel
-
-    for ((name, value) ← node.getAttributes if value == attributeValue)
-      return new RemoveAttributeCommand(node, name)
-    return null
+  override def getOrphanCommand() = {
+    super.getOrphanCommand()
   }
 
+  override protected def createDeleteCommand(deleteRequest: GroupRequest): RemoveAttributeCommand = {
+    val node = getHost.getParent.getModel
+    node.getAttributeName(getHost.getModel) match {
+      case Some(name) ⇒ new RemoveAttributeCommand(node, name)
+      case None       ⇒ null
+    }
+  }
 }

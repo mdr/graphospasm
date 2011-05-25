@@ -44,7 +44,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
     installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeLayoutEditPolicy)
     installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new CreateConnectionsEditPolicy)
     installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeComponentEditPolicy)
-    installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new TargetFeedbackEditPolicy)
+    installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NodeTargetFeedbackEditPolicy)
     installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new NodeDirectEditPolicy)
   }
 

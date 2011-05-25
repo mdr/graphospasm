@@ -15,4 +15,6 @@ class AttributeValue(initialValue: AnyRef) extends Observable {
     if (value_ == null) "null"
     else value_.toString.filterNot(c ⇒ c == '\n' || c == '\r')
 
+  override def toString = getClass.getSimpleName + "(" + value_ + ")"
+
 }

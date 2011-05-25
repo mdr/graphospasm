@@ -4,6 +4,8 @@ import org.eclipse.draw2d.Label
 import org.eclipse.draw2d.ConnectionLocator
 import org.eclipse.draw2d.MidpointLocator
 import com.github.mdr.graphospasm.grapheditor.model._
+import com.github.mdr.graphospasm.core.graph._
+import com.github.mdr.graphospasm.core._
 import org.eclipse.draw2d.IFigure
 import org.eclipse.draw2d.PolylineConnection
 import org.eclipse.gef.editparts.AbstractConnectionEditPart
@@ -21,6 +23,13 @@ import org.eclipse.gef.tools.CellEditorLocator
 import org.eclipse.gef.tools.DirectEditManager
 import org.eclipse.swt.widgets.Composite
 import org.eclipse.jface.viewers.TextCellEditor
+import org.eclipse.gef.editpolicies.LayoutEditPolicy
+import org.eclipse.gef.EditPart
+import org.eclipse.gef.editpolicies.NonResizableEditPolicy
+import org.eclipse.gef.requests.CreateRequest
+import org.eclipse.gef.commands.Command
+import com.github.mdr.graphospasm.grapheditor.EdgeLabel
+import com.github.mdr.graphospasm.grapheditor.model.commands.SetEdgeLabelCommand
 
 class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditPart with Listener with SuspendableUpdates with IPropertySource {
 
@@ -36,6 +45,8 @@ class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditP
     installEditPolicy(EditPolicy.CONNECTION_ROLE, new ConnectionEditPolicy)
     installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy)
     installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ConnectionDirectEditPolicy)
+    installEditPolicy(EditPolicy.LAYOUT_ROLE, new ConnectionLayoutEditPolicy)
+    installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new ConnectionTargetFeedbackEditPolicy)
   }
 
   override def refreshVisuals() {

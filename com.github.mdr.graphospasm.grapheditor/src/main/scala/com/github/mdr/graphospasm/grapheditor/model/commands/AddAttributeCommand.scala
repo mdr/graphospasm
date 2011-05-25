@@ -8,27 +8,17 @@ import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 
-class AddAttributeCommand(val node: Node) extends Command {
+class AddAttributeCommand(val node: Node, val attributeName: AttributeName, attributeValue: AttributeValue) extends Command {
 
-  private var attributeName_ : AttributeName = _
   private var previousDimension: Option[Dimension] = None
-
-  def attributeName = attributeName_
-
+  private var addedAnAttribute: Boolean = false
   override def execute() {
-    // TODO: Ensure unique name
 
-    val existingAttributes = node.getAttributes.map(_._1.name.simpleName).toSet
+    if (node.getAttributes.contains(attributeName, attributeValue))
+      return
 
-    var candidateName = "name"
-    var i = 0
-    while (existingAttributes contains candidateName) {
-      i += 1
-      candidateName = "name" + i
-    }
-
-    val (newName, _) = node.addAttribute(Name(candidateName), "value")
-
+    node.addAttribute(attributeName, attributeValue)
+    addedAnAttribute = true
     Utils.withFont { font ⇒
       val nodeContentsLayoutInfo = NodeContentsLayouter.layout(node, font)
       if (node.height < nodeContentsLayoutInfo.minimumRequiredHeight) {
@@ -38,13 +28,14 @@ class AddAttributeCommand(val node: Node) extends Command {
         node.size = newSize
       }
     }
-    attributeName_ = newName
-
   }
 
   override def undo() {
-    previousDimension foreach { node.size = _ }
-    node.removeAttribute(attributeName_)
+    if (addedAnAttribute) {
+      addedAnAttribute = false
+      previousDimension foreach { node.size = _ }
+      node.removeAttribute(attributeName)
+    }
   }
 
 }

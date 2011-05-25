@@ -6,7 +6,7 @@ import org.eclipse.gef.commands.Command
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command;
 
-class SetEdgeLabelCommand(connection: Connection, newSimpleNameOpt: Option[String]) extends Command {
+class SetEdgeLabelCommand(val connection: Connection, newSimpleNameOpt: Option[String]) extends Command {
 
   private var oldNameOpt: Option[Name] = None
 

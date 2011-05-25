@@ -16,6 +16,13 @@ class Node(initialName: Name) extends Observable {
 
   def getAttributes = attributeNameValues
 
+  // TODO: Why Optional?
+  def getAttributeName(attributeValue: AttributeValue): Option[AttributeName] =
+    getAttributes.collect { case (name, value) if value == attributeValue ⇒ name }.headOption
+
+  def getAttributeValue(attributeName: AttributeName): AttributeValue =
+    getAttributes.collect { case (name, value) if name == attributeName ⇒ value }.head
+
   private var attributeNameValues: List[(AttributeName, AttributeValue)] = Nil
 
   def removeAttribute(attributeName: AttributeName) {
@@ -104,6 +111,8 @@ class Node(initialName: Name) extends Observable {
       node.addAttribute(name, value)
     node
   }
+
+  override def toString = getClass.getSimpleName + "(" + name_ + ")"
 
 }
 
