@@ -7,24 +7,22 @@ import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 
-class DeleteNodeCommand(node: Node) extends Command {
+class DeleteNodeCommand(node: Node) extends AbstractCommand {
 
-  private final val diagram = node.diagram
-  private var priorIndex: Int = _
-  private var oldConnections: List[Connection] = Nil
-  private var outgoingConnectionTargets: List[Node] = Nil
-  private var incomingConnectionSources: List[Node] = Nil
+  case class DeleteNodeData(priorIndex: Int, connections: List[Connection])
 
-  override def execute() {
-    oldConnections = node.allConnections.distinct
-    oldConnections.foreach { _.delete() }
-    priorIndex = diagram indexOf node
-    diagram.remove(node)
+  type CommandExecutionData = DeleteNodeData
+
+  def createCommandExecutionData = DeleteNodeData(node.diagram indexOf node, node.allConnections.distinct)
+
+  def execute(data: DeleteNodeData) {
+    data.connections.foreach { _.delete() }
+    node.diagram.remove(node)
   }
 
-  override def undo() {
-    diagram.insert(node, priorIndex)
-    oldConnections.foreach { _.undelete() }
+  def undo(data: DeleteNodeData) {
+    node.diagram.insert(node, data.priorIndex)
+    data.connections.reverse.foreach { _.undelete() }
   }
 
 }

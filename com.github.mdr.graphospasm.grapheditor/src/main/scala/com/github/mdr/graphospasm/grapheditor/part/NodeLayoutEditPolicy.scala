@@ -49,7 +49,7 @@ class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
     val commands = for {
       editPart ← getEditParts(request)
       (attributeName, attributeValue) ← getAttributeNameValue(editPart)
-    } yield new OrphanAttributeCommand(node, attributeName)
+    } yield new DeleteAttributeCommand(node, attributeName)
     compoundCommand(commands)
   }
 

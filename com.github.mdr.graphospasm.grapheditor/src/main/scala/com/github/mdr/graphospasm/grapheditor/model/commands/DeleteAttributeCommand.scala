@@ -8,23 +8,20 @@ import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 
-class DeleteAttributeCommand(node: Node, attributeName: AttributeName) extends Command {
+class DeleteAttributeCommand(node: Node, attributeName: AttributeName) extends AbstractCommand {
 
-  private var oldAttributeValue: Option[AttributeValue] = None
-  private var previousDimension: Option[Dimension] = None
+  type CommandExecutionData = Option[AttributeValue]
 
-  override def execute() {
-    val attributeMap = node.getAttributes.toMap
-    oldAttributeValue = attributeMap.get(attributeName)
-    if (oldAttributeValue.isDefined) // It's possible that the attribute has already been removed (e.g. a multiple delete of both name and value)
+  protected def createCommandExecutionData: Option[AttributeValue] =
+    node.getAttributes.toMap.get(attributeName)
+
+  def execute(attributeValue: Option[AttributeValue]) {
+    if (attributeValue.isDefined) // It's possible that the attribute has already been removed (e.g. a multiple delete of both name and value)
       node.removeAttribute(attributeName)
   }
 
-  override def undo() {
-    previousDimension foreach { node.size = _ }
+  def undo(oldAttributeValue: Option[AttributeValue]) {
     oldAttributeValue foreach { node.addAttribute(attributeName, _) }
-    previousDimension = None
-    oldAttributeValue = None
   }
 
 }
