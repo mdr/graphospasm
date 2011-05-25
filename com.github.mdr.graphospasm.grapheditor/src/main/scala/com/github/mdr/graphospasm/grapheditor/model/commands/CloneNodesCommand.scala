@@ -1,37 +1,47 @@
 package com.github.mdr.graphospasm.grapheditor.model.commands
 
+import com.github.mdr.graphospasm.core.graph._
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 import com.github.mdr.graphospasm.grapheditor.model._
 
-class CloneNodesCommand(diagram: GraphDiagram, originalNodesAndCloneLocations: Map[Node, Rectangle]) extends Command {
+case class CloneNodesData(nodes: List[Node], connections: List[Connection])
 
-  private var addedChildren: List[Node] = Nil
+class CloneNodesCommand(diagram: GraphDiagram, originalNodesAndCloneLocations: Map[Node, Rectangle]) extends AbstractCommand {
 
-  // TODO: remember clones and new connections
-  override def execute() {
+  type CommandExecutionData = CloneNodesData
+
+  def execute(data: CloneNodesData) {
+    val CloneNodesData(nodes, connections) = data
+    nodes.foreach(diagram.add)
+    connections.foreach { _.undelete() }
+  }
+
+  def undo(data: CloneNodesData) {
+    val CloneNodesData(nodes, connections) = data
+    connections.reverse.foreach { _.delete() }
+    nodes.reverse.foreach(diagram.remove)
+  }
+
+  protected def createCommandExecutionData: CloneNodesData = {
     var originalToClone: Map[Node, Node] = Map()
-    originalNodesAndCloneLocations foreach {
+    val nodes = originalNodesAndCloneLocations.toList.map {
       case (node, newLocation) ⇒
         val clonedNode = node.copy
         clonedNode.bounds = newLocation
-        diagram.add(clonedNode)
-        addedChildren ::= clonedNode
         originalToClone += node -> clonedNode
+        clonedNode
     }
 
-    for {
-      (originalNode, _) ← originalNodesAndCloneLocations
+    val connections = for {
+      (originalNode, _) ← originalNodesAndCloneLocations.toList
       connection ← originalNode.sourceConnections // Just source connections to avoid double counting
       clonedSource ← originalToClone.get(connection.source)
       clonedTarget ← originalToClone.get(connection.target)
-    } Connection.connect(clonedSource, clonedTarget)
-  }
-
-  override def undo() {
-    addedChildren.foreach(diagram.remove)
+    } yield Connection.create(clonedSource, clonedTarget, connection.nameOpt)
+    CloneNodesData(nodes, connections)
   }
 
 }

@@ -15,4 +15,6 @@ class AttributeName(initialName: Name) extends Observable {
 
   override def toString = getClass.getSimpleName + "(" + name_ + ")"
 
+  def copy = new AttributeName(name)
+
 }

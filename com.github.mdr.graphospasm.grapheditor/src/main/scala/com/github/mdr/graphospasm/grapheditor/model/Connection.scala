@@ -3,13 +3,20 @@ import com.github.mdr.graphospasm.core.graph.Name
 
 object Connection {
 
-  def connect(source: Node, target: Node): Connection = new Connection(source, target)
+  def connect(source: Node, target: Node, initialNameOpt: Option[Name] = None): Connection = {
+    val connection = new Connection(source, target, initialNameOpt)
+    connection.undelete()
+    connection
+  }
+
+  def create(source: Node, target: Node, initialNameOpt: Option[Name] = None): Connection =
+    new Connection(source, target, initialNameOpt)
 
 }
 
-class Connection private (initialSource: Node, initialTarget: Node) extends Observable {
+class Connection private (initialSource: Node, initialTarget: Node, initialNameOpt: Option[Name]) extends Observable {
 
-  private var nameOpt_ : Option[Name] = None
+  private var nameOpt_ : Option[Name] = initialNameOpt
 
   def nameOpt = nameOpt_
 
@@ -19,15 +26,8 @@ class Connection private (initialSource: Node, initialTarget: Node) extends Obse
   }
 
   private var source_ : Node = initialSource
-  private var target_ : Node = initialTarget
-
-  {
-    source_.addSourceConnection(this)
-    target_.addTargetConnection(this)
-  }
 
   def source = source_
-  def target = target_
 
   def source_=(node: Node) {
     source_.removeSourceConnection(this)
@@ -35,13 +35,17 @@ class Connection private (initialSource: Node, initialTarget: Node) extends Obse
     source_.addSourceConnection(this)
   }
 
+  private var target_ : Node = initialTarget
+
+  def target = target_
+
   def target_=(node: Node) {
     target_.removeTargetConnection(this)
     target_ = node
     target_.addTargetConnection(this)
   }
 
-  var isDeleted: Boolean = false
+  var isDeleted: Boolean = true
 
   def delete() {
     source_.removeSourceConnection(this)
@@ -54,5 +58,7 @@ class Connection private (initialSource: Node, initialTarget: Node) extends Obse
     target_.addTargetConnection(this)
     isDeleted = false
   }
+
+  def copy = Connection.create(source, target, nameOpt)
 
 }

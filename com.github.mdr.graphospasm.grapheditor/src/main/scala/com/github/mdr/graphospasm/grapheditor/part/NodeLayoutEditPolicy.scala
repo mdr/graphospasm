@@ -76,8 +76,8 @@ class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
     groupRequest.asInstanceOf[GroupRequest].getEditParts.collect { case part: EditPart ⇒ part }.toList
 
   override def getCloneCommand(request: ChangeBoundsRequest): Command = {
-    getEditParts(request).flatMap(getAttributeNameValue).distinct
-    null
+    val attributeNameAndValues = getEditParts(request).flatMap(getAttributeNameValue).distinct
+    new CloneAttributesCommand(getHost.getModel, attributeNameAndValues)
   }
 
 }

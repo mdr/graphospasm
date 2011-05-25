@@ -17,4 +17,5 @@ class AttributeValue(initialValue: AnyRef) extends Observable {
 
   override def toString = getClass.getSimpleName + "(" + value_ + ")"
 
+  def copy = new AttributeValue(value)
 }
