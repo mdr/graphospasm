@@ -15,6 +15,8 @@ import scala.collection.JavaConversions._
 import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import org.eclipse.ui.views.properties.TextPropertyDescriptor
 import org.eclipse.ui.views.properties.IPropertySource
+import PartialFunction._
+import org.eclipse.jface.viewers.ICellEditorValidator
 
 class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildEditPart with Listener with SuspendableUpdates with IPropertySource {
   import AttributeNameEditPart._
@@ -59,7 +61,7 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
         val location = getFigure.getClientArea.getCopy
         location.width = nodeContentsLayoutInfo.attributeNameColumnWidth
         val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure, location)
-        new RenameEditManager(this, cellEditorLocator).show()
+        new RenameEditManager(this, cellEditorLocator, Some(simpleNameValidator)).show()
       }
     case _ ⇒
       super.performRequest(request)
@@ -71,25 +73,54 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
 
   def getEditableValue = getModel
 
+  val simpleNameProperty = new TextPropertyDescriptor(SIMPLE_NAME_PROPERTY_ID, "Simple name")
+
+  val namespaceProperty = new TextPropertyDescriptor(NAMESPACE_PROPERTY_ID, "Namespace")
+
+  val simpleNameValidator = new ICellEditorValidator {
+    def isValid(value: AnyRef) = {
+      val candidateName = Name(value.toString, getModel.name.namespace)
+      val attributes = getParent.getModel.getAttributes
+      val colliding = attributes.exists {
+        case (attributeName, _) ⇒ attributeName != getModel && attributeName.name == candidateName
+      }
+      if (colliding)
+        "Name would collide with an existing attribute name"
+      else
+        null
+    }
+  }
+
+  simpleNameProperty.setValidator(simpleNameValidator)
+
+  namespaceProperty.setValidator(new ICellEditorValidator {
+    def isValid(value: AnyRef) = {
+      val candidateName = Name(getModel.name.simpleName, value.toString)
+      val attributes = getParent.getModel.getAttributes
+      val colliding = attributes.exists {
+        case (attributeName, _) ⇒ attributeName != getModel && attributeName.name == candidateName
+      }
+      if (colliding)
+        "Name would collide with an existing attribute name"
+      else
+        null
+    }
+  })
   def getPropertyDescriptors = Array(simpleNameProperty, namespaceProperty)
 
-  def getPropertyValue(id: AnyRef) =
-    if (id == simpleNameProperty.getId)
-      getModel.name.simpleName
-    else if (id == namespaceProperty.getId)
-      getModel.name.namespace
-    else
-      null
+  def getPropertyValue(id: AnyRef) = id match {
+    case SIMPLE_NAME_PROPERTY_ID ⇒ getModel.name.simpleName
+    case NAMESPACE_PROPERTY_ID   ⇒ getModel.name.namespace
+  }
 
-  def isPropertySet(id: AnyRef) =
-    id == simpleNameProperty.getId || id == namespaceProperty.getId
+  def isPropertySet(id: AnyRef) = cond(id) { case SIMPLE_NAME_PROPERTY_ID | NAMESPACE_PROPERTY_ID ⇒ true }
 
   def resetPropertyValue(id: AnyRef) {}
 
-  def setPropertyValue(id: AnyRef, value: AnyRef) = {
-    if (id == simpleNameProperty.getId)
+  def setPropertyValue(id: AnyRef, value: AnyRef) = id match {
+    case SIMPLE_NAME_PROPERTY_ID ⇒
       getModel.name = getModel.name.copy(simpleName = value.toString)
-    else if (id == namespaceProperty.getId)
+    case NAMESPACE_PROPERTY_ID ⇒
       getModel.name = getModel.name.copy(namespace = value.toString)
   }
 
@@ -97,7 +128,8 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
 
 object AttributeNameEditPart {
 
-  val simpleNameProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeName.simpleName", "Simple name")
-  val namespaceProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeName.namespace", "Namespace")
+  val NAMESPACE_PROPERTY_ID = "com.github.mdr.graphospasm.grapheditor.property.attributeName.namespace"
+
+  val SIMPLE_NAME_PROPERTY_ID = "com.github.mdr.graphospasm.grapheditor.property.attributeName.simpleName"
 
 }

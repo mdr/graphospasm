@@ -27,8 +27,8 @@ object Plugin {
 
   lazy val addAttribute16Descriptor = imageDescriptor("icons/addAttribute-16.png")
 
-  lazy val newConnection16Descriptor = imageDescriptor("icons/connection_s16.gif")
-  lazy val newConnection24Descriptor = imageDescriptor("icons/connection_s24.gif")
+  lazy val addEdge16Descriptor = imageDescriptor("icons/addEdge-16.png")
+  lazy val addEdgeWithLabel16Descriptor = imageDescriptor("icons/addEdgeWithLabel-16.png")
 
   lazy val relayout16 = imageDescriptor("icons/relayout-16.png")
   lazy val addEdgeLabel16 = imageDescriptor("icons/addEdgeLabel-16.png")

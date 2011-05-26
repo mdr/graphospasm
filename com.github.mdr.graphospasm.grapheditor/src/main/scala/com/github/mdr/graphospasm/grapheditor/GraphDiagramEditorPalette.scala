@@ -1,5 +1,5 @@
 package com.github.mdr.graphospasm.grapheditor
-
+import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.part.NodeEditPart
 import com.github.mdr.graphospasm.grapheditor.part.AttributeNameEditPart
 import com.github.mdr.graphospasm.grapheditor.model.commands.AddAttributeCommand
@@ -16,6 +16,7 @@ import org.eclipse.gef.palette._
 import org.eclipse.gef.tools._
 import com.github.mdr.graphospasm.grapheditor.model.commands.SetEdgeLabelCommand
 import com.github.mdr.graphospasm.grapheditor.part.ConnectionEditPart
+import com.github.mdr.graphospasm.grapheditor.model.commands.CreateConnectionCommand
 
 object GraphDiagramEditorPalette {
 
@@ -56,9 +57,20 @@ class GraphDiagramEditorPalette extends PaletteRoot {
     paletteGroup.add(entry)
   }
   {
-    val entry = new ConnectionCreationToolEntry("Edge", "Creates a new edge", new ConnectionInProgressFactory,
-      Plugin.newConnection16Descriptor, Plugin.newConnection24Descriptor)
-    entry.setId("palette.connection")
+    val entry = new ToolEntry("Edge", "Creates a new edge", Plugin.addEdge16Descriptor,
+      Plugin.addEdge16Descriptor, classOf[EdgeCreationTool]) {
+      setToolClass(classOf[EdgeCreationTool])
+      setToolProperty(CreationTool.PROPERTY_CREATION_FACTORY, new ConnectionInProgressFactory(withLabel = false))
+    }
+    entry.setId("palette.edgeWithLabel")
+    paletteGroup.add(entry)
+  }
+  {
+    val entry = new ToolEntry("Edge with label", "Creates a new edge with a label", Plugin.addEdgeWithLabel16Descriptor,
+      Plugin.addEdgeWithLabel16Descriptor, classOf[EdgeCreationTool]) {
+      setToolProperty(CreationTool.PROPERTY_CREATION_FACTORY, new ConnectionInProgressFactory(withLabel = true))
+    }
+    entry.setId("palette.edgeWithLabel")
     paletteGroup.add(entry)
   }
   {
@@ -69,7 +81,7 @@ class GraphDiagramEditorPalette extends PaletteRoot {
     paletteGroup.add(entry)
   }
   {
-    val entry = new ToolEntry("Edge label", "Creates a new edge label", Plugin.addEdgeLabel16, Plugin.addEdgeLabel16, classOf[EdgeLabelCreationTool]) {
+    val entry = new ToolEntry("Add edge label", "Creates a new edge label", Plugin.addEdgeLabel16, Plugin.addEdgeLabel16, classOf[EdgeLabelCreationTool]) {
       setToolProperty(CreationTool.PROPERTY_CREATION_FACTORY, new EdgeLabelFactory)
     }
     entry.setId("palette.attribute")
@@ -111,6 +123,20 @@ class AttributeCreationTool extends CreationTool {
   }
 }
 
+class EdgeCreationTool extends ConnectionCreationTool {
+  override def executeCommand(command: Command) {
+    super.executeCommand(command)
+    val createConnectionCommand = command.asInstanceOf[CreateConnectionCommand]
+    val connection = createConnectionCommand.connection
+
+    val editPartRegistry = getCurrentViewer.getEditPartRegistry
+    val connectionEditPart = editPartRegistry.get(connection).asInstanceOf[ConnectionEditPart]
+
+    val request = new Request(RequestConstants.REQ_DIRECT_EDIT)
+    connectionEditPart.performRequest(request)
+  }
+}
+
 class VertexCreationTool extends CreationTool {
   override def executeCommand(command: Command) {
     super.executeCommand(command)
@@ -137,11 +163,11 @@ class AttributeFactory extends CreationFactory {
 
 }
 
-class ConnectionInProgress
+class ConnectionInProgress(val labelOpt: Option[Name])
 
-class ConnectionInProgressFactory extends CreationFactory {
+class ConnectionInProgressFactory(withLabel: Boolean) extends CreationFactory {
 
-  def getNewObject = new ConnectionInProgress
+  def getNewObject = new ConnectionInProgress(if (withLabel) Some(Name("label")) else None)
 
   def getObjectType = classOf[ConnectionInProgress]
 

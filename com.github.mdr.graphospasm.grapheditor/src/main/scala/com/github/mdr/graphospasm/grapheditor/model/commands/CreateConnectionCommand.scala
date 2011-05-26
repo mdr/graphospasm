@@ -15,6 +15,8 @@ class CreateConnectionCommand(source: Node, labelOpt: Option[Name] = None) exten
 
   protected def createCommandExecutionData = Connection.create(source, targetOpt.get, labelOpt)
 
+  def connection = dataOpt.get
+
   protected def execute(connection: Connection) {
     connection.undelete()
   }

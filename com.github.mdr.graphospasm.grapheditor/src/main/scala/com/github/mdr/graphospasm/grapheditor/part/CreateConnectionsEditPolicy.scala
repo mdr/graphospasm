@@ -9,11 +9,13 @@ import org.eclipse.gef.requests.ReconnectRequest
 import org.eclipse.gef.LayerConstants
 import org.eclipse.gef.Request
 import com.github.mdr.graphospasm.grapheditor.figure.ConnectionFigure
+import com.github.mdr.graphospasm.grapheditor.ConnectionInProgress
 
 class CreateConnectionsEditPolicy extends GraphicalNodeEditPolicy {
 
   protected def getConnectionCreateCommand(request: CreateConnectionRequest) = {
-    val result = new CreateConnectionCommand(getHost.getModel)
+    val labelOpt = request.getNewObject.asInstanceOf[ConnectionInProgress].labelOpt
+    val result = new CreateConnectionCommand(getHost.getModel, labelOpt)
     request.setStartCommand(result)
     result
   }

@@ -12,7 +12,7 @@ abstract class AbstractCommand extends Command {
 
   protected def createCommandExecutionData: CommandExecutionData
 
-  private var dataOpt: Option[CommandExecutionData] = None
+  protected var dataOpt: Option[CommandExecutionData] = None
 
   override def execute() = dataOpt match {
     case Some(data) ⇒

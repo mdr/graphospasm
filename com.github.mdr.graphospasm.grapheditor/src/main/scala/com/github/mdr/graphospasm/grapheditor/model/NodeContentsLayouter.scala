@@ -4,6 +4,7 @@ import org.eclipse.draw2d.FigureUtilities
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.swt.graphics.Font
 import scala.math.{ max, min }
+import org.eclipse.draw2d.geometry.Dimension
 
 case class NodeContentsLayoutInfo(
   nameBounds: Rectangle,
@@ -24,6 +25,7 @@ object NodeContentsLayouter {
   private final val NAME_HEIGHT_ADJUST = 4
   private final val RIGHT_PADDING = 4
   private final val BOTTOM_PADDING = 4
+  private val MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT = new Dimension(10, 0)
 
   def preferredWidth(node: Node, font: Font) = {
     implicit val f = font
@@ -102,7 +104,7 @@ object NodeContentsLayouter {
   private def widthRequired(attributeName: AttributeName)(implicit font: Font) = dimensionRequired(attributeName).width
 
   private def dimensionRequired(attributeValue: AttributeValue)(implicit font: Font) =
-    Utils.getTextExtents(attributeValue.presentationString)
+    Utils.getTextExtents(attributeValue.presentationString).getUnioned(MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT)
 
   private def widthRequired(attributeValue: AttributeValue)(implicit font: Font) = dimensionRequired(attributeValue).width
 

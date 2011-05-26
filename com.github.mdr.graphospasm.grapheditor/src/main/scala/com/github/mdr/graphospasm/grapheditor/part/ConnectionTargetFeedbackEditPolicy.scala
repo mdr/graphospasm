@@ -11,9 +11,7 @@ import org.eclipse.gef.RequestConstants._
 import org.eclipse.gef.editpolicies.GraphicalEditPolicy
 import PartialFunction._
 import org.eclipse.gef.requests.CreateRequest
-import com.github.mdr.graphospasm.grapheditor.ConnectionInProgress
-import com.github.mdr.graphospasm.grapheditor.Attribute
-import com.github.mdr.graphospasm.grapheditor.EdgeLabel
+import com.github.mdr.graphospasm.grapheditor._
 
 class ConnectionTargetFeedbackEditPolicy extends GraphicalEditPolicy {
 

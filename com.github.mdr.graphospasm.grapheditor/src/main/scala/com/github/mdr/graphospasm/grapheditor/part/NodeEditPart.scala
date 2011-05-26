@@ -166,6 +166,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
 object NodeEditPart {
 
   val simpleNameProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.node.simpleName", "Simple name")
+
   val namespaceProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.node.namespace", "Namespace")
 
 }
