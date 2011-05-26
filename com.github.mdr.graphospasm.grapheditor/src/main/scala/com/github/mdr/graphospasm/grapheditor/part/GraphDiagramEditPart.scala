@@ -15,7 +15,6 @@ import org.eclipse.gef.editpolicies.SnapFeedbackPolicy
 import com.github.mdr.graphospasm.grapheditor.figure.GraphDiagramFigure
 import com.github.mdr.graphospasm.grapheditor.model._
 import com.github.mdr.graphospasm.grapheditor.model.commands._
-
 import org.eclipse.swt.SWT
 import org.eclipse.gef.LayerConstants
 import org.eclipse.gef.requests.CreateRequest
@@ -24,15 +23,23 @@ import org.eclipse.gef.commands.Command
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
 import org.eclipse.gef.EditPolicy
-
 import org.eclipse.swt.accessibility._
 import org.eclipse.gef.editparts._
 import org.eclipse.draw2d._
-
 import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
+import com.github.mdr.graphospasm.grapheditor.namespace.SimpleNamespacePrefixManager
+import com.github.mdr.graphospasm.grapheditor.namespace.NamespacePrefixManager
+import com.github.mdr.graphospasm.grapheditor.actions.ToggleNamespacesAction
 
 class GraphDiagramEditPart(diagram: GraphDiagram) extends AbstractGraphicalEditPart with Listener with SuspendableUpdates {
+
+  val namespacePrefixManager: NamespacePrefixManager = new SimpleNamespacePrefixManager
+  //  setShowNamespaces(getViewer.getProperty(ToggleNamespacesAction.property).asInstanceOf[java.lang.Boolean])
+
+  def setShowNamespaces(showNamespaces: Boolean) {
+    namespacePrefixManager.setShowNamespaces(showNamespaces)
+  }
 
   setModel(diagram)
 

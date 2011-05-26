@@ -49,6 +49,9 @@ import org.eclipse.gef.commands.CommandStackEventListener
 import org.eclipse.gef.commands.CommandStackEvent
 import org.eclipse.jface.viewers.StructuredSelection
 import com.github.mdr.graphospasm.grapheditor.rdf.RdfImporter
+import java.beans.PropertyChangeListener
+import java.beans.PropertyChangeEvent
+import org.eclipse.ui.actions.ActionFactory
 
 class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
 
@@ -84,6 +87,24 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     configureSnapToGeometry(viewer)
     customiseKeyBindings()
     setUpContextMenu()
+
+    getGraphicalViewer.addPropertyChangeListener(new PropertyChangeListener() {
+      def propertyChange(evt: PropertyChangeEvent) {
+        if (evt.getPropertyName == ToggleNamespacesAction.property) {
+          val editPartRegistry = getGraphicalViewer.getEditPartRegistry
+          val diagramEditPart = editPartRegistry.get(diagram).asInstanceOf[GraphDiagramEditPart]
+          val showNamespaces = evt.getNewValue.asInstanceOf[java.lang.Boolean]
+          diagramEditPart.setShowNamespaces(showNamespaces)
+          for (editPart ← editPartRegistry.values) {
+            editPart.asInstanceOf[EditPart].refresh()
+          }
+        }
+      }
+
+    })
+    val editPartRegistry = getGraphicalViewer.getEditPartRegistry
+    val diagramEditPart = editPartRegistry.get(diagram).asInstanceOf[GraphDiagramEditPart]
+    diagramEditPart.setShowNamespaces(false)
 
     getCommandStack.addCommandStackEventListener(new CommandStackEventListener {
       private var start: Long = 0
@@ -221,6 +242,9 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     super.createActions()
     val registry = getActionRegistry()
 
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=330165
+    registry.removeAction(registry.getAction(ActionFactory.PRINT.getId))
+
     def createSelectionAction(action: SelectionAction) = {
       registry.registerAction(action)
       getSelectionActions.asInstanceOf[java.util.List[String]].add(action.getId)
@@ -238,6 +262,7 @@ class GraphDiagramEditor extends GraphicalEditorWithFlyoutPalette {
     createSelectionAction(new AddEdgeLabelAction(this))
     createSelectionAction(new RemoveEdgeLabelAction(this))
     createSelectionAction(new ConvertAttributeValueToIntegerAction(this))
+    registry.registerAction(new ToggleNamespacesAction(this))
 
     createSelectionAction(new MatchWidthAction(this))
     createSelectionAction(new MatchHeightAction(this))

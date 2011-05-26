@@ -50,7 +50,8 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   override def refreshVisuals() {
     for (nameBounds ← layoutChildren())
       getFigure.nameBounds = nameBounds
-    getFigure.name = node.name.simpleName
+    val nodeName = node.name
+    getFigure.name = getParent.namespacePrefixManager.getDisplayName(nodeName)
     getFigure.hasAttributes = node.getAttributes.nonEmpty
     getParent.setLayoutConstraint(this, getFigure, node.bounds)
     // getParent.refresh()
@@ -79,7 +80,7 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
     findCurrentChildEditParts()
     if (attributeNameEditParts.size == node.getAttributes.size && attributeValueEditParts.size == node.getAttributes.size)
       Utils.withFont { font ⇒
-        val layoutInfo = NodeContentsLayouter.layout(node, font)
+        val layoutInfo = NodeContentsLayouter.layout(node, font, getParent.namespacePrefixManager)
         for ((attributeName, bounds) ← layoutInfo.attributeNameBounds)
           getFigure.setConstraint(attributeNameEditParts(attributeName).getFigure, bounds)
         for ((attributeValue, bounds) ← layoutInfo.attributeValueBounds)

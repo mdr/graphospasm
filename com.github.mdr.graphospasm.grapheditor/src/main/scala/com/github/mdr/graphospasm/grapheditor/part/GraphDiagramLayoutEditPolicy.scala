@@ -1,11 +1,9 @@
 package com.github.mdr.graphospasm.grapheditor.part
 
-import com.github.mdr.graphospasm.grapheditor.model.NodeContentsLayouter
-import com.github.mdr.graphospasm.grapheditor.utils.Utils
-import com.github.mdr.graphospasm.grapheditor.model.commands.MoveNodeCommand
-import com.github.mdr.graphospasm.grapheditor.model.commands.CreateNodeCommand
-import com.github.mdr.graphospasm.grapheditor.model.Node
 import scala.collection.JavaConversions._
+import com.github.mdr.graphospasm.grapheditor.utils.Utils
+import com.github.mdr.graphospasm.grapheditor.model.commands._
+import com.github.mdr.graphospasm.grapheditor.model.Node
 import org.eclipse.draw2d.geometry.Dimension
 import org.eclipse.gef.Request
 import org.eclipse.gef.requests.ChangeBoundsRequest
@@ -15,7 +13,6 @@ import org.eclipse.gef.requests.CreateRequest
 import org.eclipse.gef.commands.Command
 import org.eclipse.gef.EditPart
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy
-import com.github.mdr.graphospasm.grapheditor.model.commands.CloneNodesCommand
 import scala.collection.JavaConversions._
 
 object GraphDiagramLayoutEditPolicy {

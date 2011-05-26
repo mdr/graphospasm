@@ -25,9 +25,10 @@ class RenameNodeNameEditManager(source: GraphicalEditPart, locator: CellEditorLo
 
   override def createCellEditorOn(composite: Composite) = new TextCellEditor(composite /*, SWT.MULTI | SWT.WRAP */ )
 
+  override def getEditPart = super.getEditPart.asInstanceOf[NodeEditPart]
+
   override def initCellEditor() {
-    val figure = getEditPart.getFigure.asInstanceOf[NodeFigure]
-    getCellEditor.setValue(figure.name)
+    getCellEditor.setValue(getEditPart.getModel.name.simpleName)
   }
 
 }

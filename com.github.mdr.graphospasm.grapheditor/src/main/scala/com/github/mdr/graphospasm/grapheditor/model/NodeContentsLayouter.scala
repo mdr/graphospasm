@@ -1,10 +1,12 @@
 package com.github.mdr.graphospasm.grapheditor.model
+import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import org.eclipse.draw2d.FigureUtilities
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.swt.graphics.Font
 import scala.math.{ max, min }
 import org.eclipse.draw2d.geometry.Dimension
+import com.github.mdr.graphospasm.grapheditor.namespace.NamespacePrefixManager
 
 case class NodeContentsLayoutInfo(
   nameBounds: Rectangle,
@@ -27,8 +29,9 @@ object NodeContentsLayouter {
   private final val BOTTOM_PADDING = 4
   private final val MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT = new Dimension(10, 0)
 
-  def preferredWidth(node: Node, font: Font) = {
+  def preferredWidth(node: Node, font: Font, namespacePrefixManager: NamespacePrefixManager = NoNamespacePrefixManager) = {
     implicit val f = font
+    implicit val npm = namespacePrefixManager
     val nameDimension = Utils.getTextExtents(node.name.simpleName)
     val nameWidth = nameDimension.width
     var preferredWidth = nameWidth + 32
@@ -43,12 +46,24 @@ object NodeContentsLayouter {
     preferredWidth
   }
 
-  def layout(node: Node, font: Font): NodeContentsLayoutInfo = {
+  object NoNamespacePrefixManager extends NamespacePrefixManager {
+
+    def getPrefix(name: Name): String = ""
+
+    def getDisplayName(name: Name): String = name.simpleName
+
+    def registerPrefix(namespace: String, prefix: String) {}
+
+    def setShowNamespaces(showNamespaces: Boolean) {}
+
+  }
+
+  def layout(node: Node, font: Font, namespacePrefixManager: NamespacePrefixManager = NoNamespacePrefixManager): NodeContentsLayoutInfo = {
     val contentArea = node.bounds.getResized(-SHADOW_SIZE, -SHADOW_SIZE)
 
     implicit val f = font
-
-    val nameDimension = Utils.getTextExtents(node.name.simpleName)
+    implicit val npm = namespacePrefixManager
+    val nameDimension = Utils.getTextExtents(namespacePrefixManager.getDisplayName(node.name))
     val nameX = max((contentArea.width - nameDimension.width) / 2, 0)
     val nameHeight = nameDimension.height + NAME_HEIGHT_ADJUST
     val nameWidth = min(nameDimension.width, contentArea.width)
@@ -98,18 +113,18 @@ object NodeContentsLayouter {
     NodeContentsLayoutInfo(nameBounds, attributeNameBounds, attributeValueBounds, minimumRequiredWidth, minimumRequiredHeight, attributeNameColumnWidth, attributeValueColumnWidth)
   }
 
-  private def dimensionRequired(attributeName: AttributeName)(implicit font: Font) =
+  private def dimensionRequired(attributeName: AttributeName)(implicit font: Font, namespacePrefixManager: NamespacePrefixManager) =
     Utils.getTextExtents(attributeName.name.simpleName)
 
-  private def widthRequired(attributeName: AttributeName)(implicit font: Font) = dimensionRequired(attributeName).width
+  private def widthRequired(attributeName: AttributeName)(implicit font: Font, namespacePrefixManager: NamespacePrefixManager) = dimensionRequired(attributeName).width
 
-  private def dimensionRequired(attributeValue: AttributeValue)(implicit font: Font) = {
+  private def dimensionRequired(attributeValue: AttributeValue)(implicit font: Font, namespacePrefixManager: NamespacePrefixManager) = {
     var basic = Utils.getTextExtents(attributeValue.presentationString)
     if (attributeValue.value.isInstanceOf[java.lang.Integer])
       basic = basic.getExpanded(16, 0)
     basic.getUnioned(MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT)
   }
 
-  private def widthRequired(attributeValue: AttributeValue)(implicit font: Font) = dimensionRequired(attributeValue).width
+  private def widthRequired(attributeValue: AttributeValue)(implicit font: Font, namespacePrefixManager: NamespacePrefixManager) = dimensionRequired(attributeValue).width
 
 }

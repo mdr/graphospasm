@@ -47,8 +47,10 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
       GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY,
       GEFMessages.ToggleSnapToGeometry_Label, IAction.AS_CHECK_BOX))
     //
-    //    addRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY,
-    //      GEFMessages.ToggleGrid_Label, IAction.AS_CHECK_BOX))
+
+    addRetargetAction(new RetargetAction(ToggleNamespacesAction.actionId, "Toggle namespaces", IAction.AS_CHECK_BOX))
+    //      addRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY,
+    //          GEFMessages.ToggleGrid_Label, IAction.AS_CHECK_BOX))
 
   }
 
@@ -102,7 +104,8 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     viewMenu.add(getAction(GEFActionConstants.ZOOM_IN))
     viewMenu.add(getAction(GEFActionConstants.ZOOM_OUT))
     viewMenu.add(new Separator)
-    //    //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY))
+    viewMenu.add(getAction(ToggleNamespacesAction.actionId))
+    //            viewMenu.add(getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY))
     //    viewMenu.add(getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY))
     viewMenu.add(getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY))
     viewMenu.add(new Separator)

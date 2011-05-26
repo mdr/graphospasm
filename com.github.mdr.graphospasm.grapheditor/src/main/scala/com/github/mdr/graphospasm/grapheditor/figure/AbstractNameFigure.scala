@@ -8,12 +8,15 @@ import org.eclipse.draw2d.Label
 class AbstractNameFigure extends Label {
 
   setLabelAlignment(PositionConstants.LEFT)
-
   private var name_ : String = _
+
+  private val toolTipLabel = new Label
+  setToolTip(toolTipLabel)
 
   def name_=(name: String) {
     name_ = name
     setText(name)
+    toolTipLabel.setText(name)
     repaint()
   }
 
