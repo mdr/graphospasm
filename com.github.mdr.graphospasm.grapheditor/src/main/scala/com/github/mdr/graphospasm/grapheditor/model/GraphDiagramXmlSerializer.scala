@@ -26,7 +26,8 @@ object GraphDiagramXmlSerializer {
 
     def makeAttribute(attributeName: AttributeName, attributeValue: AttributeValue): Elem = {
       val name = attributeName.name
-      <attribute simpleName={ name.simpleName } namespace={ name.namespace }>{ attributeValue.value }</attribute>
+      val type_ = attributeValue.value.getClass.getName
+      <attribute simpleName={ name.simpleName } namespace={ name.namespace } type={ type_ }>{ attributeValue.value }</attribute>
     }
 
     def serializeNode(node: Node): Elem = {
@@ -84,7 +85,11 @@ object GraphDiagramXmlSerializer {
 
     def getAttribute(elem: XmlNode): (Name, AnyRef) = {
       val name = getName(elem)
-      val value = elem.text
+      val type_ = (elem \ "@type").text
+      val value = if (type_ == classOf[java.lang.Integer].getName) {
+        Integer.parseInt(elem.text).asInstanceOf[AnyRef]
+      } else
+        elem.text
       (name, value)
     }
 

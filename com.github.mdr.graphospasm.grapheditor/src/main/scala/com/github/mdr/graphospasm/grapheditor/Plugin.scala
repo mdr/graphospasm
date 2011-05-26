@@ -32,6 +32,7 @@ object Plugin {
 
   lazy val relayout16 = imageDescriptor("icons/relayout-16.png")
   lazy val addEdgeLabel16 = imageDescriptor("icons/addEdgeLabel-16.png")
+  lazy val int = imageDescriptor("icons/int.png")
 
   val backgroundBlue = new Color(null, 200, 200, 240)
 

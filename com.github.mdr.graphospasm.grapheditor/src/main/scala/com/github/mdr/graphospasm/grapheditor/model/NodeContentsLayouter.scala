@@ -25,7 +25,7 @@ object NodeContentsLayouter {
   private final val NAME_HEIGHT_ADJUST = 4
   private final val RIGHT_PADDING = 4
   private final val BOTTOM_PADDING = 4
-  private val MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT = new Dimension(10, 0)
+  private final val MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT = new Dimension(10, 0)
 
   def preferredWidth(node: Node, font: Font) = {
     implicit val f = font
@@ -103,8 +103,12 @@ object NodeContentsLayouter {
 
   private def widthRequired(attributeName: AttributeName)(implicit font: Font) = dimensionRequired(attributeName).width
 
-  private def dimensionRequired(attributeValue: AttributeValue)(implicit font: Font) =
-    Utils.getTextExtents(attributeValue.presentationString).getUnioned(MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT)
+  private def dimensionRequired(attributeValue: AttributeValue)(implicit font: Font) = {
+    var basic = Utils.getTextExtents(attributeValue.presentationString)
+    if (attributeValue.value.isInstanceOf[java.lang.Integer])
+      basic = basic.getExpanded(16, 0)
+    basic.getUnioned(MINIMUM_ATTRIBUTE_VALUE_WIDTH_REQUIREMENT)
+  }
 
   private def widthRequired(attributeValue: AttributeValue)(implicit font: Font) = dimensionRequired(attributeValue).width
 

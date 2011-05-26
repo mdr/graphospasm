@@ -51,9 +51,16 @@ class GraphDiagramEditorContextMenuProvider(viewer: EditPartViewer, actionRegist
     if (addEdgeLabelAction.isEnabled)
       menu.appendToGroup(GEFActionConstants.GROUP_REST, addEdgeLabelAction)
 
-    val removeEdgeLabelAction = getAction(RemoveEdgeLabelAction.actionId)
-    if (removeEdgeLabelAction.isEnabled)
-      menu.appendToGroup(GEFActionConstants.GROUP_REST, removeEdgeLabelAction)
+    {
+      val action = getAction(RemoveEdgeLabelAction.actionId)
+      if (action.isEnabled)
+        menu.appendToGroup(GEFActionConstants.GROUP_REST, action)
+    }
+    {
+      val action = getAction(ConvertAttributeValueToIntegerAction.actionId)
+      if (action.isEnabled)
+        menu.appendToGroup(GEFActionConstants.GROUP_REST, action)
+    }
 
     val submenu = new MenuManager("Align")
 

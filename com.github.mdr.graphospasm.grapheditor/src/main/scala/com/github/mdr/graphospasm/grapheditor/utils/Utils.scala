@@ -12,6 +12,9 @@ import org.eclipse.draw2d.geometry.Dimension
 
 object Utils {
 
+  def parseInt(s: String): Option[Int] =
+    try Some(Integer.parseInt(s)) catch { case _ ⇒ None }
+
   private val textExtentsCache = new WeakHashMap[String, Dimension]
 
   def getTextExtents(s: String) =
