@@ -67,7 +67,7 @@ class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditP
   override def performRequest(request: Request) = request.getType match {
     case RequestConstants.REQ_OPEN | RequestConstants.REQ_DIRECT_EDIT ⇒
       Utils.withFont { font ⇒
-        val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure, getFigure.label.getBounds)
+        val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure, getFigure.label.getClientArea)
         new ConnectionDirectEditManager(this, cellEditorLocator).show()
       }
     case _ ⇒

@@ -44,6 +44,7 @@ class AddEdgeLabelAction(part: IWorkbenchPart) extends SelectionAction(part) {
 
     execute(command)
 
+    connectionEditPart.getFigure.validate()
     connectionEditPart.performRequest(new Request(RequestConstants.REQ_DIRECT_EDIT))
   }
 

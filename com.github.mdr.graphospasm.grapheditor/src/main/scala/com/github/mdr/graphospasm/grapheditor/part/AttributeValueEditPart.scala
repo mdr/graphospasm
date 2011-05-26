@@ -15,6 +15,7 @@ import java.util.{ List ⇒ JList }
 import scala.collection.JavaConversions._
 import org.eclipse.ui.views.properties.TextPropertyDescriptor
 import org.eclipse.ui.views.properties.IPropertySource
+import org.eclipse.ui.views.properties.PropertyDescriptor
 
 class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChildEditPart with Listener with SuspendableUpdates with IPropertySource {
 
@@ -100,6 +101,7 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
 object AttributeValueEditPart {
 
   val valueProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeValue.value", "Value")
-  val classProperty = new TextPropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeValue.class", "Class")
+
+  val classProperty = new PropertyDescriptor("com.github.mdr.graphospasm.grapheditor.property.attributeValue.class", "Class")
 
 }

@@ -39,39 +39,35 @@ class PasteAction(part: IWorkbenchPart) extends SelectionAction(part) {
   }
 
   override def run() {
-    for (graphDiagram ← getSelectedDiagram)
-      Clipboard.getDefault.getContents match {
-        case ListOfNodes(nodes) ⇒
-          var newNodes: List[Node] = Nil
-          val commands = nodes.map { node ⇒
-            val newNode = node.copy
-            newNodes ::= newNode
-            new CreateNodeCommand(newNode, node.bounds.getTopLeft.getTranslated(6, 6), node.size, graphDiagram)
-          }
-          execute(compoundCommand(commands))
-          val viewer = getSelectedObjects.get(0).asInstanceOf[EditPart].getViewer
-          val editPartRegistry = viewer.getEditPartRegistry
-          viewer.deselectAll()
-          viewer.flush()
-          newNodes.map(editPartRegistry.get(_).asInstanceOf[EditPart]).foreach(viewer.appendSelection)
+    for {
+      graphDiagram ← getSelectedDiagram
+      NodesAndConnections(nodes, connections) ← getClipboardNodesAndConnections
+    } {
+
+      var originalToClone: Map[Node, Node] = Map()
+      val createNodeCommands = nodes.map { node ⇒
+        val clonedNode = node.copy
+        originalToClone += node -> clonedNode
+        new CreateNodeCommand(clonedNode, node.bounds.getTopLeft.getTranslated(6, 6), node.size, graphDiagram)
       }
-  }
+      val createConnectionCommands = connections.map { c ⇒
+        val command = new CreateConnectionCommand(originalToClone(c.source), c.nameOpt)
+        command.setTarget(originalToClone(c.target))
+        command
+      }
+      execute(compoundCommand(createNodeCommands ++ createConnectionCommands))
 
-  object ListOfNodes {
-
-    def unapply(obj: AnyRef): Option[List[Node]] = obj match {
-      case Nil | _ :: _ ⇒
-        val xs = obj.asInstanceOf[List[AnyRef]]
-        if (xs forall { _.isInstanceOf[Node] })
-          Some(xs map { _.asInstanceOf[Node] })
-        else
-          None
-      case _ ⇒ None
+      val viewer = getSelectedObjects.get(0).asInstanceOf[EditPart].getViewer
+      viewer.deselectAll()
+      viewer.flush()
+      val editPartRegistry = viewer.getEditPartRegistry
+      originalToClone.values.map(editPartRegistry.get(_).asInstanceOf[EditPart]).foreach(viewer.appendSelection)
     }
-
   }
 
-  def calculateEnabled = cond(Clipboard.getDefault.getContents) { case ListOfNodes(nodes) ⇒ true }
+  def getClipboardNodesAndConnections = condOpt(Clipboard.getDefault.getContents) { case nodesAndConnections: NodesAndConnections ⇒ nodesAndConnections }
+
+  def calculateEnabled = getClipboardNodesAndConnections.isDefined
 
 }
 

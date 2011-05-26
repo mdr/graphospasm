@@ -98,6 +98,7 @@ class EdgeLabelCreationTool extends CreationTool {
     val connection = setEdgeLabelCommand.connection
     val editPartRegistry = getCurrentViewer.getEditPartRegistry
     val connectionEditPart = editPartRegistry.get(connection).asInstanceOf[ConnectionEditPart]
+    connectionEditPart.getFigure.validate()
 
     val request = new Request(RequestConstants.REQ_DIRECT_EDIT)
     connectionEditPart.performRequest(request)
@@ -131,7 +132,7 @@ class EdgeCreationTool extends ConnectionCreationTool {
 
     val editPartRegistry = getCurrentViewer.getEditPartRegistry
     val connectionEditPart = editPartRegistry.get(connection).asInstanceOf[ConnectionEditPart]
-
+    connectionEditPart.getFigure.validate()
     val request = new Request(RequestConstants.REQ_DIRECT_EDIT)
     connectionEditPart.performRequest(request)
   }

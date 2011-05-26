@@ -14,6 +14,7 @@ import org.eclipse.gef.Request
 import org.eclipse.draw2d.geometry.Rectangle
 import scala.collection.JavaConversions._
 import PartialFunction._
+import org.eclipse.gef.commands.UnexecutableCommand
 
 class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
 
@@ -62,7 +63,7 @@ class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
     val existingNames = targetNode.getAttributes.toMap.keySet.map(_.name).toSet
     val newNames = attributeNameAndValues.map(_._1.name)
     if (newNames.exists(existingNames))
-      null
+      UnexecutableCommand.INSTANCE
     else {
       val commands = for ((attributeName, attributeValue) ← attributeNameAndValues)
         yield new AddAttributeCommand(targetNode, attributeName, attributeValue)

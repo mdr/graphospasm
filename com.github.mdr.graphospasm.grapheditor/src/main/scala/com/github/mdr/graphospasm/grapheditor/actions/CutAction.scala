@@ -13,6 +13,7 @@ import org.eclipse.ui.ISharedImages
 import org.eclipse.ui.IWorkbenchPart
 import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.actions.ActionFactory
+import com.github.mdr.graphospasm.grapheditor.model._
 
 class CutAction(part: IWorkbenchPart) extends SelectionAction(part) {
 
@@ -26,12 +27,29 @@ class CutAction(part: IWorkbenchPart) extends SelectionAction(part) {
   }
 
   override def run() {
+
+    var originalToClone: Map[Node, Node] = Map()
+    val originalNodes = getSelectedObjects.toList.map(_.asInstanceOf[NodeEditPart].getModel)
+    val clonedNodes = originalNodes.map { node ⇒
+      val clonedNode = node.copy
+      originalToClone += node -> clonedNode
+      clonedNode
+    }
+
+    // TODO: duplication with clone nodes command & copy action
+    val clonedConnections = for {
+      originalNode ← originalNodes
+      connection ← originalNode.sourceConnections // Just source connections to avoid double counting
+      clonedSource ← originalToClone.get(connection.source)
+      clonedTarget ← originalToClone.get(connection.target)
+    } yield Connection.create(clonedSource, clonedTarget, connection.nameOpt)
+    Clipboard.getDefault.setContents(NodesAndConnections(clonedNodes, clonedConnections))
+
     val selectedEditParts = getSelectedObjects.toList.map(_.asInstanceOf[NodeEditPart])
     val request = new GroupRequest(RequestConstants.REQ_DELETE)
     request.setEditParts(selectedEditParts)
     val commands = selectedEditParts.flatMap { part ⇒ Option(part.getCommand(request)) }
     execute(compoundCommand(commands))
-    Clipboard.getDefault.setContents(selectedEditParts.map(_.getModel.copy))
   }
 
   def calculateEnabled = getSelectedObjects.nonEmpty && getSelectedObjects.forall(_.isInstanceOf[NodeEditPart])

@@ -104,11 +104,12 @@ class Node(initialName: Name) extends Observable {
     fireEvent(LocalPropertyChanged)
   }
 
+  // Excludes any connections
   def copy: Node = {
     val node = new Node(name)
     node.bounds = bounds
     for ((name, value) ← attributeNameValues)
-      node.addAttribute(name, value)
+      node.addAttribute(name.copy, value.copy)
     node
   }
 
