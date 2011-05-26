@@ -2,7 +2,6 @@ package com.github.mdr.graphospasm.grapheditor
 import com.github.mdr.graphospasm.core.graph._
 import com.github.mdr.graphospasm.grapheditor.part.NodeEditPart
 import com.github.mdr.graphospasm.grapheditor.part.AttributeNameEditPart
-import com.github.mdr.graphospasm.grapheditor.model.commands.AddAttributeCommand
 import org.eclipse.gef.RequestConstants
 import org.eclipse.gef.Request
 import org.eclipse.gef.EditPart
@@ -17,6 +16,7 @@ import org.eclipse.gef.tools._
 import com.github.mdr.graphospasm.grapheditor.model.commands.SetEdgeLabelCommand
 import com.github.mdr.graphospasm.grapheditor.part.ConnectionEditPart
 import com.github.mdr.graphospasm.grapheditor.model.commands.CreateConnectionCommand
+import com.github.mdr.graphospasm.grapheditor.model.commands.AddAttributeCommand
 
 object GraphDiagramEditorPalette {
 

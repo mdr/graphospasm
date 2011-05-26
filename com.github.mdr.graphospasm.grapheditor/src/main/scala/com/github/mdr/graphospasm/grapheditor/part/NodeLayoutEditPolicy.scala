@@ -24,17 +24,9 @@ class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
   protected def getCreateCommand(request: CreateRequest): Command = {
     val node = getHost.getModel
     val newObjectClass = request.getNewObjectType.asInstanceOf[Class[_]]
-    if (newObjectClass == classOf[Attribute]) {
-
-      val existingAttributes = node.getAttributes.map(_._1.name.simpleName).toSet
-      var candidateName = "name"
-      var i = 0
-      while (existingAttributes contains candidateName) {
-        i += 1
-        candidateName = "name" + i
-      }
-      new AddAttributeCommand(node, new AttributeName(Name(candidateName)), new AttributeValue("value"))
-    } else
+    if (newObjectClass == classOf[Attribute])
+      AddAttributeCommand.create(node)
+    else
       null
   }
 
@@ -64,20 +56,32 @@ class NodeLayoutEditPolicy extends XYLayoutEditPolicy {
       (node.getAttributeName(attributeValue).get, part.getModel)
   }
 
-  override def getAddCommand(req: Request) = {
-    val commands = for {
-      editPart ← getEditParts(req)
-      (attributeName, attributeValue) ← getAttributeNameValue(editPart)
-    } yield new AddAttributeCommand(getHost.getModel, attributeName, attributeValue)
-    compoundCommand(commands)
+  override def getAddCommand(request: Request) = {
+    val attributeNameAndValues = getEditParts(request).flatMap(getAttributeNameValue).distinct
+    val targetNode = getHost.getModel
+    val existingNames = targetNode.getAttributes.toMap.keySet.map(_.name).toSet
+    val newNames = attributeNameAndValues.map(_._1.name)
+    if (newNames.exists(existingNames))
+      null
+    else {
+      val commands = for ((attributeName, attributeValue) ← attributeNameAndValues)
+        yield new AddAttributeCommand(targetNode, attributeName, attributeValue)
+      compoundCommand(commands)
+    }
   }
 
   def getEditParts(groupRequest: Request): List[EditPart] =
-    groupRequest.asInstanceOf[GroupRequest].getEditParts.collect { case part: EditPart ⇒ part }.toList
+    groupRequest.asInstanceOf[GroupRequest].getEditParts.toList.collect { case part: EditPart ⇒ part }
 
   override def getCloneCommand(request: ChangeBoundsRequest): Command = {
     val attributeNameAndValues = getEditParts(request).flatMap(getAttributeNameValue).distinct
-    new CloneAttributesCommand(getHost.getModel, attributeNameAndValues)
+    val targetNode = getHost.getModel
+    val existingNames = targetNode.getAttributes.toMap.keySet.map(_.name).toSet
+    val newNames = attributeNameAndValues.map(_._1.name)
+    if (newNames.exists(existingNames))
+      null
+    else
+      new CloneAttributesCommand(targetNode, attributeNameAndValues)
   }
 
 }

@@ -4,7 +4,6 @@ import com.github.mdr.graphospasm.grapheditor.part.NodeEditPart
 import com.github.mdr.graphospasm.grapheditor.part.GraphDiagramEditPart
 import com.github.mdr.graphospasm.grapheditor.model.commands.RelayoutCommand
 import com.github.mdr.graphospasm.grapheditor.Plugin
-import java.util.List
 import scala.collection.JavaConversions._
 import org.eclipse.jface.resource.ImageDescriptor
 import org.eclipse.ui.IWorkbenchPart
@@ -16,10 +15,9 @@ import scala.collection.JavaConversions._
 import com.github.mdr.graphospasm.grapheditor.part.ConnectionEditPart
 import PartialFunction._
 import com.github.mdr.graphospasm.grapheditor.model.commands.SetEdgeLabelCommand
+import org.eclipse.gef.RequestConstants
 
 object AddEdgeLabelAction {
-
-  //  val requestId = "relayoutRequest"
 
   val actionId = "addEdgeLabelAction"
 
@@ -33,16 +31,20 @@ class AddEdgeLabelAction(part: IWorkbenchPart) extends SelectionAction(part) {
   setImageDescriptor(Plugin.addEdgeLabel16)
   setHoverImageDescriptor(getImageDescriptor)
 
-  def calculateEnabled =
-    getSelectedObjects.size == 1 && cond(getSelectedObjects.get(0)) {
-      case part: ConnectionEditPart ⇒ part.getModel.nameOpt.isEmpty
-    }
+  def calculateEnabled = getConnectionEditPartOpt.isDefined
 
-  private def getCommand = {
-    val connection = getSelectedObjects.get(0).asInstanceOf[ConnectionEditPart].getModel
-    new SetEdgeLabelCommand(connection, Some("label"))
+  private def getConnectionEditPartOpt: Option[ConnectionEditPart] = condOpt(getSelectedObjects.toList) {
+    case List(part: ConnectionEditPart) ⇒ part
   }
 
-  override def run() = execute(getCommand)
+  override def run() = {
+    val connectionEditPart = getConnectionEditPartOpt.get
+    val connection = connectionEditPart.getModel
+    val command = new SetEdgeLabelCommand(connection, Some("label"))
+
+    execute(command)
+
+    connectionEditPart.performRequest(new Request(RequestConstants.REQ_DIRECT_EDIT))
+  }
 
 }

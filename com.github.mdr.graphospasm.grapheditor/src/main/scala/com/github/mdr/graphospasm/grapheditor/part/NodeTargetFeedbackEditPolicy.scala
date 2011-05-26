@@ -30,7 +30,7 @@ class NodeTargetFeedbackEditPolicy extends GraphicalEditPolicy {
 
   override def showTargetFeedback(request: Request) {
     val highlight = cond(request.getType) {
-      case REQ_MOVE | REQ_ADD | REQ_CLONE | REQ_CONNECTION_START | REQ_CONNECTION_END ⇒ true
+      case REQ_MOVE | REQ_ADD | REQ_CLONE | REQ_CONNECTION_START | REQ_CONNECTION_END | REQ_RECONNECT_SOURCE | REQ_RECONNECT_TARGET ⇒ true
       case REQ_CREATE ⇒ cond(request) {
         case createRequest: CreateRequest ⇒ cond(createRequest.getNewObject) {
           case _: ConnectionInProgress | _: Attribute ⇒ true

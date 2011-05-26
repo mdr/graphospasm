@@ -8,6 +8,21 @@ import org.eclipse.draw2d.geometry.Point
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command
 
+object AddAttributeCommand {
+
+  def create(node: Node) = {
+    val existingAttributes = node.getAttributes.map(_._1.name.simpleName).toSet
+    var candidateName = "name"
+    var i = 0
+    while (existingAttributes contains candidateName) {
+      i += 1
+      candidateName = "name" + i
+    }
+    new AddAttributeCommand(node, new AttributeName(Name(candidateName)), new AttributeValue("value"))
+  }
+
+}
+
 class AddAttributeCommand(val node: Node, val attributeName: AttributeName, attributeValue: AttributeValue) extends Command {
 
   private var previousDimension: Option[Dimension] = None

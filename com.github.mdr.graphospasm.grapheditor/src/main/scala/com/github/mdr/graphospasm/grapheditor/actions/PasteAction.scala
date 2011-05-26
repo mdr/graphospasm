@@ -42,8 +42,18 @@ class PasteAction(part: IWorkbenchPart) extends SelectionAction(part) {
     for (graphDiagram ← getSelectedDiagram)
       Clipboard.getDefault.getContents match {
         case ListOfNodes(nodes) ⇒
-          val commands = nodes.map { node ⇒ new CreateNodeCommand(node.copy, node.bounds.getTopLeft.getTranslated(6, 6), node.size, graphDiagram) }
+          var newNodes: List[Node] = Nil
+          val commands = nodes.map { node ⇒
+            val newNode = node.copy
+            newNodes ::= newNode
+            new CreateNodeCommand(newNode, node.bounds.getTopLeft.getTranslated(6, 6), node.size, graphDiagram)
+          }
           execute(compoundCommand(commands))
+          val viewer = getSelectedObjects.get(0).asInstanceOf[EditPart].getViewer
+          val editPartRegistry = viewer.getEditPartRegistry
+          viewer.deselectAll()
+          viewer.flush()
+          newNodes.map(editPartRegistry.get(_).asInstanceOf[EditPart]).foreach(viewer.appendSelection)
       }
   }
 

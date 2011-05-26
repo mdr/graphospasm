@@ -6,23 +6,22 @@ import org.eclipse.gef.commands.Command
 import org.eclipse.draw2d.geometry.Rectangle
 import org.eclipse.gef.commands.Command;
 
-class SetEdgeLabelCommand(val connection: Connection, newSimpleNameOpt: Option[String]) extends Command {
+class SetEdgeLabelCommand(val connection: Connection, newSimpleNameOpt: Option[String]) extends AbstractCommand {
 
-  private var oldNameOpt: Option[Name] = None
+  case class SetEdgeLabelData(oldNameOpt: Option[Name], newNameOpt: Option[Name])
 
-  override def execute() {
-    oldNameOpt = connection.nameOpt
-    val existingNameOpt = connection.nameOpt
-    connection.nameOpt = newSimpleNameOpt.map { newSimpleName ⇒
-      existingNameOpt match {
-        case None               ⇒ Name(newSimpleName)
-        case Some(existingName) ⇒ existingName.copy(simpleName = newSimpleName)
-      }
+  type CommandExecutionData = SetEdgeLabelData
+
+  def createCommandExecutionData: SetEdgeLabelData = {
+    val oldNameOpt = connection.nameOpt
+    val newNameOpt = newSimpleNameOpt.map { newSimpleName ⇒
+      oldNameOpt.getOrElse(Name("")).copy(simpleName = newSimpleName)
     }
+    SetEdgeLabelData(oldNameOpt, newNameOpt)
   }
 
-  override def undo() {
-    connection.nameOpt = oldNameOpt
-  }
+  def execute(data: SetEdgeLabelData) { connection.nameOpt = data.newNameOpt }
+
+  def undo(data: SetEdgeLabelData) { connection.nameOpt = data.oldNameOpt }
 
 }

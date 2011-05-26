@@ -37,7 +37,7 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     addRetargetAction(new MatchHeightRetargetAction)
 
     addRetargetAction(new RelayoutRetargetAction)
-    addRetargetAction(new AddEdgeLabelRetargetAction)
+    //    addRetargetAction(new AddEdgeLabelRetargetAction)
     //
     //    //    addRetargetAction(new RetargetAction(
     //    //      GEFActionConstants.TOGGLE_RULER_VISIBILITY,
@@ -88,12 +88,11 @@ class GraphDiagramEditorActionBarContributor extends ActionBarContributor {
     add(getAction(GEFActionConstants.MATCH_HEIGHT))
 
     add(new Separator)
-    //
+
     add(getAction(RelayoutAction.actionId))
-    add(getAction(AddEdgeLabelAction.actionId))
-    //
-    //    add(new Separator)
-    //
+
+    add(new Separator)
+
     add(new ZoomComboContributionItem(getPage, Array[String]()))
   }
 

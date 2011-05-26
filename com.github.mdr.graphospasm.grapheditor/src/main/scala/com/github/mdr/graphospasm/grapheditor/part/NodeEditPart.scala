@@ -1,9 +1,8 @@
 package com.github.mdr.graphospasm.grapheditor.part
 import com.github.mdr.graphospasm.grapheditor.utils.Utils
 import org.eclipse.swt.accessibility.AccessibleEvent
-import com.github.mdr.graphospasm.grapheditor.model.commands.AddAttributeCommand
+import com.github.mdr.graphospasm.grapheditor.model.commands._
 import com.github.mdr.graphospasm.grapheditor.Attribute
-import com.github.mdr.graphospasm.grapheditor.model.commands.DeleteNodeCommand
 import org.eclipse.gef.requests.GroupRequest
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy
 import org.eclipse.swt.widgets.Shell
