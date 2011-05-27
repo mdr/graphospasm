@@ -23,7 +23,11 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
   setModel(attributeName)
 
   override def refreshVisuals() {
-    getFigure.name = attributeName.name.simpleName
+    val name = attributeName.name
+    getFigure.name = getParent.getParent.namespacePrefixManager.getDisplayName(name)
+    getFigure.toolTipText = name.simpleName + " (" + name.namespace + ")"
+
+    //    getFigure.name = attributeName.name.simpleName
     getParent.layoutChildren()
   }
 
@@ -61,7 +65,7 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
         val location = getFigure.getClientArea.getCopy
         location.width = nodeContentsLayoutInfo.attributeNameColumnWidth
         val cellEditorLocator = new FixedRegionCellEditorLocator(getFigure, location)
-        new RenameEditManager(this, cellEditorLocator, Some(simpleNameValidator)).show()
+        new RenameAttributeNameEditManager(this, cellEditorLocator, Some(simpleNameValidator)).show()
       }
     case _ ⇒
       super.performRequest(request)

@@ -27,6 +27,20 @@ class EmptyBorder extends AbstractBorder {
 
 class ConnectionFigure extends PolylineConnection {
 
+  private val toolTipLabel = new Label
+
+  setToolTip(toolTipLabel)
+
+  private var toolTipText_ : String = ""
+
+  def toolTipText_=(toolTipText: String) {
+    toolTipText_ = toolTipText
+    toolTipLabel.setText(toolTipText)
+    repaint()
+  }
+
+  def toolTipText = toolTipText_
+
   private var targetFeedback_ = false
 
   def targetFeedback = targetFeedback_

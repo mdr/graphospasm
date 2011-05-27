@@ -52,8 +52,13 @@ class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditP
   override def refreshVisuals() {
     super.refreshVisuals()
     connection.nameOpt match {
-      case Some(name) ⇒ getFigure.setLabel(name.simpleName)
-      case None       ⇒ getFigure.noLabel()
+      case Some(name) ⇒
+        getFigure.setLabel(name.simpleName)
+        getFigure.toolTipText = name.simpleName + " (" + name.namespace + ")"
+
+      case None ⇒
+        getFigure.noLabel()
+        getFigure.toolTipText = ""
     }
   }
 

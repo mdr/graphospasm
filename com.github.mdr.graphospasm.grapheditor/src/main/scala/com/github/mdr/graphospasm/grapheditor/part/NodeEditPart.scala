@@ -50,8 +50,10 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
   override def refreshVisuals() {
     for (nameBounds ← layoutChildren())
       getFigure.nameBounds = nameBounds
-    val nodeName = node.name
-    getFigure.name = getParent.namespacePrefixManager.getDisplayName(nodeName)
+    val name = node.name
+    getFigure.name = getParent.namespacePrefixManager.getDisplayName(name)
+    getFigure.toolTipText = name.simpleName + " (" + name.namespace + ")"
+
     getFigure.hasAttributes = node.getAttributes.nonEmpty
     getParent.setLayoutConstraint(this, getFigure, node.bounds)
     // getParent.refresh()

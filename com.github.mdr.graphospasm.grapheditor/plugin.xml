@@ -35,4 +35,18 @@
             name="Graphospasm">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.github.mdr.graphospasm.views"
+            name="Graphospasm">
+      </category>
+      <view
+            category="com.github.mdr.graphospasm.views"
+            class="com.github.mdr.graphospasm.grapheditor.views.NamespacesView"
+            icon="icons/namespaces.png"
+            id="com.github.mdr.graphospasm.grapheditor.views.NamespacesView"
+            name="Namespaces">
+      </view>
+   </extension>
 </plugin>

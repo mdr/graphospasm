@@ -11,12 +11,12 @@ import org.eclipse.gef.EditPart
 
 class AttributeNameDirectEditPolicy extends DirectEditPolicy {
 
+  override def getHost = super.getHost.asInstanceOf[AttributeNameEditPart]
+
   def getDirectEditCommand(edit: DirectEditRequest): Command =
     if (edit.getCellEditor.isValueValid) {
       val name = edit.getCellEditor.getValue.toString
-      val editPart = getHost.asInstanceOf[AttributeNameEditPart]
-      val node = editPart.getModel
-      new RenameAttributeNameCommand(node, name)
+      new RenameAttributeNameCommand(getHost.getModel, name)
     } else
       null
 

@@ -114,7 +114,7 @@ object NodeContentsLayouter {
   }
 
   private def dimensionRequired(attributeName: AttributeName)(implicit font: Font, namespacePrefixManager: NamespacePrefixManager) =
-    Utils.getTextExtents(attributeName.name.simpleName)
+    Utils.getTextExtents(namespacePrefixManager.getDisplayName(attributeName.name))
 
   private def widthRequired(attributeName: AttributeName)(implicit font: Font, namespacePrefixManager: NamespacePrefixManager) = dimensionRequired(attributeName).width
 

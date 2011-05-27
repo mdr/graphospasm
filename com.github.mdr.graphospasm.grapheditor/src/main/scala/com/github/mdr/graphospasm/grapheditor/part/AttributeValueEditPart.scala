@@ -40,6 +40,12 @@ class AttributeValueEditPart(val attributeValue: AttributeValue) extends NodeChi
 
   override def refreshVisuals() {
     getFigure.name = attributeValue.presentationString
+    val value = attributeValue.value
+    val typeSuffix = value match {
+      case _: AnyRef ⇒ " (" + value.getClass.getName + ")"
+      case _         ⇒ ""
+    }
+    getFigure.toolTipText = "" + attributeValue.value + typeSuffix
     getFigure.isInteger = attributeValue.value.isInstanceOf[java.lang.Integer]
     getParent.layoutChildren()
   }

@@ -47,6 +47,20 @@ class NodeFigure extends Figure {
 
   def name = name_
 
+  private val toolTipLabel = new Label
+
+  setToolTip(toolTipLabel)
+
+  private var toolTipText_ : String = ""
+
+  def toolTipText_=(toolTipText: String) {
+    toolTipText_ = toolTipText
+    toolTipLabel.setText(toolTipText)
+    repaint()
+  }
+
+  def toolTipText = toolTipText_
+
   private var nameBounds_ : Rectangle = new Rectangle(0, 0, 0, 0)
 
   def nameBounds = nameBounds_
