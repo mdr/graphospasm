@@ -25,7 +25,8 @@ class AttributeNameEditPart(val attributeName: AttributeName) extends NodeChildE
   override def refreshVisuals() {
     val name = attributeName.name
     getFigure.name = getParent.getParent.namespacePrefixManager.getDisplayName(name)
-    getFigure.toolTipText = name.simpleName + " (" + name.namespace + ")"
+    val namespaceSuffix = if (name.namespace == "") "" else " (" + name.namespace + ")"
+    getFigure.toolTipText = name.simpleName + namespaceSuffix
 
     //    getFigure.name = attributeName.name.simpleName
     getParent.layoutChildren()

@@ -52,7 +52,8 @@ class NodeEditPart(node: Node) extends AbstractGraphicalEditPart with Listener w
       getFigure.nameBounds = nameBounds
     val name = node.name
     getFigure.name = getParent.namespacePrefixManager.getDisplayName(name)
-    getFigure.toolTipText = name.simpleName + " (" + name.namespace + ")"
+    val namespaceSuffix = if (name.namespace == "") "" else " (" + name.namespace + ")"
+    getFigure.toolTipText = name.simpleName + namespaceSuffix
 
     getFigure.hasAttributes = node.getAttributes.nonEmpty
     getParent.setLayoutConstraint(this, getFigure, node.bounds)

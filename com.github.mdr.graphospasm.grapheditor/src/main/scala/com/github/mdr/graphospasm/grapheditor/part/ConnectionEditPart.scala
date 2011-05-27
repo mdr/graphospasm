@@ -54,7 +54,8 @@ class ConnectionEditPart(connection: Connection) extends AbstractConnectionEditP
     connection.nameOpt match {
       case Some(name) ⇒
         getFigure.setLabel(name.simpleName)
-        getFigure.toolTipText = name.simpleName + " (" + name.namespace + ")"
+        val namespaceSuffix = if (name.namespace == "") "" else " (" + name.namespace + ")"
+        getFigure.toolTipText = name.simpleName + namespaceSuffix
 
       case None ⇒
         getFigure.noLabel()
